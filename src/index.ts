@@ -73,15 +73,15 @@ const HouseSystem = {
     Krusinski: { id: "U", name: "Krusinski" }
 }
 
-interface IChartObject {
+export interface IChartObject {
     name: string;
-    label: string;
+    label?: string;
     symbol: string;
     position: number;
 
     print(): string;
 }
-interface IRulers {
+export interface IRulers {
     domicile: string[];
     exaltation: string[];
     detriment: string[];
@@ -89,17 +89,18 @@ interface IRulers {
     friend: string[];
     enemy: string[]
 }
-
-interface ISkyObject extends IChartObject {
+export interface IHouse extends IChartObject {
+    index: number;
+}
+export interface ISkyObject extends IChartObject {
     swisseph_id?: number;
     speed: number;
     sign: string;
     isRetrograde: boolean;
     rulers?: IRulers;    
+    house?: IHouse;
 }
-interface IHouse extends IChartObject {
 
-}
 const roman_numbers = ['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ','Ⅶ','Ⅷ','Ⅸ','Ⅹ','Ⅺ','Ⅻ'];
 const config = {
     Planets: [
@@ -288,7 +289,37 @@ function formatPosInZodic(longitude: number, sign_as_symbol: boolean = true): st
     const sign = sign_as_symbol ? zodiacSymbol(longitude) : ' ' + zodiacSign(longitude) + ' ';
     return ConvertDDToDMS(posInZodiacSign(longitude), sign);
 }
+function calc_house(longitude: number, houses: IHouse[]): IHouse {  
+    const houses_sorted = houses.sort((a: IHouse, b: IHouse) => a.position - b.position);
+    for (let i = 0; i < 12 ; i++) {
+        if (longitude < houses_sorted[i].position) {
+            if (i == 0) {
+                return houses_sorted[11];
+            } else {
+                return houses_sorted[i-1];
+            }
+        }        
+    }
+    return houses_sorted[11];
+}
+class House implements IHouse {
+    public position: number;
+    public name: string;
+    public symbol: string;
+    public label: string;
+    public index: number;
 
+    constructor(conf: any) {
+        this.position = conf.position;
+        this.name = conf.name;
+        this.symbol = conf.symbol;
+        this.label = _.get(conf, "label", conf.name);
+        this.index = conf.index;
+    }
+    public print(): string {
+        return `${this.name} ${formatPosInZodic(this.position)}`;
+    }
+}
 class Planet implements ISkyObject {
     public position: number;
     public speed: number;
@@ -297,6 +328,7 @@ class Planet implements ISkyObject {
     public label: string;
     public rulers: IRulers | undefined = undefined;
     public swisseph_id: number;
+    public house: IHouse | undefined;
     constructor(name: string) {
         const conf: any = _.find(_.get(config, "Planets", []), (x: any) => x.name === name);
         if (!conf) {
@@ -347,17 +379,17 @@ class Planet implements ISkyObject {
         if (this.isFall) rules.push('Fl');
         if (this.isDetriment) rules.push('Dt');
         const rules_fmt = _.padEnd(rules.join('.'), 18);
-        // ℞
-        return `${this.symbol} ${formatPosInZodic(this.position)} ${this.isRetrograde ? 'R' : ' '} ${rules_fmt}`;
+        // ℞        
+        return `${this.symbol} ${formatPosInZodic(this.position)} ${this.isRetrograde ? 'R' : ' '} ${this.house?.name} ${rules_fmt}`;
     }
 }
 
-const planets: ISkyObject[] = [];
+const sky_objects: ISkyObject[] = [];
 
 function init() {
 
     config.Planets.forEach(planet => {
-        planets.push(new Planet(planet.name));
+        sky_objects.push(new Planet(planet.name));
     });
 
     //console.log(JSON.stringify(planets, null, 3));
@@ -387,32 +419,20 @@ export function natal_chart_data(
     let fl: number = swisseph.SEFLG_SPEED | swisseph.SEFLG_TOPOCTR;
     fl = fl | flag;
 
-    const houses: any = swisseph.swe_houses_ex(julian_ut, swisseph.SEFLG_SIDEREAL, latitude, longitude, hsy);
-    const houses_mapped = houses.house.map((x: number, index: number) => {
-        return {
+    const hse: any = swisseph.swe_houses_ex(julian_ut, swisseph.SEFLG_SIDEREAL, latitude, longitude, hsy);
+    const houses = hse.house.map((x: number, index: number) => {
+        const h = new House({
             index,
             name: pad2(index + 1) + ' house',
             symbol: roman_numbers[index],
-            value: x            
-        }
-    });
-    console.log(houses_mapped.sort((a: any, b: any) => a.index - b.index).map((x: any) => `${x.name} ${formatPosInZodic(x.value)}`).join('\n'));
-    console.log();
-    const houses_sorted = houses_mapped.sort((a: any, b: any) => a.value - b.value);
-    function calc_house(longitude: number): any {        
-        for (let i = 0; i < 12 ; i++) {
-            if (longitude < houses_sorted[i].value) {
-                if (i == 0) {
-                    return houses_sorted[11];
-                } else {
-                    return houses_sorted[i-1];
-                }
-            }        
-        }
-        return houses_sorted[11];
-    }
+            position: x            
+        });
+        //console.log(h.print());
+        return h;
+    });    
+    //console.log();
 
-    planets.forEach((x: ISkyObject) => {
+    sky_objects.forEach((x: ISkyObject) => {
         let calc: any;
         if (x.name !== SkyObject.ParsForuna) {
             const id = x.name === SkyObject.SouthNode ? swisseph.SE_TRUE_NODE : x.swisseph_id!;
@@ -420,19 +440,32 @@ export function natal_chart_data(
             x.position = x.name === SkyObject.SouthNode ? swisseph.swe_degnorm(calc.longitude + 180).x360 : calc.longitude;        
             x.speed = calc.longitudeSpeed;
         } else {
-            const sun = planets.find(x => x.name === SkyObject.Sun)!.position;
-            const moon = planets.find(x => x.name === SkyObject.Moon)!.position;
-            const asc = houses.ascendant;  
-            const sun_house = calc_house(sun); 
+            const sun = sky_objects.find(x => x.name === SkyObject.Sun)!.position;
+            const moon = sky_objects.find(x => x.name === SkyObject.Moon)!.position;
+            const asc = hse.ascendant;  
+            const sun_house = calc_house(sun, houses); 
             const is_night = 0 <= sun_house.index && sun_house.index <= 5;                      
             x.position = is_night 
                 ? swisseph.swe_degnorm(asc + sun - moon).x360
                 : swisseph.swe_degnorm(asc + moon - sun).x360;
             x.speed = 0;
         }
-        
-        console.log(x.print());
+        x.house = calc_house(x.position, houses);        
+        //console.log(x.print());
     });
+    return {
+        SkyObjects: sky_objects,
+        Houses: houses.sort((a: IHouse, b: IHouse) => a.index - b.index)
+    }
 }
 
-natal_chart_data(1970, 4, 1, 7, 20, 0, 37.545556, 55.431111, 160, HouseSystem.Placidus.id);
+const data = natal_chart_data(1970, 4, 1, 7, 20, 0, 37.545556, 55.431111, 160, HouseSystem.Placidus.id);
+
+console.info();
+
+console.log('--- Houses ---');
+data.Houses.forEach((h: IHouse) => console.log(h.print()));
+
+console.log('\n--- Planets ---');
+data.SkyObjects.forEach((sk: ISkyObject) => console.log(sk.print()));
+
