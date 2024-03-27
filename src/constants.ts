@@ -15,7 +15,9 @@ export const SkyObject = {
     Pluto: "Pluto",
     NorthNode: "NorthNode",
     SouthNode: "SothNode",
-    ParsForuna: "ParsFortuna"
+    ParsForuna: "ParsFortuna",
+    BlackMoon: "BlackMoon",
+    TrueBalckMoon: "TrueBlackMoon"
 };
 
 export const ZodiacSign = {
@@ -212,7 +214,17 @@ export const AstralkaConfig = {
         {
             name: SkyObject.ParsForuna,
             symbol: "⦻"
-        }
+        },
+        {
+            name: SkyObject.BlackMoon,
+            symbol: "⚜︎",
+            swisseph_id: swisseph.SE_MEAN_APOG
+        },
+        {
+            name: SkyObject.TrueBalckMoon,
+            symbol: "☪︎",
+            swisseph_id: swisseph.SE_OSCU_APOG
+        },
     ],
     Aspects: [
         {            
@@ -342,7 +354,3 @@ export const ZodiacSigns: string[] = [
     ZodiacSign.Pisces
 ];
 export const ZodiaSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
-export enum AspectStrength {
-    Normal,
-    Full
-};
