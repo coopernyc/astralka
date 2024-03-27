@@ -1,5 +1,6 @@
-import { AstralkaConfig } from "./constants";
-import { IHouse, IRulers, ISkyObject } from "./interfaces";
+import swisseph from "swisseph";
+import { AspectKind, AstralkaConfig } from "./constants";
+import { IAspect, IAspectDef, IChartObject, IHouse, IRulers, ISkyObject } from "./interfaces";
 import { format_pos_in_zodiac, zodiac_sign } from "./utils";
 import * as _ from "lodash";
 
@@ -83,5 +84,38 @@ export class Planet implements ISkyObject {
         const rules_fmt = _.padEnd(rules.join('.'), 18);
         // ℞        
         return `${this.symbol} ${format_pos_in_zodiac(this.position)} ${this.isRetrograde ? 'R' : ' '} ${this.house?.name} ${rules_fmt}`;
+    }
+}
+export class AspectDef implements IAspectDef {
+    public name: string;
+    public symbol: string;
+    public angle: number;
+    public kind: string;
+    public delta: number;
+    public keywords?: string[];
+    constructor(name: string) {
+        const conf: any = _.find(_.get(AstralkaConfig, "Aspects", []), (x: any) => x.name === name);
+        this.name = conf.name;
+        this.symbol = conf.symbol;
+        this.angle = conf.angle;
+        this.kind = conf.kind;
+        this.delta = conf.delta;
+        this.keywords = conf?.keywords;
+    }
+}
+export class Aspect implements IAspect {
+    public parties: [IChartObject, IChartObject];
+    public angle: number;
+    public aspect: IAspectDef
+    constructor(parties: [IChartObject, IChartObject], angle: number, aspect: IAspectDef) {
+        this.parties = parties;
+        this.angle = angle;
+        this.aspect = aspect;
+    }
+    public get is_precise(): boolean {
+        return swisseph.swe_difdegn(this.angle, this.aspect.angle).degreeDiff <= 0.7;
+    }
+    public print(): string {
+        return `${this.parties[0].symbol} ${this.aspect.symbol} ${_.padEnd(this.parties[1].symbol, 2)} ${_.padStart(_.round(this.angle, 2).toFixed(2), 6)}° ${this.aspect.kind === AspectKind.Major?'M':' '}${this.is_precise?"P":' '} ${this.aspect.name}`;
     }
 }

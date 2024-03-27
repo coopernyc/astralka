@@ -1,5 +1,7 @@
+import swisseph from "swisseph";
+import { Aspect } from "./common";
 import { ZodiaSymbols, ZodiacSigns } from "./constants";
-import { IHouse } from "./interfaces";
+import { IAspect, IAspectDef, IChartObject, IHouse } from "./interfaces";
 import * as _ from "lodash";
 
 export function pad2(n: number | string): string {
@@ -37,4 +39,10 @@ export function calculate_house(longitude: number, houses: IHouse[]): IHouse {
         }        
     }
     return houses_sorted[11];
+}
+export function find_aspect(a: IChartObject, b: IChartObject, angle: number, defs: IAspectDef[]) : IAspect | undefined {
+    //const def: IAspectDef | undefined = _.find(defs, (x: IAspectDef) => (x.angle - x.delta) <= angle && angle <= (x.angle + x.delta) );
+    
+    const def: IAspectDef | undefined = _.find(defs, (x: IAspectDef) => Math.abs(swisseph.swe_difdeg2n(x.angle, angle).degreeDistance180) <= x.delta);
+    return def ? new Aspect([a, b], angle, def) : undefined;
 }

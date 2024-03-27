@@ -25,3 +25,18 @@ export interface ISkyObject extends IChartObject {
     rulers?: IRulers;    
     house?: IHouse;
 }
+export interface IAspectDef {
+    name: string;
+    angle: number;
+    kind: string,
+    delta: number,
+    symbol: string,
+    keywords?: string[]
+}
+export interface IAspect {
+    parties: IChartObject[];
+    aspect: IAspectDef;
+    angle: number;
+    is_precise: boolean;
+    print(): string;
+}

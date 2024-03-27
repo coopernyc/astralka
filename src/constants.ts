@@ -63,6 +63,10 @@ export const HouseSystem = {
     Krusinski: { id: "U", name: "Krusinski" }
 }
 export const RomanNumbers = ['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ','Ⅶ','Ⅷ','Ⅸ','Ⅹ','Ⅺ','Ⅻ'];
+export const AspectKind = {
+    Major: "Major",
+    Minor: "Monor"
+}
 export const AstralkaConfig = {
     Planets: [
         {
@@ -209,6 +213,118 @@ export const AstralkaConfig = {
             name: SkyObject.ParsForuna,
             symbol: "⦻"
         }
+    ],
+    Aspects: [
+        {            
+            name: "Conjunction",
+            angle: 0,
+            kind: AspectKind.Major,
+            delta: 8,
+            symbol: '☌',
+            keywords: [
+                "intencity",
+                "strengthening",
+                "fusion",
+                "integration",
+                "conjunction"
+            ]            
+        },
+        {
+            name: "Opposition",
+            angle: 180,
+            kind: AspectKind.Major,
+            delta: 8,
+            symbol: '☍',
+            keywords: [
+                "opposition",
+                "balance",
+                "cooperation"            
+            ]
+        },
+        {
+            name: "Trine",
+            angle: 120,
+            kind: AspectKind.Major,
+            delta: 8,
+            symbol: '△',
+            keywords: [
+                "easy going",
+                "good luck"
+            ]
+        },
+        {
+            name: "Square",
+            angle: 90,            
+            kind: AspectKind.Major,
+            delta: 8,
+            symbol: '□',
+            keywords: [
+                "difficulties",
+                "tension"
+            ]
+        },
+        {
+            name: "Sextile",
+            angle: 60,            
+            kind: AspectKind.Major,
+            delta: 8,
+            symbol: '✶',
+            keywords: [
+                "possibility",
+                "opportunity"
+            ]
+        },
+        {
+            name: "Quincunx",
+            angle: 150,
+            kind: AspectKind.Minor,
+            delta: 3,
+            symbol: '⊼',
+            keywords: [
+                "growth"
+            ]
+        },
+        {
+            name: "Sesquiquadrate",
+            angle: 135,
+            kind: AspectKind.Minor,
+            delta: 3,
+            symbol: '⛋',
+            keywords: [
+                "trouble",
+                "concern"
+            ]
+        },        
+        {
+            name: "Semisextile",
+            angle: 30,
+            kind: AspectKind.Minor,
+            delta: 3,
+            symbol: '⊻',
+            keywords: [
+                "cooperation"
+            ]
+        },
+        {
+            name: "Quintile",
+            angle: 72,
+            kind: AspectKind.Minor,
+            delta: 3,
+            symbol: '⬠',
+            keywords: [
+                "creativity"
+            ]
+        },
+        {
+            name: "Semisquare",
+            angle: 45,
+            kind: AspectKind.Minor,
+            delta: 3,
+            symbol: '∠',
+            keywords: [
+                "tension"
+            ]
+        }
     ]
 }
 export const ZodiacSigns: string[] = [
@@ -226,3 +342,7 @@ export const ZodiacSigns: string[] = [
     ZodiacSign.Pisces
 ];
 export const ZodiaSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
+export enum AspectStrength {
+    Normal,
+    Full
+};
