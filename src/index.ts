@@ -1,5 +1,4 @@
 import * as _ from "lodash";
-//import * as config from "./config.json";
 import * as swisseph from "swisseph";
 import { HouseSystem, SkyObject, AstralkaConfig, RomanNumbers } from "./constants";
 import { IAspect, IAspectDef, IHouse, ISkyObject } from "./interfaces";
@@ -18,7 +17,9 @@ function init() {
     });
 }
 
-export function natal_chart_data(
+export * from "./constants";
+
+export default function natal_chart_data(
     year: number,
     month: number,
     day: number,
@@ -107,15 +108,15 @@ export function natal_chart_data(
     }
 }
 
-const data = natal_chart_data(1970, 4, 1, 7, 20, 0, 37.545556, 55.431111, 160, HouseSystem.Placidus.id);
+// const data = natal_chart_data(1970, 4, 1, 7, 20, 0, 37.545556, 55.431111, 160, HouseSystem.Placidus.id);
 
-console.log('--- Houses ---');
-data.Houses.forEach((h: IHouse) => console.log(h.print()));
+// console.log('--- Houses ---');
+// data.Houses.forEach((h: IHouse) => console.log(h.print()));
 
-console.log('\n--- Planets ---');
-data.SkyObjects.forEach((sk: ISkyObject) => console.log(sk.print()));
+// console.log('\n--- Planets ---');
+// data.SkyObjects.forEach((sk: ISkyObject) => console.log(sk.print()));
 
-console.log('\n--- Aspects ---');
-data.Aspects.forEach((a: IAspect) => console.log(a.print()));
+// console.log('\n--- Aspects ---');
+// data.Aspects.forEach((a: IAspect) => console.log(a.print()));
 
 

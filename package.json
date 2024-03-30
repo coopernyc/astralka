@@ -2,8 +2,8 @@
   "name": "astralka",
   "version": "1.0.0",
   "description": "astralka library",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/cjs/index.js",
+  "module": "module",
   "files": [
     "dist"
   ],
