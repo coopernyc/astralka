@@ -53,7 +53,7 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/sasha.json"
+              "src/config.json"
             ],
             "styles": [
               "src/styles.scss"

@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
 import { ChartSymbol } from './chart-symbol';
 import _ from "lodash";
-import { CHART_MARGIN, COLLISION_RADIUS, SYMBOL_CUSP, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_ZODIAC, nl180, nl360 } from './common';
+import { COLLISION_RADIUS, SYMBOL_SCALE, SYMBOL_ZODIAC, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac_sign } from './common';
 import { CommonModule } from '@angular/common';
 import { ChartCircle } from './chart-circle';
 import { ChartLine } from './chart-line';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { BreakpointObserver, LayoutModule, Breakpoints } from '@angular/cdk/layout';
+import { ChartText } from './chart-text';
 
 @Component({
   selector: 'astralka-root',
   standalone: true,
-  imports: [ChartSymbol, ChartCircle, ChartLine, CommonModule, HttpClientModule, FormsModule],
+  imports: [ChartSymbol, ChartCircle, ChartLine, ChartText, CommonModule, HttpClientModule, FormsModule, LayoutModule],
   template: `
     <div style="margin: 2px;">
       <button (click)="draw('Sasha')">Sasha</button>
@@ -20,7 +22,7 @@ import { FormsModule } from '@angular/forms';
       <button (click)="draw('Jenna')">Jenna</button>
       <button (click)="draw('Samantha')">Samantha</button>
       <div style="display: inline-block; margin-left: 3px;">
-        <label>House System </label>
+        <label>HSys</label>
         <select [(ngModel)]="hsy">
           <option *ngFor="let sh of house_system" [selected]="sh.value === hsy" [value]="sh.value">{{sh.display}}</option>
         </select>
@@ -36,19 +38,14 @@ import { FormsModule } from '@angular/forms';
         >
         <g>
           <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="none" stroke="#000"></rect> 
-
-
           <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius"></g>
           <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
           <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
-
           <g svgg-line *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
-
-
-          <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y"  [name]="p.name"></g>
-          <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y"  [name]="p.name"></g>
-          <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y"  [name]="p.name"></g>
-
+          <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+          <g svgg-text *ngFor="let p of planets" [x]="p.x + 6" [y]="p.y + 5" [text]="p.text"></g>
+          <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
+          <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
           <!--
           <g svgg-symbol [x]="20" [y]="520"  [name]="'ParsFortuna'"></g>
           <g svgg-line [x1]="10" [y1]="520" [x2]="30" [y2]="520"></g>
@@ -57,9 +54,14 @@ import { FormsModule } from '@angular/forms';
         </g>        
       </svg>
     </div>
+    <div id="details">
+      <div *ngFor="let p of sky_objects" class="roboto-medium">
+        <div style="display: inline-block; width: 16px; text-align: center" [title]="p.name">{{p.symbol}}</div> {{format_position(p.position)}}
+      </div>  
+    </div>
   `,
   styles: [
-    `
+    `      
       button {
         margin-right: 2px;
       }
@@ -67,6 +69,12 @@ import { FormsModule } from '@angular/forms';
         position: relative;
         overflow: hidden;
       }
+      .roboto-medium {
+        font-family: "Roboto", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 11px;
+      }      
     `
   ],
 })
@@ -74,6 +82,7 @@ export class AppComponent {
 
   public width: number = 600;
   public height: number = 600;
+  public margin: number = 50;
 
   public cx: number = 0;
   public cy: number = 0;
@@ -88,6 +97,8 @@ export class AppComponent {
   private _houses: any[] = [];
   private _cusps: any[] = [];
   private _lines: any[] = [];
+  private serverUrl: string = "";
+  private data: any = {};
 
   public house_system = [
     { display: "Placidus", value: "P" },
@@ -96,8 +107,71 @@ export class AppComponent {
 
   public hsy = _.first(this.house_system)?.value;
 
-  constructor(private http: HttpClient) {
-    this.init();
+  constructor(private http: HttpClient, private responsive: BreakpointObserver ) {
+    const responsive_matrix = [
+      {
+        breakpoint: '(min-width: 375px)',        
+        width: 370,
+        height: 370,
+        margin: 1
+        
+      },
+      {
+        breakpoint: '(min-width: 428px)',        
+        width: 410,
+        height: 410,
+        margin: 1        
+      },
+      {
+        breakpoint: '(min-width: 600px)',        
+        width: 590,
+        height: 590,
+        margin: 50        
+      }
+    ];
+    this.responsive.observe(responsive_matrix.map(x => x.breakpoint)).subscribe(result => {
+      if (result.matches) {
+        responsive_matrix.forEach((r: any) => {
+          if (result.breakpoints[r.breakpoint]) {
+            this.width = r.width;
+            this.height = r.height;
+            this.margin = r.margin;
+          }
+        });
+      }
+      this.init();
+    });
+  }
+
+  public format_position(p: number): string {
+    return format_pos_in_zodiac(p);
+  }
+
+  public zodiac_options(p: any): any {
+    let color = "#000";
+    switch (p.name) {
+      case SYMBOL_ZODIAC.Aries:
+      case SYMBOL_ZODIAC.Leo:
+      case SYMBOL_ZODIAC.Sagittarius:
+        color = "#b00";
+        break;
+      case SYMBOL_ZODIAC.Taurus:
+      case SYMBOL_ZODIAC.Virgo:
+      case SYMBOL_ZODIAC.Capricorn:
+        color = "#060";
+        break;
+      case SYMBOL_ZODIAC.Gemini:
+      case SYMBOL_ZODIAC.Libra:
+      case SYMBOL_ZODIAC.Aquarius:
+          color = "#069";
+          break;  
+      case SYMBOL_ZODIAC.Cancer:
+      case SYMBOL_ZODIAC.Scorpio:
+      case SYMBOL_ZODIAC.Pisces:
+        color = "#006";
+        break;  
+    }
+    return { stroke_color: color };
   }
 
   private init(): void {
@@ -107,9 +181,13 @@ export class AppComponent {
     this._cusps = [];
     this._lines = [];
 
+    this.http.get("config.json").subscribe((data:any) => {
+      this.serverUrl = data.server;
+    });
+
     this.cx = Math.trunc(this.width/2);
     this.cy = Math.trunc(this.height/2);
-    this.outer_radius = Math.min(this.width/2, this.height/2) - CHART_MARGIN;
+    this.outer_radius = Math.min(this.width/2, this.height/2) - this.margin;
     this.inner_radius = this.outer_radius - this.outer_radius / 5;
     this.house_radius = 2 * this.outer_radius / 5;
     
@@ -119,7 +197,8 @@ export class AppComponent {
       const p2 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius, i);
       this.lines.push({
         p1,
-        p2        
+        p2,
+        options: { stroke_color: i % 30 === 0 ? "#000" : "#0007" }        
       });      
     }
     let index = 0;
@@ -134,8 +213,12 @@ export class AppComponent {
   }
 
   public draw(name: string) {    
-    this.http.get(`http://localhost:3010/natal?name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
+    this.http.get(`${this.serverUrl}/natal?name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
+      
       this.init();
+
+      this.data = _.clone(data);
+
       for (let i = 0; i < 12; i++) {
         const house: any = _.find(data.Houses, (x: any) => x.index == i);        
         const a = house.position;
@@ -144,7 +227,13 @@ export class AppComponent {
         this._lines.push({
           p1,
           p2,
-          options: _.includes([0, 3, 6, 9], house.index) ? {} : { stroke_dasharray: "3, 2" }
+          options: _.includes([0, 3, 6, 9], house.index) 
+            ? house.index == 0 
+              ? { stroke_color: "#090", stroke_width: 1.5 }
+              : house.index == 9
+                ? { stroke_color: "#900", stroke_width: 1.5 }
+                : {} 
+            : { stroke_dasharray: "3, 2" }
         }); 
         const b = i == 11 
           ? _.find(data.Houses, (x: any) => x.index == 0 )
@@ -158,8 +247,7 @@ export class AppComponent {
           }
         );        
       }      
-
-      
+            
       const skyObjectsAdjusted = this.adjust(data.SkyObjects);
 
       skyObjectsAdjusted.forEach((so: any) => {
@@ -175,10 +263,18 @@ export class AppComponent {
         })
         this._planets.push({
           name: x.name,
-          ...p
+          ...p,
+          text: (x.speed < 0 ? 'R': '')
         });
       });
     });
+  }
+
+  public get sky_objects(): any[] {
+    if (_.isEmpty(this.data)) { return []; }
+    return this._planets.map(p => {
+      return this.data.SkyObjects.find(x => x.name === p.name);
+    }) || [];
   }
 
   private adjust(sos: any[]): any[] {
