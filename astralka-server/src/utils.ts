@@ -2,7 +2,7 @@ import swisseph from "swisseph";
 import { Aspect } from "./common";
 import { ZodiaSymbols, ZodiacSigns } from "./constants";
 import { IAspect, IAspectDef, IChartObject, IHouse } from "./interfaces";
-import * as _ from "lodash";
+import _ from "lodash";
 
 export function pad2(n: number | string): string {
     return _.padStart(n + '', 2);

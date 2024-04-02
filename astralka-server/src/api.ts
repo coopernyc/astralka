@@ -1,26 +1,10 @@
-import * as _ from "lodash";
-import * as swisseph from "swisseph";
-import { HouseSystem, SkyObject, AstralkaConfig, RomanNumbers } from "./constants";
+import swisseph from "swisseph";
 import { IAspect, IAspectDef, IHouse, ISkyObject } from "./interfaces";
-import { calculate_house, find_aspect, pad2 } from "./utils";
+import { AstralkaConfig, HouseSystem, SkyObject } from "./constants";
 import { AspectDef, House, Planet } from "./common";
+import { calculate_house, find_aspect, pad2 } from "./utils";
 
-const sky_objects: ISkyObject[] = [];
-const aspect_defs: IAspectDef[] = [];
-
-function init() {
-    AstralkaConfig.Planets.forEach(planet => {
-        sky_objects.push(new Planet(planet.name));
-    });
-    AstralkaConfig.Aspects.forEach(aspect => {
-        aspect_defs.push(new AspectDef(aspect.name));
-    });
-}
-
-export * from "./constants";
-
-export default function natal_chart_data(
-    year: number,
+export function natal_chart_data(year: number,
     month: number,
     day: number,
     hour: number,
@@ -34,8 +18,17 @@ export default function natal_chart_data(
     )
     : { SkyObjects: ISkyObject[], Houses: IHouse[], Aspects: IAspect[] } {
 
-    init();
+    const sky_objects: ISkyObject[] = [];
+    const aspect_defs: IAspectDef[] = [];
 
+    swisseph.swe_set_ephe_path("./node_modules/swisseph/ephe");
+    AstralkaConfig.Planets.forEach(planet => {
+        sky_objects.push(new Planet(planet.name));
+    });
+    AstralkaConfig.Aspects.forEach(aspect => {
+        aspect_defs.push(new AspectDef(aspect.name));
+    });
+    
     const julian: any = swisseph.swe_utc_to_jd(year, month, day, hour, minutes, seconds, swisseph.SE_GREG_CAL);
     const julian_ut: number = julian.julianDayUT;
 
@@ -59,7 +52,7 @@ export default function natal_chart_data(
         let calc: any;
         if (x.name !== SkyObject.ParsForuna) {
             const id = x.name === SkyObject.SouthNode ? swisseph.SE_TRUE_NODE : x.swisseph_id!;
-            calc = swisseph.swe_calc_ut(julian_ut, id, fl);
+            calc = swisseph.swe_calc_ut(julian_ut, id, fl);            
             x.position = x.name === SkyObject.SouthNode ? swisseph.swe_degnorm(calc.longitude + 180).x360 : calc.longitude;        
             x.speed = calc.longitudeSpeed;
         } else {
@@ -107,16 +100,3 @@ export default function natal_chart_data(
         Aspects: aspects
     }
 }
-
-// const data = natal_chart_data(1970, 4, 1, 7, 20, 0, 37.545556, 55.431111, 160, HouseSystem.Placidus.id);
-
-// console.log('--- Houses ---');
-// data.Houses.forEach((h: IHouse) => console.log(h.print()));
-
-// console.log('\n--- Planets ---');
-// data.SkyObjects.forEach((sk: ISkyObject) => console.log(sk.print()));
-
-// console.log('\n--- Aspects ---');
-// data.Aspects.forEach((a: IAspect) => console.log(a.print()));
-
-

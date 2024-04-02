@@ -2,7 +2,7 @@ import swisseph from "swisseph";
 import { AspectKind, AstralkaConfig } from "./constants";
 import { IAspect, IAspectDef, IChartObject, IHouse, IRulers, ISkyObject } from "./interfaces";
 import { format_pos_in_zodiac, zodiac_sign } from "./utils";
-import * as _ from "lodash";
+import _ from "lodash";
 
 export class House implements IHouse {
     public position: number;

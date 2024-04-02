@@ -1,5 +1,4 @@
-
-import * as swisseph from "swisseph";
+import swisseph from "swisseph";
 
 export const SkyObject = {
     Sun: "Sun",
@@ -14,10 +13,11 @@ export const SkyObject = {
     Neptune: "Neptune",
     Pluto: "Pluto",
     NorthNode: "NorthNode",
-    SouthNode: "SothNode",
+    SouthNode: "SouthNode",
     ParsForuna: "ParsFortuna",
-    BlackMoon: "BlackMoon",
-    TrueBalckMoon: "TrueBlackMoon"
+    Lilith: "Lilith",
+    TrueBalckMoon: "TrueBlackMoon",
+    Chiron: "Chiron"
 };
 
 export const ZodiacSign = {
@@ -216,15 +216,20 @@ export const AstralkaConfig = {
             symbol: "⦻"
         },
         {
-            name: SkyObject.BlackMoon,
+            name: SkyObject.Lilith,
             symbol: "⚜︎",
             swisseph_id: swisseph.SE_MEAN_APOG
         },
+        // {
+        //     name: SkyObject.TrueBalckMoon,
+        //     symbol: "☪︎",
+        //     swisseph_id: swisseph.SE_OSCU_APOG
+        // },
         {
-            name: SkyObject.TrueBalckMoon,
-            symbol: "☪︎",
-            swisseph_id: swisseph.SE_OSCU_APOG
-        },
+            name: SkyObject.Chiron,
+            symbol: "k",
+            swisseph_id: swisseph.SE_CHIRON
+        }
     ],
     Aspects: [
         {            

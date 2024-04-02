@@ -1,0 +1,3219 @@
+{
+    "SkyObjects": [
+        {
+            "rulers": {
+                "domicile": [
+                    "Leo"
+                ],
+                "exaltation": [
+                    "Aries"
+                ],
+                "detriment": [
+                    "Aquarius"
+                ],
+                "fall": [
+                    "Libra"
+                ],
+                "friend": [
+                    "Sagittarius"
+                ],
+                "enemy": [
+                    "Gemini"
+                ]
+            },
+            "name": "Sun",
+            "swisseph_id": 0,
+            "label": "Sun",
+            "symbol": "⊙",
+            "speed": 0.9763594789191643,
+            "position": 11.150941149914692,
+            "house": {
+                "position": 345.0156412712839,
+                "name": "11 house",
+                "symbol": "11",
+                "label": "11 house",
+                "index": 10
+            }
+        },
+        {
+            "rulers": {
+                "domicile": [
+                    "Cancer"
+                ],
+                "exaltation": [
+                    "Taurus"
+                ],
+                "detriment": [
+                    "Capricorn"
+                ],
+                "fall": [
+                    "Scorpio"
+                ],
+                "friend": [
+                    "Pisces"
+                ],
+                "enemy": [
+                    "Virgo"
+                ]
+            },
+            "name": "Moon",
+            "swisseph_id": 1,
+            "label": "Moon",
+            "symbol": "☽",
+            "speed": 11.438547694524459,
+            "position": 304.74276077774283,
+            "house": {
+                "position": 288.71678925224774,
+                "name": " 9 house",
+                "symbol": "9",
+                "label": " 9 house",
+                "index": 8
+            }
+        },
+        {
+            "rulers": {
+                "domicile": [
+                    "Gemini",
+                    "Virgo"
+                ],
+                "exaltation": [
+                    "Virgo"
+                ],
+                "detriment": [
+                    "Sagittarius",
+                    "Pisces"
+                ],
+                "fall": [
+                    "Pisces"
+                ],
+                "friend": [
+                    "Aquarius",
+                    "Capricorn"
+                ],
+                "enemy": [
+                    "Leo",
+                    "Cancer"
+                ]
+            },
+            "name": "Mercury",
+            "swisseph_id": 2,
+            "label": "Mercury",
+            "symbol": "☿",
+            "speed": 2.012697937452401,
+            "position": 20.191142926494287,
+            "house": {
+                "position": 345.0156412712839,
+                "name": "11 house",
+                "symbol": "11",
+                "label": "11 house",
+                "index": 10
+            }
+        },
+        {
+            "rulers": {
+                "domicile": [
+                    "Taurus",
+                    "Libra"
+                ],
+                "exaltation": [
+                    "Pisces"
+                ],
+                "detriment": [
+                    "Aries",
+                    "Scorpio"
+                ],
+                "fall": [
+                    "Virgo"
+                ],
+                "friend": [
+                    "Aquarius",
+                    "Capricorn"
+                ],
+                "enemy": [
+                    "Leo",
+                    "Cancer"
+                ]
+            },
+            "name": "Venus",
+            "swisseph_id": 3,
+            "label": "Venus",
+            "symbol": "♀",
+            "speed": 1.2299137294391471,
+            "position": 27.389206130578042,
+            "house": {
+                "position": 345.0156412712839,
+                "name": "11 house",
+                "symbol": "11",
+                "label": "11 house",
+                "index": 10
+            }
+        },
+        {
+            "rulers": {
+                "domicile": [
+                    "Aries",
+                    "Scorpio"
+                ],
+                "exaltation": [
+                    "Capricorn"
+                ],
+                "detriment": [
+                    "Taurus",
+                    "Libra"
+                ],
+                "fall": [
+                    "Cancer"
+                ],
+                "friend": [
+                    "Sagittarius",
+                    "Leo"
+                ],
+                "enemy": [
+                    "Gemini",
+                    "Aquarius"
+                ]
+            },
+            "name": "Mars",
+            "swisseph_id": 4,
+            "label": "Mars",
+            "symbol": "♂",
+            "speed": 0.6967338001828693,
+            "position": 47.872317588752,
+            "house": {
+                "position": 36.229160214045166,
+                "name": "12 house",
+                "symbol": "12",
+                "label": "12 house",
+                "index": 11
+            }
+        },
+        {
+            "rulers": {
+                "domicile": [
+                    "Sagittarius",
+                    "Pisces"
+                ],
+                "exaltation": [
+                    "Cancer"
+                ],
+                "detriment": [
+                    "Gemini",
+                    "Virgo"
+                ],
+                "fall": [
+                    "Capricorn"
+                ],
+                "friend": [
+                    "Aries",
+                    "Leo",
+                    "Scorpio"
+                ],
+                "enemy": [
+                    "Libra",
+                    "Aquarius",
+                    "Taurus"
+                ]
+            },
+            "name": "Jupiter",
+            "swisseph_id": 5,
+            "label": "Jupiter",
+            "symbol": "♃",
+            "speed": -0.10776061060369102,
+            "position": 213.56955552518426,
+            "house": {
+                "position": 165.01564127128395,
+                "name": " 5 house",
+                "symbol": "5",
+                "label": " 5 house",
+                "index": 4
+            }
+        },
+        {
+            "rulers": {
+                "domicile": [
+                    "Capricorn",
+                    "Aquarius"
+                ],
+                "exaltation": [
+                    "Libra"
+                ],
+                "detriment": [
+                    "Cancer",
+                    "Leo"
+                ],
+                "fall": [
+                    "Aries"
+                ],
+                "friend": [
+                    "Taurus",
+                    "Gemini",
+                    "Virgo"
+                ],
+                "enemy": [
+                    "Scorpio",
+                    "Sagittarius",
+                    "Pisces"
+                ]
+            },
+            "name": "Saturn",
+            "swisseph_id": 6,
+            "label": "Saturn",
+            "symbol": "♄",
+            "speed": 0.11878091303429983,
+            "position": 38.154453392295096,
+            "house": {
+                "position": 36.229160214045166,
+                "name": "12 house",
+                "symbol": "12",
+                "label": "12 house",
+                "index": 11
+            }
+        },
+        {
+            "rulers": {
+                "domicile": [
+                    "Aquarius"
+                ],
+                "exaltation": [
+                    "Virgo"
+                ],
+                "detriment": [
+                    "Leo"
+                ],
+                "fall": [
+                    "Taurus"
+                ],
+                "friend": [
+                    "Gemini",
+                    "Virgo",
+                    "Libra"
+                ],
+                "enemy": [
+                    "Sagittarius",
+                    "Pisces",
+                    "Aries"
+                ]
+            },
+            "name": "Uranus",
+            "swisseph_id": 7,
+            "label": "Uranus",
+            "symbol": "♅",
+            "speed": -0.04262720267433906,
+            "position": 186.5659253456337,
+            "house": {
+                "position": 165.01564127128395,
+                "name": " 5 house",
+                "symbol": "5",
+                "label": " 5 house",
+                "index": 4
+            }
+        },
+        {
+            "rulers": {
+                "domicile": [
+                    "Pisces"
+                ],
+                "exaltation": [
+                    "Leo"
+                ],
+                "detriment": [
+                    "Virgo"
+                ],
+                "fall": [
+                    "Aquarius"
+                ],
+                "friend": [
+                    "Scorpio",
+                    "Cancer"
+                ],
+                "enemy": [
+                    "Taurus",
+                    "Capricorn"
+                ]
+            },
+            "name": "Neptune",
+            "swisseph_id": 8,
+            "label": "Neptune",
+            "symbol": "♆",
+            "speed": -0.015276195597380138,
+            "position": 240.66493039088064,
+            "house": {
+                "position": 216.22916021404515,
+                "name": " 6 house",
+                "symbol": "6",
+                "label": " 6 house",
+                "index": 5
+            }
+        },
+        {
+            "rulers": {
+                "domicile": [
+                    "Scorpio"
+                ],
+                "exaltation": [
+                    "Aries"
+                ],
+                "detriment": [
+                    "Taurus"
+                ],
+                "fall": [
+                    "Libra"
+                ],
+                "friend": [
+                    "Sagittarius",
+                    "Pisces"
+                ],
+                "enemy": [
+                    "Gemini",
+                    "Virgo"
+                ]
+            },
+            "name": "Pluto",
+            "swisseph_id": 9,
+            "label": "Pluto",
+            "symbol": "♇",
+            "speed": -0.025605811515561072,
+            "position": 175.65421773244992,
+            "house": {
+                "position": 165.01564127128395,
+                "name": " 5 house",
+                "symbol": "5",
+                "label": " 5 house",
+                "index": 4
+            }
+        },
+        {
+            "name": "NorthNode",
+            "swisseph_id": 11,
+            "label": "NorthNode",
+            "symbol": "☊",
+            "speed": 0.02480958681218226,
+            "position": 341.54285632082133,
+            "house": {
+                "position": 310.61835700101466,
+                "name": "10 house",
+                "symbol": "10",
+                "label": "10 house",
+                "index": 9
+            }
+        },
+        {
+            "name": "SouthNode",
+            "swisseph_id": 11,
+            "label": "SouthNode",
+            "symbol": "☋",
+            "speed": 0.02480958681218226,
+            "position": 161.54285632082133,
+            "house": {
+                "position": 130.6183570010147,
+                "name": " 4 house",
+                "symbol": "4",
+                "label": " 4 house",
+                "index": 3
+            }
+        },
+        {
+            "name": "ParsFortuna",
+            "label": "ParsFortuna",
+            "symbol": "⦻",
+            "speed": 0,
+            "position": 12.480257249087515,
+            "house": {
+                "position": 345.0156412712839,
+                "name": "11 house",
+                "symbol": "11",
+                "label": "11 house",
+                "index": 10
+            }
+        },
+        {
+            "name": "Lilith",
+            "swisseph_id": 12,
+            "label": "Lilith",
+            "symbol": "⚜︎",
+            "speed": 0.1110364486578419,
+            "position": 132.80552372529138,
+            "house": {
+                "position": 130.6183570010147,
+                "name": " 4 house",
+                "symbol": "4",
+                "label": " 4 house",
+                "index": 3
+            }
+        },
+        {
+            "name": "Chiron",
+            "swisseph_id": 15,
+            "label": "Chiron",
+            "symbol": "k",
+            "speed": 0.05821980345377398,
+            "position": 6.582769299419698,
+            "house": {
+                "position": 345.0156412712839,
+                "name": "11 house",
+                "symbol": "11",
+                "label": "11 house",
+                "index": 10
+            }
+        }
+    ],
+    "Houses": [
+        {
+            "position": 78.88843762125938,
+            "name": " 1 house",
+            "symbol": "1",
+            "label": " 1 house",
+            "index": 0
+        },
+        {
+            "position": 92.66947070803977,
+            "name": " 2 house",
+            "symbol": "2",
+            "label": " 2 house",
+            "index": 1
+        },
+        {
+            "position": 108.71678925224776,
+            "name": " 3 house",
+            "symbol": "3",
+            "label": " 3 house",
+            "index": 2
+        },
+        {
+            "position": 130.6183570010147,
+            "name": " 4 house",
+            "symbol": "4",
+            "label": " 4 house",
+            "index": 3
+        },
+        {
+            "position": 165.01564127128395,
+            "name": " 5 house",
+            "symbol": "5",
+            "label": " 5 house",
+            "index": 4
+        },
+        {
+            "position": 216.22916021404515,
+            "name": " 6 house",
+            "symbol": "6",
+            "label": " 6 house",
+            "index": 5
+        },
+        {
+            "position": 258.88843762125936,
+            "name": " 7 house",
+            "symbol": "7",
+            "label": " 7 house",
+            "index": 6
+        },
+        {
+            "position": 272.66947070803974,
+            "name": " 8 house",
+            "symbol": "8",
+            "label": " 8 house",
+            "index": 7
+        },
+        {
+            "position": 288.71678925224774,
+            "name": " 9 house",
+            "symbol": "9",
+            "label": " 9 house",
+            "index": 8
+        },
+        {
+            "position": 310.61835700101466,
+            "name": "10 house",
+            "symbol": "10",
+            "label": "10 house",
+            "index": 9
+        },
+        {
+            "position": 345.0156412712839,
+            "name": "11 house",
+            "symbol": "11",
+            "label": "11 house",
+            "index": 10
+        },
+        {
+            "position": 36.229160214045166,
+            "name": "12 house",
+            "symbol": "12",
+            "label": "12 house",
+            "index": 11
+        }
+    ],
+    "Aspects": [
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Leo"
+                        ],
+                        "exaltation": [
+                            "Aries"
+                        ],
+                        "detriment": [
+                            "Aquarius"
+                        ],
+                        "fall": [
+                            "Libra"
+                        ],
+                        "friend": [
+                            "Sagittarius"
+                        ],
+                        "enemy": [
+                            "Gemini"
+                        ]
+                    },
+                    "name": "Sun",
+                    "swisseph_id": 0,
+                    "label": "Sun",
+                    "symbol": "⊙",
+                    "speed": 0.9763594789191643,
+                    "position": 11.150941149914692,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Cancer"
+                        ],
+                        "exaltation": [
+                            "Taurus"
+                        ],
+                        "detriment": [
+                            "Capricorn"
+                        ],
+                        "fall": [
+                            "Scorpio"
+                        ],
+                        "friend": [
+                            "Pisces"
+                        ],
+                        "enemy": [
+                            "Virgo"
+                        ]
+                    },
+                    "name": "Moon",
+                    "swisseph_id": 1,
+                    "label": "Moon",
+                    "symbol": "☽",
+                    "speed": 11.438547694524459,
+                    "position": 304.74276077774283,
+                    "house": {
+                        "position": 288.71678925224774,
+                        "name": " 9 house",
+                        "symbol": "9",
+                        "label": " 9 house",
+                        "index": 8
+                    }
+                }
+            ],
+            "angle": 66.40818037217184,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Leo"
+                        ],
+                        "exaltation": [
+                            "Aries"
+                        ],
+                        "detriment": [
+                            "Aquarius"
+                        ],
+                        "fall": [
+                            "Libra"
+                        ],
+                        "friend": [
+                            "Sagittarius"
+                        ],
+                        "enemy": [
+                            "Gemini"
+                        ]
+                    },
+                    "name": "Sun",
+                    "swisseph_id": 0,
+                    "label": "Sun",
+                    "symbol": "⊙",
+                    "speed": 0.9763594789191643,
+                    "position": 11.150941149914692,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Virgo"
+                        ],
+                        "detriment": [
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Taurus"
+                        ],
+                        "friend": [
+                            "Gemini",
+                            "Virgo",
+                            "Libra"
+                        ],
+                        "enemy": [
+                            "Sagittarius",
+                            "Pisces",
+                            "Aries"
+                        ]
+                    },
+                    "name": "Uranus",
+                    "swisseph_id": 7,
+                    "label": "Uranus",
+                    "symbol": "♅",
+                    "speed": -0.04262720267433906,
+                    "position": 186.5659253456337,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                }
+            ],
+            "angle": 184.585015804281,
+            "aspect": {
+                "name": "Opposition",
+                "symbol": "☍",
+                "angle": 180,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "opposition",
+                    "balance",
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Leo"
+                        ],
+                        "exaltation": [
+                            "Aries"
+                        ],
+                        "detriment": [
+                            "Aquarius"
+                        ],
+                        "fall": [
+                            "Libra"
+                        ],
+                        "friend": [
+                            "Sagittarius"
+                        ],
+                        "enemy": [
+                            "Gemini"
+                        ]
+                    },
+                    "name": "Sun",
+                    "swisseph_id": 0,
+                    "label": "Sun",
+                    "symbol": "⊙",
+                    "speed": 0.9763594789191643,
+                    "position": 11.150941149914692,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "name": "NorthNode",
+                    "swisseph_id": 11,
+                    "label": "NorthNode",
+                    "symbol": "☊",
+                    "speed": 0.02480958681218226,
+                    "position": 341.54285632082133,
+                    "house": {
+                        "position": 310.61835700101466,
+                        "name": "10 house",
+                        "symbol": "10",
+                        "label": "10 house",
+                        "index": 9
+                    }
+                }
+            ],
+            "angle": 29.608084829093343,
+            "aspect": {
+                "name": "Semisextile",
+                "symbol": "⊻",
+                "angle": 30,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Leo"
+                        ],
+                        "exaltation": [
+                            "Aries"
+                        ],
+                        "detriment": [
+                            "Aquarius"
+                        ],
+                        "fall": [
+                            "Libra"
+                        ],
+                        "friend": [
+                            "Sagittarius"
+                        ],
+                        "enemy": [
+                            "Gemini"
+                        ]
+                    },
+                    "name": "Sun",
+                    "swisseph_id": 0,
+                    "label": "Sun",
+                    "symbol": "⊙",
+                    "speed": 0.9763594789191643,
+                    "position": 11.150941149914692,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "name": "ParsFortuna",
+                    "label": "ParsFortuna",
+                    "symbol": "⦻",
+                    "speed": 0,
+                    "position": 12.480257249087515,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 358.67068390082716,
+            "aspect": {
+                "name": "Conjunction",
+                "symbol": "☌",
+                "angle": 0,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "intencity",
+                    "strengthening",
+                    "fusion",
+                    "integration",
+                    "conjunction"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Leo"
+                        ],
+                        "exaltation": [
+                            "Aries"
+                        ],
+                        "detriment": [
+                            "Aquarius"
+                        ],
+                        "fall": [
+                            "Libra"
+                        ],
+                        "friend": [
+                            "Sagittarius"
+                        ],
+                        "enemy": [
+                            "Gemini"
+                        ]
+                    },
+                    "name": "Sun",
+                    "swisseph_id": 0,
+                    "label": "Sun",
+                    "symbol": "⊙",
+                    "speed": 0.9763594789191643,
+                    "position": 11.150941149914692,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "name": "Chiron",
+                    "swisseph_id": 15,
+                    "label": "Chiron",
+                    "symbol": "k",
+                    "speed": 0.05821980345377398,
+                    "position": 6.582769299419698,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 4.568171850494994,
+            "aspect": {
+                "name": "Conjunction",
+                "symbol": "☌",
+                "angle": 0,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "intencity",
+                    "strengthening",
+                    "fusion",
+                    "integration",
+                    "conjunction"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Leo"
+                        ],
+                        "exaltation": [
+                            "Aries"
+                        ],
+                        "detriment": [
+                            "Aquarius"
+                        ],
+                        "fall": [
+                            "Libra"
+                        ],
+                        "friend": [
+                            "Sagittarius"
+                        ],
+                        "enemy": [
+                            "Gemini"
+                        ]
+                    },
+                    "name": "Sun",
+                    "swisseph_id": 0,
+                    "label": "Sun",
+                    "symbol": "⊙",
+                    "speed": 0.9763594789191643,
+                    "position": 11.150941149914692,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "position": 310.61835700101466,
+                    "name": "10 house",
+                    "symbol": "10",
+                    "label": "10 house",
+                    "index": 9
+                }
+            ],
+            "angle": 60.532584148900014,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Cancer"
+                        ],
+                        "exaltation": [
+                            "Taurus"
+                        ],
+                        "detriment": [
+                            "Capricorn"
+                        ],
+                        "fall": [
+                            "Scorpio"
+                        ],
+                        "friend": [
+                            "Pisces"
+                        ],
+                        "enemy": [
+                            "Virgo"
+                        ]
+                    },
+                    "name": "Moon",
+                    "swisseph_id": 1,
+                    "label": "Moon",
+                    "symbol": "☽",
+                    "speed": 11.438547694524459,
+                    "position": 304.74276077774283,
+                    "house": {
+                        "position": 288.71678925224774,
+                        "name": " 9 house",
+                        "symbol": "9",
+                        "label": " 9 house",
+                        "index": 8
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "exaltation": [
+                            "Cancer"
+                        ],
+                        "detriment": [
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "fall": [
+                            "Capricorn"
+                        ],
+                        "friend": [
+                            "Aries",
+                            "Leo",
+                            "Scorpio"
+                        ],
+                        "enemy": [
+                            "Libra",
+                            "Aquarius",
+                            "Taurus"
+                        ]
+                    },
+                    "name": "Jupiter",
+                    "swisseph_id": 5,
+                    "label": "Jupiter",
+                    "symbol": "♃",
+                    "speed": -0.10776061060369102,
+                    "position": 213.56955552518426,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                }
+            ],
+            "angle": 91.17320525255857,
+            "aspect": {
+                "name": "Square",
+                "symbol": "□",
+                "angle": 90,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "difficulties",
+                    "tension"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Cancer"
+                        ],
+                        "exaltation": [
+                            "Taurus"
+                        ],
+                        "detriment": [
+                            "Capricorn"
+                        ],
+                        "fall": [
+                            "Scorpio"
+                        ],
+                        "friend": [
+                            "Pisces"
+                        ],
+                        "enemy": [
+                            "Virgo"
+                        ]
+                    },
+                    "name": "Moon",
+                    "swisseph_id": 1,
+                    "label": "Moon",
+                    "symbol": "☽",
+                    "speed": 11.438547694524459,
+                    "position": 304.74276077774283,
+                    "house": {
+                        "position": 288.71678925224774,
+                        "name": " 9 house",
+                        "symbol": "9",
+                        "label": " 9 house",
+                        "index": 8
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Virgo"
+                        ],
+                        "detriment": [
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Taurus"
+                        ],
+                        "friend": [
+                            "Gemini",
+                            "Virgo",
+                            "Libra"
+                        ],
+                        "enemy": [
+                            "Sagittarius",
+                            "Pisces",
+                            "Aries"
+                        ]
+                    },
+                    "name": "Uranus",
+                    "swisseph_id": 7,
+                    "label": "Uranus",
+                    "symbol": "♅",
+                    "speed": -0.04262720267433906,
+                    "position": 186.5659253456337,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                }
+            ],
+            "angle": 118.17683543210913,
+            "aspect": {
+                "name": "Trine",
+                "symbol": "△",
+                "angle": 120,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "easy going",
+                    "good luck"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Cancer"
+                        ],
+                        "exaltation": [
+                            "Taurus"
+                        ],
+                        "detriment": [
+                            "Capricorn"
+                        ],
+                        "fall": [
+                            "Scorpio"
+                        ],
+                        "friend": [
+                            "Pisces"
+                        ],
+                        "enemy": [
+                            "Virgo"
+                        ]
+                    },
+                    "name": "Moon",
+                    "swisseph_id": 1,
+                    "label": "Moon",
+                    "symbol": "☽",
+                    "speed": 11.438547694524459,
+                    "position": 304.74276077774283,
+                    "house": {
+                        "position": 288.71678925224774,
+                        "name": " 9 house",
+                        "symbol": "9",
+                        "label": " 9 house",
+                        "index": 8
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Pisces"
+                        ],
+                        "exaltation": [
+                            "Leo"
+                        ],
+                        "detriment": [
+                            "Virgo"
+                        ],
+                        "fall": [
+                            "Aquarius"
+                        ],
+                        "friend": [
+                            "Scorpio",
+                            "Cancer"
+                        ],
+                        "enemy": [
+                            "Taurus",
+                            "Capricorn"
+                        ]
+                    },
+                    "name": "Neptune",
+                    "swisseph_id": 8,
+                    "label": "Neptune",
+                    "symbol": "♆",
+                    "speed": -0.015276195597380138,
+                    "position": 240.66493039088064,
+                    "house": {
+                        "position": 216.22916021404515,
+                        "name": " 6 house",
+                        "symbol": "6",
+                        "label": " 6 house",
+                        "index": 5
+                    }
+                }
+            ],
+            "angle": 64.07783038686219,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Cancer"
+                        ],
+                        "exaltation": [
+                            "Taurus"
+                        ],
+                        "detriment": [
+                            "Capricorn"
+                        ],
+                        "fall": [
+                            "Scorpio"
+                        ],
+                        "friend": [
+                            "Pisces"
+                        ],
+                        "enemy": [
+                            "Virgo"
+                        ]
+                    },
+                    "name": "Moon",
+                    "swisseph_id": 1,
+                    "label": "Moon",
+                    "symbol": "☽",
+                    "speed": 11.438547694524459,
+                    "position": 304.74276077774283,
+                    "house": {
+                        "position": 288.71678925224774,
+                        "name": " 9 house",
+                        "symbol": "9",
+                        "label": " 9 house",
+                        "index": 8
+                    }
+                },
+                {
+                    "position": 310.61835700101466,
+                    "name": "10 house",
+                    "symbol": "10",
+                    "label": "10 house",
+                    "index": 9
+                }
+            ],
+            "angle": 354.1244037767282,
+            "aspect": {
+                "name": "Conjunction",
+                "symbol": "☌",
+                "angle": 0,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "intencity",
+                    "strengthening",
+                    "fusion",
+                    "integration",
+                    "conjunction"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "exaltation": [
+                            "Virgo"
+                        ],
+                        "detriment": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "fall": [
+                            "Pisces"
+                        ],
+                        "friend": [
+                            "Aquarius",
+                            "Capricorn"
+                        ],
+                        "enemy": [
+                            "Leo",
+                            "Cancer"
+                        ]
+                    },
+                    "name": "Mercury",
+                    "swisseph_id": 2,
+                    "label": "Mercury",
+                    "symbol": "☿",
+                    "speed": 2.012697937452401,
+                    "position": 20.191142926494287,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Taurus",
+                            "Libra"
+                        ],
+                        "exaltation": [
+                            "Pisces"
+                        ],
+                        "detriment": [
+                            "Aries",
+                            "Scorpio"
+                        ],
+                        "fall": [
+                            "Virgo"
+                        ],
+                        "friend": [
+                            "Aquarius",
+                            "Capricorn"
+                        ],
+                        "enemy": [
+                            "Leo",
+                            "Cancer"
+                        ]
+                    },
+                    "name": "Venus",
+                    "swisseph_id": 3,
+                    "label": "Venus",
+                    "symbol": "♀",
+                    "speed": 1.2299137294391471,
+                    "position": 27.389206130578042,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 352.8019367959162,
+            "aspect": {
+                "name": "Conjunction",
+                "symbol": "☌",
+                "angle": 0,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "intencity",
+                    "strengthening",
+                    "fusion",
+                    "integration",
+                    "conjunction"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "exaltation": [
+                            "Virgo"
+                        ],
+                        "detriment": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "fall": [
+                            "Pisces"
+                        ],
+                        "friend": [
+                            "Aquarius",
+                            "Capricorn"
+                        ],
+                        "enemy": [
+                            "Leo",
+                            "Cancer"
+                        ]
+                    },
+                    "name": "Mercury",
+                    "swisseph_id": 2,
+                    "label": "Mercury",
+                    "symbol": "☿",
+                    "speed": 2.012697937452401,
+                    "position": 20.191142926494287,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "name": "ParsFortuna",
+                    "label": "ParsFortuna",
+                    "symbol": "⦻",
+                    "speed": 0,
+                    "position": 12.480257249087515,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 7.710885677406772,
+            "aspect": {
+                "name": "Conjunction",
+                "symbol": "☌",
+                "angle": 0,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "intencity",
+                    "strengthening",
+                    "fusion",
+                    "integration",
+                    "conjunction"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "exaltation": [
+                            "Virgo"
+                        ],
+                        "detriment": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "fall": [
+                            "Pisces"
+                        ],
+                        "friend": [
+                            "Aquarius",
+                            "Capricorn"
+                        ],
+                        "enemy": [
+                            "Leo",
+                            "Cancer"
+                        ]
+                    },
+                    "name": "Mercury",
+                    "swisseph_id": 2,
+                    "label": "Mercury",
+                    "symbol": "☿",
+                    "speed": 2.012697937452401,
+                    "position": 20.191142926494287,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "position": 310.61835700101466,
+                    "name": "10 house",
+                    "symbol": "10",
+                    "label": "10 house",
+                    "index": 9
+                }
+            ],
+            "angle": 69.57278592547965,
+            "aspect": {
+                "name": "Quintile",
+                "symbol": "⬠",
+                "angle": 72,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "creativity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Taurus",
+                            "Libra"
+                        ],
+                        "exaltation": [
+                            "Pisces"
+                        ],
+                        "detriment": [
+                            "Aries",
+                            "Scorpio"
+                        ],
+                        "fall": [
+                            "Virgo"
+                        ],
+                        "friend": [
+                            "Aquarius",
+                            "Capricorn"
+                        ],
+                        "enemy": [
+                            "Leo",
+                            "Cancer"
+                        ]
+                    },
+                    "name": "Venus",
+                    "swisseph_id": 3,
+                    "label": "Venus",
+                    "symbol": "♀",
+                    "speed": 1.2299137294391471,
+                    "position": 27.389206130578042,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "exaltation": [
+                            "Cancer"
+                        ],
+                        "detriment": [
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "fall": [
+                            "Capricorn"
+                        ],
+                        "friend": [
+                            "Aries",
+                            "Leo",
+                            "Scorpio"
+                        ],
+                        "enemy": [
+                            "Libra",
+                            "Aquarius",
+                            "Taurus"
+                        ]
+                    },
+                    "name": "Jupiter",
+                    "swisseph_id": 5,
+                    "label": "Jupiter",
+                    "symbol": "♃",
+                    "speed": -0.10776061060369102,
+                    "position": 213.56955552518426,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                }
+            ],
+            "angle": 173.81965060539378,
+            "aspect": {
+                "name": "Opposition",
+                "symbol": "☍",
+                "angle": 180,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "opposition",
+                    "balance",
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Taurus",
+                            "Libra"
+                        ],
+                        "exaltation": [
+                            "Pisces"
+                        ],
+                        "detriment": [
+                            "Aries",
+                            "Scorpio"
+                        ],
+                        "fall": [
+                            "Virgo"
+                        ],
+                        "friend": [
+                            "Aquarius",
+                            "Capricorn"
+                        ],
+                        "enemy": [
+                            "Leo",
+                            "Cancer"
+                        ]
+                    },
+                    "name": "Venus",
+                    "swisseph_id": 3,
+                    "label": "Venus",
+                    "symbol": "♀",
+                    "speed": 1.2299137294391471,
+                    "position": 27.389206130578042,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "name": "NorthNode",
+                    "swisseph_id": 11,
+                    "label": "NorthNode",
+                    "symbol": "☊",
+                    "speed": 0.02480958681218226,
+                    "position": 341.54285632082133,
+                    "house": {
+                        "position": 310.61835700101466,
+                        "name": "10 house",
+                        "symbol": "10",
+                        "label": "10 house",
+                        "index": 9
+                    }
+                }
+            ],
+            "angle": 45.8463498097567,
+            "aspect": {
+                "name": "Semisquare",
+                "symbol": "∠",
+                "angle": 45,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "tension"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Aries",
+                            "Scorpio"
+                        ],
+                        "exaltation": [
+                            "Capricorn"
+                        ],
+                        "detriment": [
+                            "Taurus",
+                            "Libra"
+                        ],
+                        "fall": [
+                            "Cancer"
+                        ],
+                        "friend": [
+                            "Sagittarius",
+                            "Leo"
+                        ],
+                        "enemy": [
+                            "Gemini",
+                            "Aquarius"
+                        ]
+                    },
+                    "name": "Mars",
+                    "swisseph_id": 4,
+                    "label": "Mars",
+                    "symbol": "♂",
+                    "speed": 0.6967338001828693,
+                    "position": 47.872317588752,
+                    "house": {
+                        "position": 36.229160214045166,
+                        "name": "12 house",
+                        "symbol": "12",
+                        "label": "12 house",
+                        "index": 11
+                    }
+                },
+                {
+                    "name": "NorthNode",
+                    "swisseph_id": 11,
+                    "label": "NorthNode",
+                    "symbol": "☊",
+                    "speed": 0.02480958681218226,
+                    "position": 341.54285632082133,
+                    "house": {
+                        "position": 310.61835700101466,
+                        "name": "10 house",
+                        "symbol": "10",
+                        "label": "10 house",
+                        "index": 9
+                    }
+                }
+            ],
+            "angle": 66.3294612679307,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Aries",
+                            "Scorpio"
+                        ],
+                        "exaltation": [
+                            "Capricorn"
+                        ],
+                        "detriment": [
+                            "Taurus",
+                            "Libra"
+                        ],
+                        "fall": [
+                            "Cancer"
+                        ],
+                        "friend": [
+                            "Sagittarius",
+                            "Leo"
+                        ],
+                        "enemy": [
+                            "Gemini",
+                            "Aquarius"
+                        ]
+                    },
+                    "name": "Mars",
+                    "swisseph_id": 4,
+                    "label": "Mars",
+                    "symbol": "♂",
+                    "speed": 0.6967338001828693,
+                    "position": 47.872317588752,
+                    "house": {
+                        "position": 36.229160214045166,
+                        "name": "12 house",
+                        "symbol": "12",
+                        "label": "12 house",
+                        "index": 11
+                    }
+                },
+                {
+                    "position": 310.61835700101466,
+                    "name": "10 house",
+                    "symbol": "10",
+                    "label": "10 house",
+                    "index": 9
+                }
+            ],
+            "angle": 97.25396058773731,
+            "aspect": {
+                "name": "Square",
+                "symbol": "□",
+                "angle": 90,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "difficulties",
+                    "tension"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "exaltation": [
+                            "Cancer"
+                        ],
+                        "detriment": [
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "fall": [
+                            "Capricorn"
+                        ],
+                        "friend": [
+                            "Aries",
+                            "Leo",
+                            "Scorpio"
+                        ],
+                        "enemy": [
+                            "Libra",
+                            "Aquarius",
+                            "Taurus"
+                        ]
+                    },
+                    "name": "Jupiter",
+                    "swisseph_id": 5,
+                    "label": "Jupiter",
+                    "symbol": "♃",
+                    "speed": -0.10776061060369102,
+                    "position": 213.56955552518426,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Capricorn",
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Libra"
+                        ],
+                        "detriment": [
+                            "Cancer",
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Aries"
+                        ],
+                        "friend": [
+                            "Taurus",
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "enemy": [
+                            "Scorpio",
+                            "Sagittarius",
+                            "Pisces"
+                        ]
+                    },
+                    "name": "Saturn",
+                    "swisseph_id": 6,
+                    "label": "Saturn",
+                    "symbol": "♄",
+                    "speed": 0.11878091303429983,
+                    "position": 38.154453392295096,
+                    "house": {
+                        "position": 36.229160214045166,
+                        "name": "12 house",
+                        "symbol": "12",
+                        "label": "12 house",
+                        "index": 11
+                    }
+                }
+            ],
+            "angle": 175.41510213288916,
+            "aspect": {
+                "name": "Opposition",
+                "symbol": "☍",
+                "angle": 180,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "opposition",
+                    "balance",
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "exaltation": [
+                            "Cancer"
+                        ],
+                        "detriment": [
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "fall": [
+                            "Capricorn"
+                        ],
+                        "friend": [
+                            "Aries",
+                            "Leo",
+                            "Scorpio"
+                        ],
+                        "enemy": [
+                            "Libra",
+                            "Aquarius",
+                            "Taurus"
+                        ]
+                    },
+                    "name": "Jupiter",
+                    "swisseph_id": 5,
+                    "label": "Jupiter",
+                    "symbol": "♃",
+                    "speed": -0.10776061060369102,
+                    "position": 213.56955552518426,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Virgo"
+                        ],
+                        "detriment": [
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Taurus"
+                        ],
+                        "friend": [
+                            "Gemini",
+                            "Virgo",
+                            "Libra"
+                        ],
+                        "enemy": [
+                            "Sagittarius",
+                            "Pisces",
+                            "Aries"
+                        ]
+                    },
+                    "name": "Uranus",
+                    "swisseph_id": 7,
+                    "label": "Uranus",
+                    "symbol": "♅",
+                    "speed": -0.04262720267433906,
+                    "position": 186.5659253456337,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                }
+            ],
+            "angle": 27.003630179550555,
+            "aspect": {
+                "name": "Semisextile",
+                "symbol": "⊻",
+                "angle": 30,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "exaltation": [
+                            "Cancer"
+                        ],
+                        "detriment": [
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "fall": [
+                            "Capricorn"
+                        ],
+                        "friend": [
+                            "Aries",
+                            "Leo",
+                            "Scorpio"
+                        ],
+                        "enemy": [
+                            "Libra",
+                            "Aquarius",
+                            "Taurus"
+                        ]
+                    },
+                    "name": "Jupiter",
+                    "swisseph_id": 5,
+                    "label": "Jupiter",
+                    "symbol": "♃",
+                    "speed": -0.10776061060369102,
+                    "position": 213.56955552518426,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                },
+                {
+                    "name": "SouthNode",
+                    "swisseph_id": 11,
+                    "label": "SouthNode",
+                    "symbol": "☋",
+                    "speed": 0.02480958681218226,
+                    "position": 161.54285632082133,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                }
+            ],
+            "angle": 52.02669920436293,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "exaltation": [
+                            "Cancer"
+                        ],
+                        "detriment": [
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "fall": [
+                            "Capricorn"
+                        ],
+                        "friend": [
+                            "Aries",
+                            "Leo",
+                            "Scorpio"
+                        ],
+                        "enemy": [
+                            "Libra",
+                            "Aquarius",
+                            "Taurus"
+                        ]
+                    },
+                    "name": "Jupiter",
+                    "swisseph_id": 5,
+                    "label": "Jupiter",
+                    "symbol": "♃",
+                    "speed": -0.10776061060369102,
+                    "position": 213.56955552518426,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                },
+                {
+                    "position": 78.88843762125938,
+                    "name": " 1 house",
+                    "symbol": "1",
+                    "label": " 1 house",
+                    "index": 0
+                }
+            ],
+            "angle": 134.68111790392487,
+            "aspect": {
+                "name": "Sesquiquadrate",
+                "symbol": "⛋",
+                "angle": 135,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "trouble",
+                    "concern"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Capricorn",
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Libra"
+                        ],
+                        "detriment": [
+                            "Cancer",
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Aries"
+                        ],
+                        "friend": [
+                            "Taurus",
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "enemy": [
+                            "Scorpio",
+                            "Sagittarius",
+                            "Pisces"
+                        ]
+                    },
+                    "name": "Saturn",
+                    "swisseph_id": 6,
+                    "label": "Saturn",
+                    "symbol": "♄",
+                    "speed": 0.11878091303429983,
+                    "position": 38.154453392295096,
+                    "house": {
+                        "position": 36.229160214045166,
+                        "name": "12 house",
+                        "symbol": "12",
+                        "label": "12 house",
+                        "index": 11
+                    }
+                },
+                {
+                    "name": "NorthNode",
+                    "swisseph_id": 11,
+                    "label": "NorthNode",
+                    "symbol": "☊",
+                    "speed": 0.02480958681218226,
+                    "position": 341.54285632082133,
+                    "house": {
+                        "position": 310.61835700101466,
+                        "name": "10 house",
+                        "symbol": "10",
+                        "label": "10 house",
+                        "index": 9
+                    }
+                }
+            ],
+            "angle": 56.61159707147374,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Capricorn",
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Libra"
+                        ],
+                        "detriment": [
+                            "Cancer",
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Aries"
+                        ],
+                        "friend": [
+                            "Taurus",
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "enemy": [
+                            "Scorpio",
+                            "Sagittarius",
+                            "Pisces"
+                        ]
+                    },
+                    "name": "Saturn",
+                    "swisseph_id": 6,
+                    "label": "Saturn",
+                    "symbol": "♄",
+                    "speed": 0.11878091303429983,
+                    "position": 38.154453392295096,
+                    "house": {
+                        "position": 36.229160214045166,
+                        "name": "12 house",
+                        "symbol": "12",
+                        "label": "12 house",
+                        "index": 11
+                    }
+                },
+                {
+                    "name": "Chiron",
+                    "swisseph_id": 15,
+                    "label": "Chiron",
+                    "symbol": "k",
+                    "speed": 0.05821980345377398,
+                    "position": 6.582769299419698,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 31.571684092875397,
+            "aspect": {
+                "name": "Semisextile",
+                "symbol": "⊻",
+                "angle": 30,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Capricorn",
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Libra"
+                        ],
+                        "detriment": [
+                            "Cancer",
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Aries"
+                        ],
+                        "friend": [
+                            "Taurus",
+                            "Gemini",
+                            "Virgo"
+                        ],
+                        "enemy": [
+                            "Scorpio",
+                            "Sagittarius",
+                            "Pisces"
+                        ]
+                    },
+                    "name": "Saturn",
+                    "swisseph_id": 6,
+                    "label": "Saturn",
+                    "symbol": "♄",
+                    "speed": 0.11878091303429983,
+                    "position": 38.154453392295096,
+                    "house": {
+                        "position": 36.229160214045166,
+                        "name": "12 house",
+                        "symbol": "12",
+                        "label": "12 house",
+                        "index": 11
+                    }
+                },
+                {
+                    "position": 310.61835700101466,
+                    "name": "10 house",
+                    "symbol": "10",
+                    "label": "10 house",
+                    "index": 9
+                }
+            ],
+            "angle": 87.53609639128047,
+            "aspect": {
+                "name": "Square",
+                "symbol": "□",
+                "angle": 90,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "difficulties",
+                    "tension"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Virgo"
+                        ],
+                        "detriment": [
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Taurus"
+                        ],
+                        "friend": [
+                            "Gemini",
+                            "Virgo",
+                            "Libra"
+                        ],
+                        "enemy": [
+                            "Sagittarius",
+                            "Pisces",
+                            "Aries"
+                        ]
+                    },
+                    "name": "Uranus",
+                    "swisseph_id": 7,
+                    "label": "Uranus",
+                    "symbol": "♅",
+                    "speed": -0.04262720267433906,
+                    "position": 186.5659253456337,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                },
+                {
+                    "name": "ParsFortuna",
+                    "label": "ParsFortuna",
+                    "symbol": "⦻",
+                    "speed": 0,
+                    "position": 12.480257249087515,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 174.0856680965462,
+            "aspect": {
+                "name": "Opposition",
+                "symbol": "☍",
+                "angle": 180,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "opposition",
+                    "balance",
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Virgo"
+                        ],
+                        "detriment": [
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Taurus"
+                        ],
+                        "friend": [
+                            "Gemini",
+                            "Virgo",
+                            "Libra"
+                        ],
+                        "enemy": [
+                            "Sagittarius",
+                            "Pisces",
+                            "Aries"
+                        ]
+                    },
+                    "name": "Uranus",
+                    "swisseph_id": 7,
+                    "label": "Uranus",
+                    "symbol": "♅",
+                    "speed": -0.04262720267433906,
+                    "position": 186.5659253456337,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                },
+                {
+                    "name": "Lilith",
+                    "swisseph_id": 12,
+                    "label": "Lilith",
+                    "symbol": "⚜︎",
+                    "speed": 0.1110364486578419,
+                    "position": 132.80552372529138,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                }
+            ],
+            "angle": 53.76040162034232,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Aquarius"
+                        ],
+                        "exaltation": [
+                            "Virgo"
+                        ],
+                        "detriment": [
+                            "Leo"
+                        ],
+                        "fall": [
+                            "Taurus"
+                        ],
+                        "friend": [
+                            "Gemini",
+                            "Virgo",
+                            "Libra"
+                        ],
+                        "enemy": [
+                            "Sagittarius",
+                            "Pisces",
+                            "Aries"
+                        ]
+                    },
+                    "name": "Uranus",
+                    "swisseph_id": 7,
+                    "label": "Uranus",
+                    "symbol": "♅",
+                    "speed": -0.04262720267433906,
+                    "position": 186.5659253456337,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                },
+                {
+                    "name": "Chiron",
+                    "swisseph_id": 15,
+                    "label": "Chiron",
+                    "symbol": "k",
+                    "speed": 0.05821980345377398,
+                    "position": 6.582769299419698,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 179.983156046214,
+            "aspect": {
+                "name": "Opposition",
+                "symbol": "☍",
+                "angle": 180,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "opposition",
+                    "balance",
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Pisces"
+                        ],
+                        "exaltation": [
+                            "Leo"
+                        ],
+                        "detriment": [
+                            "Virgo"
+                        ],
+                        "fall": [
+                            "Aquarius"
+                        ],
+                        "friend": [
+                            "Scorpio",
+                            "Cancer"
+                        ],
+                        "enemy": [
+                            "Taurus",
+                            "Capricorn"
+                        ]
+                    },
+                    "name": "Neptune",
+                    "swisseph_id": 8,
+                    "label": "Neptune",
+                    "symbol": "♆",
+                    "speed": -0.015276195597380138,
+                    "position": 240.66493039088064,
+                    "house": {
+                        "position": 216.22916021404515,
+                        "name": " 6 house",
+                        "symbol": "6",
+                        "label": " 6 house",
+                        "index": 5
+                    }
+                },
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Scorpio"
+                        ],
+                        "exaltation": [
+                            "Aries"
+                        ],
+                        "detriment": [
+                            "Taurus"
+                        ],
+                        "fall": [
+                            "Libra"
+                        ],
+                        "friend": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "enemy": [
+                            "Gemini",
+                            "Virgo"
+                        ]
+                    },
+                    "name": "Pluto",
+                    "swisseph_id": 9,
+                    "label": "Pluto",
+                    "symbol": "♇",
+                    "speed": -0.025605811515561072,
+                    "position": 175.65421773244992,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                }
+            ],
+            "angle": 65.01071265843072,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Scorpio"
+                        ],
+                        "exaltation": [
+                            "Aries"
+                        ],
+                        "detriment": [
+                            "Taurus"
+                        ],
+                        "fall": [
+                            "Libra"
+                        ],
+                        "friend": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "enemy": [
+                            "Gemini",
+                            "Virgo"
+                        ]
+                    },
+                    "name": "Pluto",
+                    "swisseph_id": 9,
+                    "label": "Pluto",
+                    "symbol": "♇",
+                    "speed": -0.025605811515561072,
+                    "position": 175.65421773244992,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                },
+                {
+                    "name": "Lilith",
+                    "swisseph_id": 12,
+                    "label": "Lilith",
+                    "symbol": "⚜︎",
+                    "speed": 0.1110364486578419,
+                    "position": 132.80552372529138,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                }
+            ],
+            "angle": 42.84869400715854,
+            "aspect": {
+                "name": "Semisquare",
+                "symbol": "∠",
+                "angle": 45,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "tension"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "rulers": {
+                        "domicile": [
+                            "Scorpio"
+                        ],
+                        "exaltation": [
+                            "Aries"
+                        ],
+                        "detriment": [
+                            "Taurus"
+                        ],
+                        "fall": [
+                            "Libra"
+                        ],
+                        "friend": [
+                            "Sagittarius",
+                            "Pisces"
+                        ],
+                        "enemy": [
+                            "Gemini",
+                            "Virgo"
+                        ]
+                    },
+                    "name": "Pluto",
+                    "swisseph_id": 9,
+                    "label": "Pluto",
+                    "symbol": "♇",
+                    "speed": -0.025605811515561072,
+                    "position": 175.65421773244992,
+                    "house": {
+                        "position": 165.01564127128395,
+                        "name": " 5 house",
+                        "symbol": "5",
+                        "label": " 5 house",
+                        "index": 4
+                    }
+                },
+                {
+                    "position": 78.88843762125938,
+                    "name": " 1 house",
+                    "symbol": "1",
+                    "label": " 1 house",
+                    "index": 0
+                }
+            ],
+            "angle": 96.76578011119054,
+            "aspect": {
+                "name": "Square",
+                "symbol": "□",
+                "angle": 90,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "difficulties",
+                    "tension"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "NorthNode",
+                    "swisseph_id": 11,
+                    "label": "NorthNode",
+                    "symbol": "☊",
+                    "speed": 0.02480958681218226,
+                    "position": 341.54285632082133,
+                    "house": {
+                        "position": 310.61835700101466,
+                        "name": "10 house",
+                        "symbol": "10",
+                        "label": "10 house",
+                        "index": 9
+                    }
+                },
+                {
+                    "position": 310.61835700101466,
+                    "name": "10 house",
+                    "symbol": "10",
+                    "label": "10 house",
+                    "index": 9
+                }
+            ],
+            "angle": 30.92449931980667,
+            "aspect": {
+                "name": "Semisextile",
+                "symbol": "⊻",
+                "angle": 30,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "SouthNode",
+                    "swisseph_id": 11,
+                    "label": "SouthNode",
+                    "symbol": "☋",
+                    "speed": 0.02480958681218226,
+                    "position": 161.54285632082133,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                },
+                {
+                    "name": "ParsFortuna",
+                    "label": "ParsFortuna",
+                    "symbol": "⦻",
+                    "speed": 0,
+                    "position": 12.480257249087515,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 149.0625990717338,
+            "aspect": {
+                "name": "Quincunx",
+                "symbol": "⊼",
+                "angle": 150,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "growth"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "SouthNode",
+                    "swisseph_id": 11,
+                    "label": "SouthNode",
+                    "symbol": "☋",
+                    "speed": 0.02480958681218226,
+                    "position": 161.54285632082133,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                },
+                {
+                    "name": "Lilith",
+                    "swisseph_id": 12,
+                    "label": "Lilith",
+                    "symbol": "⚜︎",
+                    "speed": 0.1110364486578419,
+                    "position": 132.80552372529138,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                }
+            ],
+            "angle": 28.73733259552995,
+            "aspect": {
+                "name": "Semisextile",
+                "symbol": "⊻",
+                "angle": 30,
+                "kind": "Monor",
+                "delta": 3,
+                "keywords": [
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "SouthNode",
+                    "swisseph_id": 11,
+                    "label": "SouthNode",
+                    "symbol": "☋",
+                    "speed": 0.02480958681218226,
+                    "position": 161.54285632082133,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                },
+                {
+                    "position": 78.88843762125938,
+                    "name": " 1 house",
+                    "symbol": "1",
+                    "label": " 1 house",
+                    "index": 0
+                }
+            ],
+            "angle": 82.65441869956194,
+            "aspect": {
+                "name": "Square",
+                "symbol": "□",
+                "angle": 90,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "difficulties",
+                    "tension"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "ParsFortuna",
+                    "label": "ParsFortuna",
+                    "symbol": "⦻",
+                    "speed": 0,
+                    "position": 12.480257249087515,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "name": "Chiron",
+                    "swisseph_id": 15,
+                    "label": "Chiron",
+                    "symbol": "k",
+                    "speed": 0.05821980345377398,
+                    "position": 6.582769299419698,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 5.897487949667817,
+            "aspect": {
+                "name": "Conjunction",
+                "symbol": "☌",
+                "angle": 0,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "intencity",
+                    "strengthening",
+                    "fusion",
+                    "integration",
+                    "conjunction"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "ParsFortuna",
+                    "label": "ParsFortuna",
+                    "symbol": "⦻",
+                    "speed": 0,
+                    "position": 12.480257249087515,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "position": 310.61835700101466,
+                    "name": "10 house",
+                    "symbol": "10",
+                    "label": "10 house",
+                    "index": 9
+                }
+            ],
+            "angle": 61.86190024807286,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "Lilith",
+                    "swisseph_id": 12,
+                    "label": "Lilith",
+                    "symbol": "⚜︎",
+                    "speed": 0.1110364486578419,
+                    "position": 132.80552372529138,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                },
+                {
+                    "name": "Chiron",
+                    "swisseph_id": 15,
+                    "label": "Chiron",
+                    "symbol": "k",
+                    "speed": 0.05821980345377398,
+                    "position": 6.582769299419698,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                }
+            ],
+            "angle": 126.22275442587168,
+            "aspect": {
+                "name": "Trine",
+                "symbol": "△",
+                "angle": 120,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "easy going",
+                    "good luck"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "Lilith",
+                    "swisseph_id": 12,
+                    "label": "Lilith",
+                    "symbol": "⚜︎",
+                    "speed": 0.1110364486578419,
+                    "position": 132.80552372529138,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                },
+                {
+                    "position": 78.88843762125938,
+                    "name": " 1 house",
+                    "symbol": "1",
+                    "label": " 1 house",
+                    "index": 0
+                }
+            ],
+            "angle": 53.917086104031995,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "Lilith",
+                    "swisseph_id": 12,
+                    "label": "Lilith",
+                    "symbol": "⚜︎",
+                    "speed": 0.1110364486578419,
+                    "position": 132.80552372529138,
+                    "house": {
+                        "position": 130.6183570010147,
+                        "name": " 4 house",
+                        "symbol": "4",
+                        "label": " 4 house",
+                        "index": 3
+                    }
+                },
+                {
+                    "position": 310.61835700101466,
+                    "name": "10 house",
+                    "symbol": "10",
+                    "label": "10 house",
+                    "index": 9
+                }
+            ],
+            "angle": 182.18716672427672,
+            "aspect": {
+                "name": "Opposition",
+                "symbol": "☍",
+                "angle": 180,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "opposition",
+                    "balance",
+                    "cooperation"
+                ]
+            }
+        },
+        {
+            "parties": [
+                {
+                    "name": "Chiron",
+                    "swisseph_id": 15,
+                    "label": "Chiron",
+                    "symbol": "k",
+                    "speed": 0.05821980345377398,
+                    "position": 6.582769299419698,
+                    "house": {
+                        "position": 345.0156412712839,
+                        "name": "11 house",
+                        "symbol": "11",
+                        "label": "11 house",
+                        "index": 10
+                    }
+                },
+                {
+                    "position": 310.61835700101466,
+                    "name": "10 house",
+                    "symbol": "10",
+                    "label": "10 house",
+                    "index": 9
+                }
+            ],
+            "angle": 55.96441229840502,
+            "aspect": {
+                "name": "Sextile",
+                "symbol": "✶",
+                "angle": 60,
+                "kind": "Major",
+                "delta": 8,
+                "keywords": [
+                    "possibility",
+                    "opportunity"
+                ]
+            }
+        }
+    ]
+}
