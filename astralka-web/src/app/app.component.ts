@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ChartSymbol } from './chart-symbol';
 import _ from "lodash";
-import { COLLISION_RADIUS, SYMBOL_SCALE, SYMBOL_ZODIAC, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac_sign } from './common';
+import { COLLISION_RADIUS, SYMBOL_HOUSE, SYMBOL_SCALE, SYMBOL_ZODIAC, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
 import { CommonModule } from '@angular/common';
 import { ChartCircle } from './chart-circle';
 import { ChartLine } from './chart-line';
@@ -9,11 +9,22 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BreakpointObserver, LayoutModule, Breakpoints } from '@angular/cdk/layout';
 import { ChartText } from './chart-text';
+import { StatsLine } from './stats-line';
 
 @Component({
   selector: 'astralka-root',
   standalone: true,
-  imports: [ChartSymbol, ChartCircle, ChartLine, ChartText, CommonModule, HttpClientModule, FormsModule, LayoutModule],
+  imports: [
+    ChartSymbol, 
+    ChartCircle, 
+    ChartLine, 
+    ChartText, 
+    StatsLine,
+    CommonModule, 
+    HttpClientModule, 
+    FormsModule, 
+    LayoutModule
+  ],
   template: `
     <div style="margin: 2px;">
       <button (click)="draw('Sasha')">Sasha</button>
@@ -46,18 +57,46 @@ import { ChartText } from './chart-text';
           <g svgg-text *ngFor="let p of planets" [x]="p.x + 6" [y]="p.y + 5" [text]="p.text"></g>
           <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
           <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-          <!--
-          <g svgg-symbol [x]="20" [y]="520"  [name]="'ParsFortuna'"></g>
-          <g svgg-line [x1]="10" [y1]="520" [x2]="30" [y2]="520"></g>
-          <g svgg-line [x1]="20" [y1]="510" [x2]="20" [y2]="530"></g>
-          //-->
+          <g svgg-symbol *ngFor="let p of houses" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.85, stroke_color: '#003399', stroke_width: 2}"></g>
+          
+
+          <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
+          <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
+          <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
+
+          <g svgg-symbol [x]="60" [y]="30" [options]="{ scale: 2 }"></g>
+          <g svgg-line [x1]="50" [y1]="30" [x2]="70" [y2]="30"></g>
+          <g svgg-line [x1]="60" [y1]="20" [x2]="60" [y2]="40"></g>
+
+          <g svgg-symbol [x]="90" [y]="30" [options]="{ scale: 0.5 }"></g>
+          <g svgg-line [x1]="80" [y1]="30" [x2]="100" [y2]="30"></g>
+          <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
+
+          <g svgg-symbol *ngFor="let p of cusps; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
+          <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
+          
         </g>        
       </svg>
     </div>
-    <div id="details" *ngIf="has_name">
+    <div id="stats">
+      <svg xmlns="http://www.w3.org/2000/svg" 
+          xmlns:xlink="http://www.w3.org/1999/xlink" 
+          version="1.1"
+          [attr.width]="width"
+          [attr.height]="300"
+          [attr.viewBox]="'0 0 ' + width + ' 300'"        
+          >
+          <g>
+            <rect x="0" y="0" [attr.width]="width" [attr.height]="300" fill="none" stroke="#0004"></rect> 
+            <g svgg-text *ngIf="has_name" [x]="12" [y]="12" [text]="formatted_header"></g>
+            <g svgg-stat *ngFor="let s of stat_lines" [x]="s.x" [y]="s.y" [stats]="s.stats"></g>
+          </g>
+      </svg>
+    </div>
+    <!-- <div id="details" *ngIf="has_name && explain">
       <div>Interpretation for {{data?.query.name}}</div>
       <pre>{{explain}}</pre>
-    </div>
+    </div> -->
   `,
   styleUrls: ['./app.component.scss'],
 })
@@ -80,6 +119,7 @@ export class AppComponent {
   private _houses: any[] = [];
   private _cusps: any[] = [];
   private _lines: any[] = [];
+  private _stat_lines: any[] = [];
   
   private serverUrl: string = "";
   public data: any = {};
@@ -161,9 +201,9 @@ export class AppComponent {
   private init(): void {
     this._planets = [];
     this._zodiac = [];
-    this._houses = [];
     this._cusps = [];
     this._lines = [];
+    this._houses = [];
 
     this.http.get("config.json").subscribe((data:any) => {
       this.serverUrl = data.server;
@@ -175,7 +215,7 @@ export class AppComponent {
     this.cy = Math.trunc(this.height/2);
     this.outer_radius = Math.min(this.width/2, this.height/2) - this.margin;
     this.inner_radius = this.outer_radius - this.outer_radius / 5;
-    this.house_radius = 2 * this.outer_radius / 5;
+    this.house_radius = this.inner_radius * 2 / 3;
     
     //  assemble ruller lines
     for (let i = 0; i < 360; i++) {
@@ -235,7 +275,22 @@ export class AppComponent {
             name: 'Cusp' + house.symbol,
             ...p
           }
-        );        
+        ); 
+        if (_.includes([0, 3, 6, 9], i)) {
+          const c = house.position;
+          const delta = (this.inner_radius - this.house_radius) / 3;
+          let p = this.get_point_on_circle(this.cx, this.cy, this.house_radius + delta, c);
+          this._houses.push({
+            name: i == 0 
+              ? SYMBOL_HOUSE.Ascendant 
+              : i == 3 
+                ? SYMBOL_HOUSE.ImmumCoeli
+                : i == 9
+                  ? SYMBOL_HOUSE.MediumCoeli
+                  : SYMBOL_HOUSE.Descendant,
+            ...p
+          });
+        }
       }      
       
       // resolve sky objects collision
@@ -308,7 +363,57 @@ export class AppComponent {
         });
       });
 
+      // stat lines
+      let cnt = 1;
+      this._stat_lines = [];      
+      this.data.SkyObjects.forEach((so: any) => {
+        const STAT_MARGIN = 12;
+        this._stat_lines.push({
+          x: STAT_MARGIN,
+          y: STAT_MARGIN + cnt * 18,
+          stats: {
+            name: so.name,
+            position: pos_in_zodiac(so.position),
+            speed: so.speed,
+            house: so.house.name,
+            dignities: this.format_dignities(so)
+          }
+        });
+        cnt++;
+      });
+      cnt = 1;
+      this.data.Houses.forEach((so: any) => {
+        const STAT_MARGIN = 12;
+        this._stat_lines.push({
+          x: 220,
+          y: STAT_MARGIN + cnt * 18,
+          stats: {
+            name: 'Cusp' + so.symbol,
+            position: pos_in_zodiac(so.position)
+          }
+        });
+        cnt++;
+      });
     });
+  }
+
+  private format_dignities(so: any): string {
+    const sign: string = zodiac_sign(so.position);
+    let result: string[] = [];
+    if (_.some(_.get(so, "rulers.domicile", []), x => x === sign)) {
+      result.push("Dom");
+    } else if (_.some(_.get(so, "rulers.exaltation", []), x => x === sign)) {
+      result.push("Exl");
+    } else if (_.some(_.get(so, "rulers.detriment", []), x => x === sign)) {
+      result.push("Det");
+    } else if (_.some(_.get(so, "rulers.fall", []), x => x === sign)) {
+      result.push("Fall");
+    } 
+    return result.join('.');
+  } 
+
+  public get formatted_header(): string {    
+    return `${this.data.query.name} ${this.data.query.lat}`;
   }
 
   public get sky_objects(): any[] {
@@ -402,6 +507,10 @@ export class AppComponent {
 
   public get lines(): any[] {
     return this._lines;
+  }
+
+  public get stat_lines(): any[] {
+    return this._stat_lines;
   }
 
   public get_point_on_circle(cx: number, cy: number, radius: number, angle: number): { x: number, y: number  } {

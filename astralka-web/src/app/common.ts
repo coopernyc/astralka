@@ -103,3 +103,20 @@ export function format_pos_in_zodiac(position: number, sign_as_symbol: boolean =
     const sign = sign_as_symbol ? zodiac_symbol(position) : ' ' + zodiac_sign(position) + ' ';
     return convert_DD_to_DMS(pos_in_zodiac_sign(position), sign);
 }
+export function pos_in_zodiac(position: number) : any {
+    const z_pos = pos_in_zodiac_sign(position);
+    var deg = z_pos | 0;
+    var frac = Math.abs(z_pos - deg);
+    var min = (frac * 60) | 0;
+    var sec = Math.round(frac * 3600 - min * 60);
+    return {
+        position: position,
+        deg,
+        min,
+        sec,
+        deg_fmt: deg + "°",
+        min_fmt: min + "'" ,
+        sec_fmt: sec + "\"",
+        sign: ZodiacSigns[Math.floor(position / 30)]
+    };
+}

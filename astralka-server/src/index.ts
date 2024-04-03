@@ -118,10 +118,9 @@ app.get("/interpretation", async (req: Request, res: Response, next: NextFunctio
             break;
         case "Samantha": 
             nc = natal_chart_data(2010, 4, 15, 0, 58, 0, -73.935242, 40.730610, 10, hsys);
-            break;
-        default: 
-            nc = natal_chart_data(year, month, day, hour, minutes, seconds, longitude, latitude, elevation, hsys);
+            break;        
     }
+    nc = natal_chart_data(year, month, day, hour, minutes, seconds, longitude, latitude, elevation, hsys);
     
     const first = `Write maximum ${process.env.MAX_WORDS} words interpretation as paragraphs with no formatting for each of the following sentenses: `;
 
