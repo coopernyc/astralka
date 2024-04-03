@@ -3,6 +3,11 @@ import { AspectKind, AstralkaConfig } from "./constants";
 import { IAspect, IAspectDef, IChartObject, IHouse, IRulers, ISkyObject } from "./interfaces";
 import { format_pos_in_zodiac, zodiac_sign } from "./utils";
 import _ from "lodash";
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
+import dotenv from "dotenv";
+
+dotenv.config();
+const genAI = new GoogleGenerativeAI(process.env.API_KEY!);
 
 export class House implements IHouse {
     public position: number;
@@ -118,4 +123,24 @@ export class Aspect implements IAspect {
     public print(): string {
         return `${this.parties[0].symbol} ${this.aspect.symbol} ${_.padEnd(this.parties[1].symbol, 2)} ${_.padStart(_.round(this.angle, 2).toFixed(2), 6)}° ${this.aspect.kind === AspectKind.Major?'M':' '}${this.is_precise?"P":' '} ${this.aspect.name}`;
     }
+}
+const generationConfig = {    
+    maxOutputTokens: 2000
+};
+const safetySettings = [
+    {
+      category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+      threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+    },
+    {
+      category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+    },
+  ];
+const ai_model = genAI.getGenerativeModel({ model: "gemini-pro", safetySettings, generationConfig } );
+export async function call_ai(prompt: string): Promise<string> {
+    let response: any;    
+    const result = await ai_model.generateContent(prompt);
+    response = await result.response;    
+    return response.text();
 }

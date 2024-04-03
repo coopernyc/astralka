@@ -21,12 +21,12 @@ import { ChartText } from './chart-text';
       <button (click)="draw('Maria')">Maria</button>
       <button (click)="draw('Jenna')">Jenna</button>
       <button (click)="draw('Samantha')">Samantha</button>
-      <div style="display: inline-block; margin-left: 3px;">
-        <label>HSys</label>
-        <select [(ngModel)]="hsy">
+      <div style="display: inline-block; margin-left: 8px;">        
+        <select [ngModel]="hsy" (ngModelChange)="hsy_change($event)">
           <option *ngFor="let sh of house_system" [selected]="sh.value === hsy" [value]="sh.value">{{sh.display}}</option>
         </select>
       </div>
+      <button (click)="interpret()" [disabled]="!has_name" style="margin-left: 4px;">Interpret</button>
     </div>    
     <div id="container">
       <svg xmlns="http://www.w3.org/2000/svg" 
@@ -54,29 +54,15 @@ import { ChartText } from './chart-text';
         </g>        
       </svg>
     </div>
-    <div id="details">
-      <div *ngFor="let p of sky_objects" class="roboto-medium">
+    <div id="details" *ngIf="has_name && explain">
+      <!-- <div *ngFor="let p of sky_objects" class="roboto-medium">
         <div style="display: inline-block; width: 16px; text-align: center" [title]="p.name">{{p.symbol}}</div> {{format_position(p.position)}}
-      </div>  
+      </div>   -->
+      <div>Interpretation for {{data?.query.name}}</div>
+      <pre>{{explain}}</pre>
     </div>
   `,
-  styles: [
-    `      
-      button {
-        margin-right: 2px;
-      }
-      svg {
-        position: relative;
-        overflow: hidden;
-      }
-      .roboto-medium {
-        font-family: "Roboto", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        font-size: 11px;
-      }      
-    `
-  ],
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
 
@@ -98,7 +84,7 @@ export class AppComponent {
   private _cusps: any[] = [];
   private _lines: any[] = [];
   private serverUrl: string = "";
-  private data: any = {};
+  public data: any = {};
 
   public house_system = [
     { display: "Placidus", value: "P" },
@@ -185,6 +171,8 @@ export class AppComponent {
       this.serverUrl = data.server;
     });
 
+    this._explanation = "";
+
     this.cx = Math.trunc(this.width/2);
     this.cy = Math.trunc(this.height/2);
     this.outer_radius = Math.min(this.width/2, this.height/2) - this.margin;
@@ -212,12 +200,13 @@ export class AppComponent {
     });
   }
 
-  public draw(name: string) {    
+  public draw(name: string) {   
     this.http.get(`${this.serverUrl}/natal?name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
       
       this.init();
 
       this.data = _.clone(data);
+      console.log(data);
 
       for (let i = 0; i < 12; i++) {
         const house: any = _.find(data.Houses, (x: any) => x.index == i);        
@@ -366,5 +355,34 @@ export class AppComponent {
   public get_point_on_circle(cx: number, cy: number, radius: number, angle: number): { x: number, y: number  } {
     const a = (180 - angle) * Math.PI / 180;
     return { x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a) };
+  }
+
+  private _explanation: string = "";
+  public get explain(): string {    
+    return this._explanation;
+  }
+
+  public hsy_change(hsy: string) {    
+    this.hsy = hsy;
+    const name = _.get(this, "data.query.name", null);
+    if (name) {
+      //const query_string = Object.entries(this.data.query).map(([key, val]) => `${key}=${val}`).join('&');
+      this.draw(name);
+    }
+  }
+
+  public async interpret(): Promise<void> {
+    const name = _.get(this, "data.query.name", null);
+    if (name) {
+      this.http.get(`${this.serverUrl}/interpretation?name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
+        if (data && data.result) {
+          this._explanation = data.result;
+        }
+      });
+    }
+  }
+
+  public get has_name(): boolean {
+    return !!_.get(this, "data.query.name", null);
   }
 }
