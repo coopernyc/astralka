@@ -37,7 +37,7 @@ import { ChartText } from './chart-text';
         [attr.viewBox]="'0 0 ' + width + ' ' + height"        
         >
         <g>
-          <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="none" stroke="#000"></rect> 
+          <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="none" stroke="#0004"></rect> 
           <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius"></g>
           <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
           <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
@@ -54,10 +54,7 @@ import { ChartText } from './chart-text';
         </g>        
       </svg>
     </div>
-    <div id="details" *ngIf="has_name && explain">
-      <!-- <div *ngFor="let p of sky_objects" class="roboto-medium">
-        <div style="display: inline-block; width: 16px; text-align: center" [title]="p.name">{{p.symbol}}</div> {{format_position(p.position)}}
-      </div>   -->
+    <div id="details" *ngIf="has_name">
       <div>Interpretation for {{data?.query.name}}</div>
       <pre>{{explain}}</pre>
     </div>
@@ -83,6 +80,7 @@ export class AppComponent {
   private _houses: any[] = [];
   private _cusps: any[] = [];
   private _lines: any[] = [];
+  
   private serverUrl: string = "";
   public data: any = {};
 
@@ -179,6 +177,7 @@ export class AppComponent {
     this.inner_radius = this.outer_radius - this.outer_radius / 5;
     this.house_radius = 2 * this.outer_radius / 5;
     
+    //  assemble ruller lines
     for (let i = 0; i < 360; i++) {
       const n = i % 30 === 0 ? this.outer_radius - this.inner_radius : i % 10 === 0 ? 10 : 5;
       const p1 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius + n, i);
@@ -189,6 +188,7 @@ export class AppComponent {
         options: { stroke_color: i % 30 === 0 ? "#000" : "#0007" }        
       });      
     }
+    // assemble zodiac signs
     let index = 0;
     _.forOwn(SYMBOL_ZODIAC, (name) => {
       const p = this.get_point_on_circle(this.cx, this.cy, (this.outer_radius - this.inner_radius) / 2 + this.inner_radius, index * 30 + 15);
@@ -209,6 +209,7 @@ export class AppComponent {
       console.log(data);
 
       for (let i = 0; i < 12; i++) {
+        // assemble houses
         const house: any = _.find(data.Houses, (x: any) => x.index == i);        
         const a = house.position;
         const p1 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius, a);
@@ -236,11 +237,12 @@ export class AppComponent {
           }
         );        
       }      
-            
+      
+      // resolve sky objects collision
       const skyObjectsAdjusted = this.adjust(data.SkyObjects);
 
       skyObjectsAdjusted.forEach((so: any) => {
-
+        // assemble sky objects
         const x = _.find(data.SkyObjects, x => x.name === so.name);        
         const p = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15, so.angle);
 
@@ -256,6 +258,56 @@ export class AppComponent {
           text: (x.speed < 0 ? 'R': '')
         });
       });
+
+      const aspects = this.data.Aspects.filter((x: any) => 
+        _.includes([0, 180, 90, 120, 60, 150, 30, 45, 135], x.aspect.angle) && !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
+      );
+      _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name').forEach((x: any) => {
+        const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
+        const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.position);
+        this.lines.push({
+          p1,
+          p2,
+          options: { stroke_color: "#000000" }
+        });
+      });
+
+      aspects.forEach((x: any) => {
+        const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.parties[0].position);
+        const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.parties[1].position);        
+        let options = {};
+        switch (x.aspect.angle) {
+          case 0:
+            options = { stroke_color: "#bb6600" };
+            break;
+          case 180:
+            options = { stroke_color: "#bb0000", stroke_dasharray: "5,3" };
+            break;
+          case 90: 
+            options = { stroke_color: "#bb0000" };
+            break;
+          case 120: 
+            options = { stroke_color: "#009900" };
+            break;
+          case 60: 
+            options = { stroke_color: "#009900", stroke_dasharray: "1,1" };
+            break;
+          case 150:
+          case 30: 
+            options = { stroke_color: "#ff00dd55", stroke_dasharray: "1,1" };
+            break;
+          case 45:
+          case 135: 
+            options = { stroke_color: "#0000ff55", stroke_dasharray: "1,1" };
+            break;
+        }        
+        this.lines.push({
+          p1,
+          p2,
+          options
+        });
+      });
+
     });
   }
 
@@ -372,9 +424,11 @@ export class AppComponent {
   }
 
   public async interpret(): Promise<void> {
+    this._explanation = "..... processing .....";
     const name = _.get(this, "data.query.name", null);
     if (name) {
       this.http.get(`${this.serverUrl}/interpretation?name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
+        
         if (data && data.result) {
           this._explanation = data.result;
         }

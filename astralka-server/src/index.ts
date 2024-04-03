@@ -123,7 +123,7 @@ app.get("/interpretation", async (req: Request, res: Response, next: NextFunctio
             nc = natal_chart_data(year, month, day, hour, minutes, seconds, longitude, latitude, elevation, hsys);
     }
     
-    const first = `Write maximum ${process.env.MAX_WORDS} words interpretation as bullets points for each of the following sentenses: `;
+    const first = `Write maximum ${process.env.MAX_WORDS} words interpretation as paragraphs with no formatting for each of the following sentenses: `;
 
     let prompt: string = "";
     for (let i = 0; i < nc.SkyObjects.length; i++) {
@@ -131,7 +131,12 @@ app.get("/interpretation", async (req: Request, res: Response, next: NextFunctio
         prompt += `${so.name} in ${zodiac_sign(so.position)} and in ${so.house.name}. `;
     };
     console.log(first + prompt);
-    const result = await call_ai(first + prompt);
+    let result = "";
+    try {
+        result = await call_ai(first + prompt);
+    } catch(err: any) {
+        console.log(err?.message);
+    }
     console.log('result', result);
 
     res.json(_.merge(data, { result }));
