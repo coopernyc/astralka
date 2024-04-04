@@ -65,6 +65,19 @@ export const SYMBOL_CUSP = {
     Cusp11: "Cusp11",
     Cusp12: "Cusp12"
 }
+export const SYMBOL_ASPECT = {
+    Conjunction: "Conjunction",
+    Opposition: "Opposition",
+    Trine: "Trine",
+    Square: "Square",
+    Sextile: "Sextile",
+    Semisextile: "Semisextile",
+    Quincunx: "Quincunx",
+    Semisquare: "Semisquare",
+    Sesquiquadrate: "Sesquiquadrate",
+    Quintile: "Quintile",
+    Biquintile: "Biquintile"
+}
 export const ZodiacSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
 export const ZodiacSigns: string[] = [
     SYMBOL_ZODIAC.Aries,
@@ -119,4 +132,33 @@ export function pos_in_zodiac(position: number) : any {
         sec_fmt: sec + "\"",
         sign: ZodiacSigns[Math.floor(position / 30)]
     };
+}
+export function aspect_color(angle: number): any {
+    let options = {};
+    switch (angle) {
+        case 0:
+            options = { stroke_color: "#bb6600" };
+            break;
+        case 180:
+            options = { stroke_color: "#bb0000", stroke_dasharray: "5,3" };
+            break;
+        case 90: 
+            options = { stroke_color: "#bb0000" };
+            break;
+        case 120: 
+            options = { stroke_color: "#009900" };
+            break;
+        case 60: 
+            options = { stroke_color: "#009900", stroke_dasharray: "1,1" };
+            break;
+        case 150:
+        case 30: 
+            options = { stroke_color: "#ff00dd", stroke_dasharray: "1,1" };
+            break;
+        case 45:
+        case 135: 
+            options = { stroke_color: "#8888ff", stroke_dasharray: "1,1" };
+            break;
+        }
+    return options;    
 }

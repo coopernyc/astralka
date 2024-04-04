@@ -6,7 +6,7 @@ export interface IChartObject {
 
     print(): string;
 }
-export interface IRulers {
+export interface IDignities {
     domicile: string[];
     exaltation: string[];
     detriment: string[];
@@ -22,7 +22,7 @@ export interface ISkyObject extends IChartObject {
     speed: number;
     sign: string;
     isRetrograde: boolean;
-    rulers?: IRulers;    
+    dignities?: IDignities;    
     house?: IHouse;
 }
 export interface IAspectDef {

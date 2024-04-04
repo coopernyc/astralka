@@ -1,7 +1,7 @@
 {
     "SkyObjects": [
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Leo"
                 ],
@@ -36,7 +36,7 @@
             }
         },
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Cancer"
                 ],
@@ -71,7 +71,7 @@
             }
         },
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Gemini",
                     "Virgo"
@@ -110,7 +110,7 @@
             }
         },
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Taurus",
                     "Libra"
@@ -149,7 +149,7 @@
             }
         },
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Aries",
                     "Scorpio"
@@ -188,7 +188,7 @@
             }
         },
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Sagittarius",
                     "Pisces"
@@ -229,7 +229,7 @@
             }
         },
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Capricorn",
                     "Aquarius"
@@ -270,7 +270,7 @@
             }
         },
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Aquarius"
                 ],
@@ -309,7 +309,7 @@
             }
         },
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Pisces"
                 ],
@@ -346,7 +346,7 @@
             }
         },
         {
-            "rulers": {
+            "dignities": {
                 "domicile": [
                     "Scorpio"
                 ],
@@ -547,7 +547,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Leo"
                         ],
@@ -582,7 +582,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Cancer"
                         ],
@@ -633,7 +633,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Leo"
                         ],
@@ -668,7 +668,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Aquarius"
                         ],
@@ -724,7 +724,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Leo"
                         ],
@@ -789,7 +789,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Leo"
                         ],
@@ -857,7 +857,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Leo"
                         ],
@@ -926,7 +926,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Leo"
                         ],
@@ -984,7 +984,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Cancer"
                         ],
@@ -1019,7 +1019,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Sagittarius",
                             "Pisces"
@@ -1076,7 +1076,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Cancer"
                         ],
@@ -1111,7 +1111,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Aquarius"
                         ],
@@ -1166,7 +1166,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Cancer"
                         ],
@@ -1201,7 +1201,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Pisces"
                         ],
@@ -1254,7 +1254,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Cancer"
                         ],
@@ -1315,7 +1315,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Gemini",
                             "Virgo"
@@ -1354,7 +1354,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Taurus",
                             "Libra"
@@ -1412,7 +1412,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Gemini",
                             "Virgo"
@@ -1484,7 +1484,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Gemini",
                             "Virgo"
@@ -1545,7 +1545,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Taurus",
                             "Libra"
@@ -1584,7 +1584,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Sagittarius",
                             "Pisces"
@@ -1642,7 +1642,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Taurus",
                             "Libra"
@@ -1711,7 +1711,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Aries",
                             "Scorpio"
@@ -1781,7 +1781,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Aries",
                             "Scorpio"
@@ -1843,7 +1843,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Sagittarius",
                             "Pisces"
@@ -1884,7 +1884,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Capricorn",
                             "Aquarius"
@@ -1942,7 +1942,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Sagittarius",
                             "Pisces"
@@ -1983,7 +1983,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Aquarius"
                         ],
@@ -2037,7 +2037,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Sagittarius",
                             "Pisces"
@@ -2109,7 +2109,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Sagittarius",
                             "Pisces"
@@ -2173,7 +2173,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Capricorn",
                             "Aquarius"
@@ -2245,7 +2245,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Capricorn",
                             "Aquarius"
@@ -2316,7 +2316,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Capricorn",
                             "Aquarius"
@@ -2380,7 +2380,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Aquarius"
                         ],
@@ -2450,7 +2450,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Aquarius"
                         ],
@@ -2520,7 +2520,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Aquarius"
                         ],
@@ -2591,7 +2591,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Pisces"
                         ],
@@ -2628,7 +2628,7 @@
                     }
                 },
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Scorpio"
                         ],
@@ -2681,7 +2681,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Scorpio"
                         ],
@@ -2748,7 +2748,7 @@
         {
             "parties": [
                 {
-                    "rulers": {
+                    "dignities": {
                         "domicile": [
                             "Scorpio"
                         ],

@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { SYMBOL_CUSP, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_STROKE_COLOR, SYMBOL_STROKE_WIDTH, SYMBOL_ZODIAC } from "./common";
+import { SYMBOL_ASPECT, SYMBOL_CUSP, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_STROKE_COLOR, SYMBOL_STROKE_WIDTH, SYMBOL_ZODIAC } from "./common";
 import { CommonModule } from "@angular/common";
 import _ from "lodash";
 
@@ -29,7 +29,7 @@ export class ChartSymbol {
     
     @Input() x: number = 0;
     @Input() y: number = 0;
-    @Input() name: string = "";
+    
     @Input() options: any = {};
 
 
@@ -137,7 +137,6 @@ export class ChartSymbol {
             case SYMBOL_HOUSE.ImmumCoeli:
                 shift = [7, -2.5];
                 break;
-
             case SYMBOL_CUSP.Cusp1:
                 shift = [0, -3];
                 break;
@@ -174,11 +173,45 @@ export class ChartSymbol {
             case SYMBOL_CUSP.Cusp12:
                 shift = [-3, -3];
                 break;
+            case SYMBOL_ASPECT.Conjunction:
+                shift = [2, 0]
+                break;
+            case SYMBOL_ASPECT.Opposition:
+                shift = [-2.5, 6]
+                break;
+            case SYMBOL_ASPECT.Trine:
+                shift = [0, -5.5]
+                break;
+            case SYMBOL_ASPECT.Square:
+                shift = [0, 0]
+                break;
+            case SYMBOL_ASPECT.Sextile:
+                shift = [0, 0]
+                break;
+            case SYMBOL_ASPECT.Semisextile:
+                shift = [0, 2.5]
+                break;
+            case SYMBOL_ASPECT.Quincunx:
+                shift = [0, -2.5]
+                break;
+            case SYMBOL_ASPECT.Semisquare:
+                shift = [0, 2.5]
+                break;
+            case SYMBOL_ASPECT.Sesquiquadrate:
+                shift = [0, -1.5]
+                break;
+            case SYMBOL_ASPECT.Quintile:
+                shift = [0.5, -5.5]
+                break;
+            case SYMBOL_ASPECT.Biquintile:
+                shift = [0.5, -6.5]
+                break;
+
         }
         return `translate(${this.x + this.scale * shift[0]} ${this.y + this.scale * shift[1]}) ${rotate}scale(${this.scale}) `;
     }
 
-  
+    @Input() name: string = SYMBOL_ASPECT.Biquintile;
 
     public get need2paths() {
         return _.includes([
@@ -240,7 +273,7 @@ export class ChartSymbol {
                 p.push("m" + x + ", " + y + "   -3.942997,4.243844 4.110849,3.656151 m -4.867569,-9.009468 0,11.727251");
                 break;     
             case SYMBOL_PLANET.ParsFortuna:
-                p.push("m" + x + ", " + y + " c-5.3,-4.2,-11.7,3.2,-7,7.8s12,-1.8,7.9,-7l-0.9,-0.8zm-7.4,7.8l8,-7m-8.1,-0.3l8,7");
+                p.push("m" + x + ", " + y + " c-5.3,-4.2,-11.7,3.2,-7,7.8s12,-1.8,7.9,-7l-0.9,-0.8z m-7.4,7.8l8,-7m-8.1,-0.3l8,7");
                 break;     
             case SYMBOL_PLANET.Lilith:
                 p.push("m" + x + ", " + y + " -2.525435,-1.12853 -1.464752,-1.79539 -0.808138,-2.20576 0.151526,-2.05188 0.909156,-1.5389 1.010173,-1.02593 0.909157,-0.56427 1.363735,-0.61556 m 2.315327,-0.39055 -1.716301,0.54716 -1.7163,1.09431 -1.1442,1.64146 -0.572102,1.64146 0,1.64146 0.572102,1.64147 1.1442,1.64145 1.7163,1.09432 1.716301,0.54715 m 0,-11.49024 -2.2884,0 -2.288401,0.54716 -1.716302,1.09431 -1.144201,1.64146 -0.5721,1.64146 0,1.64146 0.5721,1.64147 1.144201,1.64145 1.716302,1.09432 2.288401,0.54715 2.2884,0 m -4.36712,-0.4752 0,6.44307 m -2.709107,-3.41101 5.616025,0");			
@@ -338,6 +371,42 @@ export class ChartSymbol {
                 p.push("m" + x + ", " + y + " -2.28795747,7.7790553 0.91518297,0 m 2.7455489,-9.6094213 -0.9151829,1.830366 -2.28795748,7.7790553 m 3.20314038,-9.6094213 -2.7455489,9.6094213 m 2.7455489,-9.6094213 -1.3727744,1.3727745 -1.3727745,0.915183 -0.91518297,0.4575915 m 2.28795747,-0.915183 -0.91518301,0.4575915 -1.37277446,0.4575915");			
                 [x, y] = [x + 4, y + 1];
                 p.push("m" + x + ", " + y + " 0,-0.4545454 0.4545454,0 0,0.9090909 -0.9090909,0 0,-0.9090909 0.4545455,-0.9090909 0.4545454,-0.4545455 1.36363637,-0.4545454 1.36363633,0 1.3636364,0.4545454 0.4545455,0.9090909 0,0.9090909 -0.4545455,0.909091 -0.9090909,0.9090909 -4.5454546,2.72727269 -0.9090909,0.90909091 -0.9090909,1.8181818 m 6.8181818,-9.0909091 0.4545455,0.9090909 0,0.9090909 -0.4545455,0.909091 -0.9090909,0.9090909 -1.36363633,0.9090909 m 1.36363633,-5 0.4545455,0.4545454 0.4545454,0.9090909 0,0.9090909 -0.4545454,0.909091 -0.9090909,0.9090909 -3.6363637,2.72727269 m -1.3636363,1.81818181 0.4545454,-0.4545454 0.9090909,0 2.27272732,0.4545454 2.27272728,0 0.4545454,-0.4545454 m -5,0 2.27272732,0.9090909 2.27272728,0 m -4.5454546,-0.9090909 2.27272732,1.3636363 1.36363638,0 0.9090909,-0.4545454 0.4545454,-0.9090909 0,-0.4545455");
+                break;
+            case SYMBOL_ASPECT.Conjunction:
+                p.push("m" + x + ", " + y + "c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0z m-1,-2.4l2.97,-2.95l-2.97,2.95z");			
+                break;
+            case SYMBOL_ASPECT.Opposition:
+                p.push("m" + x + ", " + y + "c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0z m12,-12c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0z m-5.39,2.02l-8,8l8,-8z");			
+                break;
+            case SYMBOL_ASPECT.Trine:
+                p.push("m" + x + ", " + y + "l-5.98,9.33l11.28,0l-5.3,-9.33z");			
+                break;
+            case SYMBOL_ASPECT.Square:
+                p.push("m" + x + ", " + y + "m0,5l5,0l0,-10l-10,0l0,10z");			
+                break;
+            case SYMBOL_ASPECT.Sextile:
+                p.push("m" + x + ", " + y + "m5,5l-10,-10m0,10l10,-10m-10,5l10,0z");			
+                break;
+            case SYMBOL_ASPECT.Sextile:
+                p.push("m" + x + ", " + y + "m5,5l-10,-10m0,10l10,-10m-10,5l10,0z");			
+                break;
+            case SYMBOL_ASPECT.Semisextile:
+                p.push("m" + x + ", " + y + "m-5,0l10,0m-5,0l-5,-5m5,5l5,-5z");			
+                break;
+            case SYMBOL_ASPECT.Quincunx:
+                p.push("m" + x + ", " + y + "m-5,0l10,0m-5,0l-5,5m5,-5l5,5z");			
+                break;
+            case SYMBOL_ASPECT.Semisquare:
+                p.push("m" + x + ", " + y + "m4,0l-8,0l6,-6");			
+                break;
+            case SYMBOL_ASPECT.Sesquiquadrate:
+                p.push("m" + x + ", " + y + "m0,4l4,0l0,-8l-8,0l0,8z m2,2l-4,0l4,-4");			
+                break;
+            case SYMBOL_ASPECT.Quintile:
+                p.push("m" + x + ", " + y + "c-0.31,-0.23,-0.73,-0.23,-1.04,0l-2.53,1.84l-2.14,1.55c-0.31,0.23,-0.44,0.62,-0.32,0.99l1.78,5.49c0.12,0.36,0.46,0.61,0.84,0.61h5.77c0.38,0,0.72,-0.25,0.84,-0.61l1.78,-5.49c0.12,-0.36,-0.01,-0.76,-0.32,-0.99l-4.67,-3.39z");			
+                break;
+            case SYMBOL_ASPECT.Biquintile:
+                p.push("m" + x + ", " + y + "c-0.31,-0.23,-0.73,-0.23,-1.04,0l-2.53,1.84l-2.14,1.55c-0.31,0.23,-0.44,0.62,-0.32,0.99l1.78,5.49c0.12,0.36,0.46,0.61,0.84,0.61h5.77c0.38,0,0.72,-0.25,0.84,-0.61l1.78,-5.49c0.12,-0.36,-0.01,-0.76,-0.32,-0.99l-4.67,-3.39z m5,12l-11,0z");			
                 break;
         }
         return p;

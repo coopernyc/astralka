@@ -41,7 +41,7 @@ export function natal_chart_data(year: number,
     hse.house.forEach((x: number, index: number) => {
         const h = new House({
             index,
-            name: pad2(index + 1) + ' house',
+            name: 'Cusp' + (index + 1),
             symbol: (index + 1)+'',  //RomanNumbers[index],
             position: x            
         });

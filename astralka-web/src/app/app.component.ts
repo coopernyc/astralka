@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ChartSymbol } from './chart-symbol';
 import _ from "lodash";
-import { COLLISION_RADIUS, SYMBOL_HOUSE, SYMBOL_SCALE, SYMBOL_ZODIAC, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
+import { COLLISION_RADIUS, SYMBOL_ASPECT, SYMBOL_HOUSE, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
 import { CommonModule } from '@angular/common';
 import { ChartCircle } from './chart-circle';
 import { ChartLine } from './chart-line';
@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { BreakpointObserver, LayoutModule, Breakpoints } from '@angular/cdk/layout';
 import { ChartText } from './chart-text';
 import { StatsLine } from './stats-line';
+import { StatsAspect } from './stats-aspect';
 
 @Component({
   selector: 'astralka-root',
@@ -20,6 +21,7 @@ import { StatsLine } from './stats-line';
     ChartLine, 
     ChartText, 
     StatsLine,
+    StatsAspect,
     CommonModule, 
     HttpClientModule, 
     FormsModule, 
@@ -36,8 +38,7 @@ import { StatsLine } from './stats-line';
         <select [ngModel]="hsy" (ngModelChange)="hsy_change($event)">
           <option *ngFor="let sh of house_system" [selected]="sh.value === hsy" [value]="sh.value">{{sh.display}}</option>
         </select>
-      </div>
-      <button (click)="interpret()" [disabled]="!has_name" style="margin-left: 4px;">Interpret</button>
+      </div>      
     </div>    
     <div id="container">
       <svg xmlns="http://www.w3.org/2000/svg" 
@@ -54,13 +55,13 @@ import { StatsLine } from './stats-line';
           <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
           <g svgg-line *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
           <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-          <g svgg-text *ngFor="let p of planets" [x]="p.x + 6" [y]="p.y + 5" [text]="p.text"></g>
+          <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
           <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
           <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-          <g svgg-symbol *ngFor="let p of houses" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.85, stroke_color: '#003399', stroke_width: 2}"></g>
+          <g svgg-symbol *ngFor="let p of houses" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.75, stroke_color: '#336699'}"></g>
           
-
-          <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
+          <!--
+          <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
           <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
           <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
 
@@ -72,8 +73,9 @@ import { StatsLine } from './stats-line';
           <g svgg-line [x1]="80" [y1]="30" [x2]="100" [y2]="30"></g>
           <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
 
-          <g svgg-symbol *ngFor="let p of cusps; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
-          <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
+          <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
+          <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g>
+          //-->
           
         </g>        
       </svg>
@@ -89,7 +91,19 @@ import { StatsLine } from './stats-line';
           <g>
             <rect x="0" y="0" [attr.width]="width" [attr.height]="300" fill="none" stroke="#0004"></rect> 
             <g svgg-text *ngIf="has_name" [x]="12" [y]="12" [text]="formatted_header"></g>
-            <g svgg-stat *ngFor="let s of stat_lines" [x]="s.x" [y]="s.y" [stats]="s.stats"></g>
+            <g svgg-stat-line *ngFor="let s of stat_lines" [x]="s.x" [y]="s.y" [stats]="s.stats"></g>
+          </g>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" 
+          xmlns:xlink="http://www.w3.org/1999/xlink" 
+          version="1.1"
+          [attr.width]="width"
+          [attr.height]="320"
+          [attr.viewBox]="'0 0 ' + width + ' 320'"        
+          >
+          <g>
+            <rect x="0" y="0" [attr.width]="width" [attr.height]="320" fill="none" stroke="#0004"></rect>             
+            <g svgg-stat-aspect [x]="10" [y]="10" [stats]="aspects"></g>
           </g>
       </svg>
     </div>
@@ -97,6 +111,9 @@ import { StatsLine } from './stats-line';
       <div>Interpretation for {{data?.query.name}}</div>
       <pre>{{explain}}</pre>
     </div> -->
+    <div style="margin: 2px;">      
+      <button (click)="interpret()" [disabled]="!has_name">Interpret</button>
+    </div>    
   `,
   styleUrls: ['./app.component.scss'],
 })
@@ -120,6 +137,7 @@ export class AppComponent {
   private _cusps: any[] = [];
   private _lines: any[] = [];
   private _stat_lines: any[] = [];
+  private _aspects: any[] = [];
   
   private serverUrl: string = "";
   public data: any = {};
@@ -204,6 +222,7 @@ export class AppComponent {
     this._cusps = [];
     this._lines = [];
     this._houses = [];
+    this._aspects = [];
 
     this.http.get("config.json").subscribe((data:any) => {
       this.serverUrl = data.server;
@@ -310,7 +329,7 @@ export class AppComponent {
         this._planets.push({
           name: x.name,
           ...p,
-          text: (x.speed < 0 ? 'R': '')
+          text: (x.speed < 0 ? 'r': '')
         });
       });
 
@@ -330,32 +349,7 @@ export class AppComponent {
       aspects.forEach((x: any) => {
         const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.parties[0].position);
         const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.parties[1].position);        
-        let options = {};
-        switch (x.aspect.angle) {
-          case 0:
-            options = { stroke_color: "#bb6600" };
-            break;
-          case 180:
-            options = { stroke_color: "#bb0000", stroke_dasharray: "5,3" };
-            break;
-          case 90: 
-            options = { stroke_color: "#bb0000" };
-            break;
-          case 120: 
-            options = { stroke_color: "#009900" };
-            break;
-          case 60: 
-            options = { stroke_color: "#009900", stroke_dasharray: "1,1" };
-            break;
-          case 150:
-          case 30: 
-            options = { stroke_color: "#ff00dd55", stroke_dasharray: "1,1" };
-            break;
-          case 45:
-          case 135: 
-            options = { stroke_color: "#0000ff55", stroke_dasharray: "1,1" };
-            break;
-        }        
+        let options = aspect_color(x.aspect.angle);                
         this.lines.push({
           p1,
           p2,
@@ -373,6 +367,7 @@ export class AppComponent {
           y: STAT_MARGIN + cnt * 18,
           stats: {
             name: so.name,
+            label: so.name,
             position: pos_in_zodiac(so.position),
             speed: so.speed,
             house: so.house.name,
@@ -385,35 +380,37 @@ export class AppComponent {
       this.data.Houses.forEach((so: any) => {
         const STAT_MARGIN = 12;
         this._stat_lines.push({
-          x: 220,
+          x: 320,
           y: STAT_MARGIN + cnt * 18,
-          stats: {
+          stats: {            
             name: 'Cusp' + so.symbol,
+            label: "House",
             position: pos_in_zodiac(so.position)
           }
         });
         cnt++;
       });
+      this._aspects = this.data.Aspects;  
     });
   }
 
   private format_dignities(so: any): string {
     const sign: string = zodiac_sign(so.position);
     let result: string[] = [];
-    if (_.some(_.get(so, "rulers.domicile", []), x => x === sign)) {
+    if (_.some(_.get(so, "dignities.domicile", []), x => x === sign)) {
       result.push("Dom");
-    } else if (_.some(_.get(so, "rulers.exaltation", []), x => x === sign)) {
+    } else if (_.some(_.get(so, "dignities.exaltation", []), x => x === sign)) {
       result.push("Exl");
-    } else if (_.some(_.get(so, "rulers.detriment", []), x => x === sign)) {
+    } else if (_.some(_.get(so, "dignities.detriment", []), x => x === sign)) {
       result.push("Det");
-    } else if (_.some(_.get(so, "rulers.fall", []), x => x === sign)) {
+    } else if (_.some(_.get(so, "dignities.fall", []), x => x === sign)) {
       result.push("Fall");
     } 
     return result.join('.');
   } 
 
   public get formatted_header(): string {    
-    return `${this.data.query.name} ${this.data.query.lat}`;
+    return `Details for ${this.data.query.name} ${this.data.query.lat}`;
   }
 
   public get sky_objects(): any[] {
@@ -507,6 +504,10 @@ export class AppComponent {
 
   public get lines(): any[] {
     return this._lines;
+  }
+
+  public get aspects(): any[] {
+    return this._aspects;
   }
 
   public get stat_lines(): any[] {

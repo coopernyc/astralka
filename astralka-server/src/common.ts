@@ -1,6 +1,6 @@
 import swisseph from "swisseph";
 import { AspectKind, AstralkaConfig } from "./constants";
-import { IAspect, IAspectDef, IChartObject, IHouse, IRulers, ISkyObject } from "./interfaces";
+import { IAspect, IAspectDef, IChartObject, IHouse, IDignities as Dignities, ISkyObject } from "./interfaces";
 import { format_pos_in_zodiac, zodiac_sign } from "./utils";
 import _ from "lodash";
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
@@ -34,7 +34,7 @@ export class Planet implements ISkyObject {
     public name: string;
     public symbol: string;
     public label: string;
-    public rulers: IRulers | undefined = undefined;
+    public dignities: Dignities | undefined = undefined;
     public swisseph_id: number;
     public house: IHouse | undefined;
     constructor(name: string) {
@@ -48,9 +48,9 @@ export class Planet implements ISkyObject {
         this.symbol = _.get(conf, "symbol", this.name);
         this.speed = 0;
         this.position = 0;
-        const rulers = _.get(conf, "rulers", null);
-        if (rulers) {
-            this.rulers = rulers as IRulers;
+        const dignities = _.get(conf, "dignities", null);
+        if (dignities) {
+            this.dignities = dignities as Dignities;
         }
     }
     public get sign(): string {
@@ -60,22 +60,22 @@ export class Planet implements ISkyObject {
         return this.speed < 0;
     }
     public get isDomicile(): boolean {
-        return !!this.rulers && !!_.includes(this.rulers.domicile || [], this.sign);        
+        return !!this.dignities && !!_.includes(this.dignities.domicile || [], this.sign);        
     }
     public get isExaltation(): boolean {
-        return !!this.rulers && !!_.includes(this.rulers.exaltation || [], this.sign);
+        return !!this.dignities && !!_.includes(this.dignities.exaltation || [], this.sign);
     }
     public get isDetriment(): boolean {
-        return !!this.rulers && !!_.includes(this.rulers.detriment || [], this.sign);
+        return !!this.dignities && !!_.includes(this.dignities.detriment || [], this.sign);
     }
     public get isFall(): boolean {
-        return !!this.rulers && !!_.includes(this.rulers.fall || [], this.sign);
+        return !!this.dignities && !!_.includes(this.dignities.fall || [], this.sign);
     }
     public get isFriend(): boolean {
-        return !!this.rulers && !!_.includes(this.rulers.friend || [], this.sign);
+        return !!this.dignities && !!_.includes(this.dignities.friend || [], this.sign);
     }
     public get isEnemy(): boolean {
-        return !!this.rulers && !!_.includes(this.rulers.enemy || [], this.sign);
+        return !!this.dignities && !!_.includes(this.dignities.enemy || [], this.sign);
     }
 
     public print(): string {

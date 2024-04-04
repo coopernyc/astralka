@@ -17,7 +17,11 @@ export const SkyObject = {
     ParsForuna: "ParsFortuna",
     Lilith: "Lilith",
     TrueBalckMoon: "TrueBlackMoon",
-    Chiron: "Chiron"
+    Chiron: "Chiron",
+    Ceres: "Ceres",
+    Pallas: "Pallas",
+    Juno: "Juno",
+    Vesta: "Vesta"
 };
 
 export const ZodiacSign = {
@@ -75,7 +79,7 @@ export const AstralkaConfig = {
             name: SkyObject.Sun,
             symbol: "⊙",
             swisseph_id: swisseph.SE_SUN,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Leo],
                 exaltation: [ZodiacSign.Aries],
                 detriment: [ZodiacSign.Aquarius],
@@ -88,7 +92,7 @@ export const AstralkaConfig = {
             name: SkyObject.Moon,
             symbol: "☽",
             swisseph_id: swisseph.SE_MOON,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Cancer],
                 exaltation: [ZodiacSign.Taurus],
                 detriment: [ZodiacSign.Capricorn],
@@ -101,7 +105,7 @@ export const AstralkaConfig = {
             name: SkyObject.Mercury,
             symbol: "☿",
             swisseph_id: swisseph.SE_MERCURY,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Gemini, ZodiacSign.Virgo],
                 exaltation: [ZodiacSign.Virgo],
                 detriment: [ZodiacSign.Sagittarius, ZodiacSign.Pisces],
@@ -114,7 +118,7 @@ export const AstralkaConfig = {
             name: SkyObject.Venus,
             symbol: "♀",
             swisseph_id: swisseph.SE_VENUS,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Taurus, ZodiacSign.Libra],
                 exaltation: [ZodiacSign.Pisces],
                 detriment: [ZodiacSign.Aries, ZodiacSign.Scorpio],
@@ -127,7 +131,7 @@ export const AstralkaConfig = {
             name: SkyObject.Mars,
             symbol: "♂",
             swisseph_id: swisseph.SE_MARS,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Aries, ZodiacSign.Scorpio],
                 exaltation: [ZodiacSign.Capricorn],
                 detriment: [ZodiacSign.Taurus, ZodiacSign.Libra],
@@ -140,7 +144,7 @@ export const AstralkaConfig = {
             name: SkyObject.Jupiter,
             symbol: "♃",
             swisseph_id: swisseph.SE_JUPITER,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Sagittarius, ZodiacSign.Pisces],
                 exaltation: [ZodiacSign.Cancer],
                 detriment: [ZodiacSign.Gemini, ZodiacSign.Virgo],
@@ -153,7 +157,7 @@ export const AstralkaConfig = {
             name: SkyObject.Saturn,
             symbol: "♄",
             swisseph_id: swisseph.SE_SATURN,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Capricorn, ZodiacSign.Aquarius],
                 exaltation: [ZodiacSign.Libra],
                 detriment: [ZodiacSign.Cancer, ZodiacSign.Leo],
@@ -166,7 +170,7 @@ export const AstralkaConfig = {
             name: SkyObject.Uranus,
             symbol: "♅",
             swisseph_id: swisseph.SE_URANUS,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Aquarius],
                 exaltation: [ZodiacSign.Virgo],
                 detriment: [ZodiacSign.Leo],
@@ -179,7 +183,7 @@ export const AstralkaConfig = {
             name: SkyObject.Neptune,
             symbol: "♆",
             swisseph_id: swisseph.SE_NEPTUNE,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Pisces],
                 exaltation: [ZodiacSign.Leo],
                 detriment: [ZodiacSign.Virgo],
@@ -192,7 +196,7 @@ export const AstralkaConfig = {
             name: SkyObject.Pluto,
             symbol: "♇",
             swisseph_id: swisseph.SE_PLUTO,
-            rulers: {
+            dignities: {
                 domicile: [ZodiacSign.Scorpio],
                 exaltation: [ZodiacSign.Aries],
                 detriment: [ZodiacSign.Taurus],
@@ -229,7 +233,27 @@ export const AstralkaConfig = {
             name: SkyObject.Chiron,
             symbol: "k",
             swisseph_id: swisseph.SE_CHIRON
-        }
+        },
+        // {
+        //     name: SkyObject.Vesta,
+        //     symbol: "v",
+        //     swisseph_id: swisseph.SE_VESTA
+        // },
+        // {
+        //     name: SkyObject.Ceres,
+        //     symbol: "v",
+        //     swisseph_id: swisseph.SE_CERES
+        // },
+        // {
+        //     name: SkyObject.Pallas,
+        //     symbol: "v",
+        //     swisseph_id: swisseph.SE_PALLAS
+        // },
+        // {
+        //     name: SkyObject.Juno,
+        //     symbol: "v",
+        //     swisseph_id: swisseph.SE_JUNO
+        // }
     ],
     Aspects: [
         {            
@@ -262,7 +286,7 @@ export const AstralkaConfig = {
             name: "Trine",
             angle: 120,
             kind: AspectKind.Major,
-            delta: 8,
+            delta: 6,
             symbol: '△',
             keywords: [
                 "easy going",
@@ -273,7 +297,7 @@ export const AstralkaConfig = {
             name: "Square",
             angle: 90,            
             kind: AspectKind.Major,
-            delta: 8,
+            delta: 6,
             symbol: '□',
             keywords: [
                 "difficulties",
@@ -284,7 +308,7 @@ export const AstralkaConfig = {
             name: "Sextile",
             angle: 60,            
             kind: AspectKind.Major,
-            delta: 8,
+            delta: 4,
             symbol: '✶',
             keywords: [
                 "possibility",
@@ -295,7 +319,7 @@ export const AstralkaConfig = {
             name: "Quincunx",
             angle: 150,
             kind: AspectKind.Minor,
-            delta: 3,
+            delta: 2,
             symbol: '⊼',
             keywords: [
                 "growth"
@@ -305,7 +329,7 @@ export const AstralkaConfig = {
             name: "Sesquiquadrate",
             angle: 135,
             kind: AspectKind.Minor,
-            delta: 3,
+            delta: 2,
             symbol: '⛋',
             keywords: [
                 "trouble",
@@ -313,10 +337,20 @@ export const AstralkaConfig = {
             ]
         },        
         {
+            name: "Semisquare",
+            angle: 45,
+            kind: AspectKind.Minor,
+            delta: 1,
+            symbol: '∠',
+            keywords: [
+                "tension"
+            ]
+        },        
+        {
             name: "Semisextile",
             angle: 30,
             kind: AspectKind.Minor,
-            delta: 3,
+            delta: 1,
             symbol: '⊻',
             keywords: [
                 "cooperation"
@@ -326,22 +360,23 @@ export const AstralkaConfig = {
             name: "Quintile",
             angle: 72,
             kind: AspectKind.Minor,
-            delta: 3,
+            delta: 0.5,
             symbol: '⬠',
             keywords: [
                 "creativity"
             ]
         },
         {
-            name: "Semisquare",
-            angle: 45,
+            name: "Biquintile",
+            angle: 144,
             kind: AspectKind.Minor,
-            delta: 3,
-            symbol: '∠',
+            delta: 0.5,
+            symbol: 'b',
             keywords: [
-                "tension"
+                "deep creative powers"
             ]
         }
+        
     ]
 }
 export const ZodiacSigns: string[] = [
