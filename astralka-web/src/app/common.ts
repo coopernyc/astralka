@@ -101,7 +101,7 @@ export function convert_DD_to_DMS(degrees: number, sign = "°") {
     var frac = Math.abs(degrees - deg);
     var min = (frac * 60) | 0;
     var sec = Math.round(frac * 3600 - min * 60);
-    return pad2(deg) + '°' + sign + pad2(min) + "'" + pad2(sec) + "\"";
+    return pad2(deg) + sign + pad2(min) + "'" + pad2(sec) + "\"";
 }
 export function pos_in_zodiac_sign(longitude: number): number {
     return longitude % 30;
@@ -137,7 +137,7 @@ export function aspect_color(angle: number): any {
     let options = {};
     switch (angle) {
         case 0:
-            options = { stroke_color: "#bb6600" };
+            options = { stroke_color: "#804f14" };
             break;
         case 180:
             options = { stroke_color: "#bb0000", stroke_dasharray: "5,3" };

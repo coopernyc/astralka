@@ -85,11 +85,11 @@ import { StatsAspect } from './stats-aspect';
           xmlns:xlink="http://www.w3.org/1999/xlink" 
           version="1.1"
           [attr.width]="width"
-          [attr.height]="300"
-          [attr.viewBox]="'0 0 ' + width + ' 300'"        
+          [attr.height]="320"
+          [attr.viewBox]="'0 0 ' + width + ' 320'"        
           >
           <g>
-            <rect x="0" y="0" [attr.width]="width" [attr.height]="300" fill="none" stroke="#0004"></rect> 
+            <rect x="0" y="0" [attr.width]="width" [attr.height]="320" fill="none" stroke="#0004"></rect> 
             <g svgg-text *ngIf="has_name" [x]="12" [y]="12" [text]="formatted_header"></g>
             <g svgg-stat-line *ngFor="let s of stat_lines" [x]="s.x" [y]="s.y" [stats]="s.stats"></g>
           </g>
