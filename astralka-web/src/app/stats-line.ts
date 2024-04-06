@@ -39,6 +39,6 @@ export class StatsLine {
         const prompt: string = this.stats?.label === "House" 
             ? `In maximum 30 words interpret ${this.stats?.name} in ${this.stats?.position.sign}`
             : `In maximum 30 words interpret ${this.stats?.speed < 0 ? 'retrograde ':''}${this.stats?.name} in ${this.stats?.position.sign} sign in ${this.stats?.house}`;
-        this.rest.do_explain({prompt});
+        this.rest.do_explain({ prompt, params: this.stats});
     }
 }

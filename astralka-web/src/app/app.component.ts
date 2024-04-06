@@ -102,7 +102,7 @@ import { RestService } from './services/rest.service';
           >
           <g>
             <rect x="0" y="0" [attr.width]="width" [attr.height]="320" fill="none" stroke="#0004"></rect>             
-            <g svgg-stat-aspect [x]="10" [y]="10" [stats]="aspects"></g>
+            <g svgg-stat-aspect [x]="10" [y]="10" [data]="data"></g>
           </g>
       </svg>
     </div>
@@ -222,6 +222,7 @@ export class AppComponent {
     this._lines = [];
     this._houses = [];
     this._aspects = [];
+    this.data = {};
 
     this._explanation = "";
 
