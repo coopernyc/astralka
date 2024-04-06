@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { ChartSymbol } from './chart-symbol';
 import _ from "lodash";
-import { COLLISION_RADIUS, SYMBOL_ASPECT, SYMBOL_HOUSE, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
+import { COLLISION_RADIUS, SYMBOL_HOUSE, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
 import { CommonModule } from '@angular/common';
 import { ChartCircle } from './chart-circle';
 import { ChartLine } from './chart-line';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { BreakpointObserver, LayoutModule, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver, LayoutModule } from '@angular/cdk/layout';
 import { ChartText } from './chart-text';
 import { StatsLine } from './stats-line';
 import { StatsAspect } from './stats-aspect';
+import { RestService } from './services/rest.service';
 
 @Component({
   selector: 'astralka-root',
@@ -23,7 +23,6 @@ import { StatsAspect } from './stats-aspect';
     StatsLine,
     StatsAspect,
     CommonModule, 
-    HttpClientModule, 
     FormsModule, 
     LayoutModule
   ],
@@ -111,9 +110,9 @@ import { StatsAspect } from './stats-aspect';
       <div>Interpretation for {{data?.query.name}}</div>
       <pre>{{explain}}</pre>
     </div> -->
-    <div style="margin: 2px;">      
+    <!-- <div style="margin: 2px;">      
       <button (click)="interpret()" [disabled]="!has_name">Interpret</button>
-    </div>    
+    </div>     -->
   `,
   styleUrls: ['./app.component.scss'],
 })
@@ -149,7 +148,7 @@ export class AppComponent {
 
   public hsy = _.first(this.house_system)?.value;
 
-  constructor(private http: HttpClient, private responsive: BreakpointObserver ) {
+  constructor(private responsive: BreakpointObserver, private rest: RestService ) {
     const responsive_matrix = [
       {
         breakpoint: '(min-width: 375px)',        
@@ -224,10 +223,6 @@ export class AppComponent {
     this._houses = [];
     this._aspects = [];
 
-    this.http.get("config.json").subscribe((data:any) => {
-      this.serverUrl = data.server;
-    });
-
     this._explanation = "";
 
     this.cx = Math.trunc(this.width/2);
@@ -259,8 +254,9 @@ export class AppComponent {
     });
   }
 
-  public draw(name: string) {   
-    this.http.get(`${this.serverUrl}/natal?name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
+  public draw(name: string) {  
+    this.rest.natal_data(`name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
+      //this.http.get(`${this.serverUrl}/natal?name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
       
       this.init();
 
@@ -370,7 +366,7 @@ export class AppComponent {
             label: so.name,
             position: pos_in_zodiac(so.position),
             speed: so.speed,
-            house: so.house.name,
+            house: so.house.symbol + ' House',
             dignities: this.format_dignities(so)
           }
         });
@@ -380,11 +376,11 @@ export class AppComponent {
       this.data.Houses.forEach((so: any) => {
         const STAT_MARGIN = 12;
         this._stat_lines.push({
-          x: 320,
+          x: 280,
           y: STAT_MARGIN + cnt * 18,
           stats: {            
             name: 'Cusp' + so.symbol,
-            label: "House",
+            label: "House",            
             position: pos_in_zodiac(so.position)
           }
         });
@@ -530,19 +526,6 @@ export class AppComponent {
     if (name) {
       //const query_string = Object.entries(this.data.query).map(([key, val]) => `${key}=${val}`).join('&');
       this.draw(name);
-    }
-  }
-
-  public async interpret(): Promise<void> {
-    this._explanation = "..... processing .....";
-    const name = _.get(this, "data.query.name", null);
-    if (name) {
-      this.http.get(`${this.serverUrl}/interpretation?name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
-        
-        if (data && data.result) {
-          this._explanation = data.result;
-        }
-      });
     }
   }
 

@@ -3,6 +3,8 @@ import winston from "winston";
 import { natal_chart_data } from "./api";
 import _ from "lodash";
 import cors from "cors";
+import bodyParser from "body-parser";
+import multer from "multer";
 import { call_ai } from "./common";
 import { zodiac_sign } from "./utils";
 
@@ -23,6 +25,8 @@ const app: Express = express();
 const port = process.env.PORT || 3010;
 
 app.use(cors());
+app.use(bodyParser.json()) // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 app.use((req: Request, res: Response, next: NextFunction) => {    
     logger.info(`Received a ${req.method} request for ${req.url}`);
@@ -86,6 +90,19 @@ app.get("/natal", async (req: Request, res: Response, next: NextFunction) => {
     res.json(_.merge(data, nc, {
         query: req.query
     }));
+});
+
+app.post("/explain", async (req: Request, res: Response, next: NextFunction ) => {
+    const prompt = _.get(req.body, "prompt");   
+    console.log(prompt); 
+    let result = "";
+    try {
+        result = await call_ai(prompt);
+    } catch(err: any) {
+        console.log(err?.message);
+    }
+    console.log('result', result);
+    res.json({ result });
 });
 
 app.get("/interpretation", async (req: Request, res: Response, next: NextFunction) => {
