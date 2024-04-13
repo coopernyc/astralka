@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartSymbol } from './chart-symbol';
 import _ from "lodash";
-import { COLLISION_RADIUS, SYMBOL_HOUSE, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
+import moment from "moment-timezone";
+import { COLLISION_RADIUS, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
 import { CommonModule } from '@angular/common';
 import { ChartCircle } from './chart-circle';
 import { ChartLine } from './chart-line';
@@ -34,12 +35,52 @@ import { take } from 'rxjs';
       <button (click)="draw('Maria')">Maria</button>
       <button (click)="draw('Jenna')">Jenna</button>
       <button (click)="draw('Samantha')">Sam</button>
+      <button (click)="show_entry_form = !show_entry_form">Form</button>
       <div style="display: inline-block; margin-left: 8px;">        
         <select [ngModel]="hsy" (ngModelChange)="hsy_change($event)">
           <option *ngFor="let sh of house_systems" [selected]="sh.value === hsy" [value]="sh.value">{{sh.display}}</option>
         </select>
-      </div>      
+      </div>   
+      <button (click)="it_traits()" [disabled]="_.isEmpty(data)">IT traits</button>   
     </div>    
+    
+    <ng-container *ngIf="show_entry_form">
+      <form name="entry" class="entry-form" (submit)="onSubmit($event)">
+        <div class="entry-body">
+          <div class="entry-group">
+            <label>Name</label>
+            <input class="double" type="text" [(ngModel)]="entry.name" name="name">
+          </div>
+          <div class="entry-group">
+            <label>Lattitude</label>
+            <input class="double" type="number" [(ngModel)]="entry.latitude" min="-90" max="90" name="latitude">
+          </div>
+          <div class="entry-group">
+            <label>Longitude</label>
+            <input class="double" type="number" [(ngModel)]="entry.longitude" min="-180" max="180" name="longitude">
+          </div>
+          <div class="entry-group">
+            <label>Elevation</label>
+            <input class="single" type="number" [(ngModel)]="entry.elevation" min="0" max="10000" name="elevation">
+          </div>
+          <div class="entry-group">
+            <label>Date Time</label>
+            <input type="datetime-local" [(ngModel)]="entry.dob" name="dob">
+          </div>
+          <div class="entry-group">
+            <label>Time Zone</label>
+            <input class="single" type="number" [(ngModel)]="entry.timezone" min="-12" max="12" name="timezone">
+          </div>
+        </div>
+        
+        <div class="entry-footer">
+          <button type="submit" name="btn-submit">Draw Chart</button>  
+          <button type="button" name="btn-submit">Clear</button>
+          <button type="button" name="btn-submit" (click)="onSave()">Save</button>
+        </div> 
+      </form>
+    </ng-container>
+
     <div id="container">
       <svg xmlns="http://www.w3.org/2000/svg" 
         xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -106,14 +147,7 @@ import { take } from 'rxjs';
             <g svgg-stat-aspect [x]="10" [y]="10" [data]="data"></g>
           </g>
       </svg>
-    </div>
-    <!-- <div id="details" *ngIf="has_name && explain">
-      <div>Interpretation for {{data?.query.name}}</div>
-      <pre>{{explain}}</pre>
-    </div> -->
-    <!-- <div style="margin: 2px;">      
-      <button (click)="interpret()" [disabled]="!has_name">Interpret</button>
-    </div>     -->
+    </div>    
   `,
   styleUrls: ['./app.component.scss'],
 })
@@ -122,12 +156,21 @@ export class AppComponent implements OnInit {
   public width: number = 600;
   public height: number = 600;
   public margin: number = 50;
-
+  public show_entry_form: boolean = false;
   public cx: number = 0;
   public cy: number = 0;
   public outer_radius: number = 0;
   public inner_radius: number = 0;
   public house_radius: number = 0;
+
+  public entry = {
+    name: '',
+    latitude: 0,
+    longitude: 0,
+    dob: null,
+    timezone: 0,
+    elevation: 0
+  }
   
   title = 'astralka-web';
 
@@ -180,9 +223,6 @@ export class AppComponent implements OnInit {
       }
       this.init();
     });
-
-    
-
   }
 
   ngOnInit(): void {
@@ -200,11 +240,15 @@ export class AppComponent implements OnInit {
     });    
   }
 
+  public onSubmit(data: any) {
+    
+    console.log(this.entry);
+    this.draw(this.entry)
+  }
+
   public get house_systems(): any[] {
     return this._house_systems;
   }
-
-  
 
   public format_position(p: number): string {
     return format_pos_in_zodiac(p);
@@ -277,13 +321,22 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public draw(name: string) {  
-    this.rest.natal_data(`name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
+  public draw(name: string | object) {
+    let params: string;
+    if (_.isString(name)) {
+      params = `name=${name}&hsys=${this.hsy}`;
+    } else {
+      const entry: any = name;
+      const dob = moment(entry.dob).subtract(entry.timezone, 'hours');
+      console.log(dob.format('MM/DD/YYYY hh:mm:ss'));
+      params = `name=${entry.name}&y=${dob.year()}&m=${dob.month() + 1}&d=${dob.date()}&h=${dob.hours()}&min=${dob.minutes()}&s=${dob.seconds()}&elv=${entry.elevation}&long=${entry.longitude}&lat=${entry.latitude}&hsys=${this.hsy}`
+    } 
+    this.rest.natal_data(params).subscribe((data: any) => {
       
       this.init();
 
       this.data = _.clone(data);
-      console.log(data);
+      //console.log(data);
 
       for (let i = 0; i < 12; i++) {
         // assemble houses
@@ -554,4 +607,31 @@ export class AppComponent implements OnInit {
   public get has_name(): boolean {
     return !!_.get(this, "data.query.name", null);
   }
+
+  public it_traits(): void {   
+    const planets: string[] = _.reduce(this.stat_lines, (acc: string[], line: any) => {
+      if (_.startsWith(line.stats.name, 'Cusp')) {
+        return acc;
+      }
+      const stats = line.stats;
+      acc.push(`${stats.label} in ${stats.position.sign}/${stats.house}`);
+      return acc;
+    }, []);
+    console.log(planets.join(', '));
+
+    //const prompt = `Write summary about what are programmer's traits, prefered programming language and favorable IT sphere based on the following information:  ${planets.join(', ')}.`;
+    const prompt = `Write summary about what is the preferred careers and list specific professions based on the following information:  ${planets.join(', ')}.`;
+
+    this.rest.explain({prompt}).subscribe((data: any) => {
+      console.log(data);
+    });
+  }
+
+  public async onSave(): Promise<void> {
+    const result = this.rest.save(this.entry).subscribe();
+  }
+
+  public _ = _;
 }
+
+

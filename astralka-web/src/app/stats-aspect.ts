@@ -173,7 +173,7 @@ export class StatsAspect implements OnChanges {
                 _.isUndefined(this.selected.aspect.parties[0].speed) || this.selected.aspect.parties[0].speed > 0 ? '' : 'retrograde '
             ];
             const prompt = { prompt: `Write in maximum 30 words interpretation of ${r0}${this.selected.aspect.parties[0].name} is in ${this.selected.aspect.aspect.name} with ${r1}${this.selected.aspect.parties[1].name} in?`};
-            this._response = "... in progress ...";
+            this._response = "... processing ...";
             this.explain(prompt);
         }
     }

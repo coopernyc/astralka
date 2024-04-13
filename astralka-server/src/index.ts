@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import multer from "multer";
 import { call_ai } from "./common";
 import { HouseSystem } from "./constants";
+import { MongoClient } from "mongodb";
 
 const logger = winston.createLogger({
     level: "info",
@@ -46,15 +47,15 @@ app.get("/hsys", async (req: Request, res: Response, next: NextFunction) => {
     next();
 });
 app.get("/natal", async (req: Request, res: Response, next: NextFunction) => {
-    let year: number = _.get(req.query, "y", 1970) as number;
-    let month: number = _.get(req.query, "m", 4) as number;
-    let day: number = _.get(req.query, "d", 1) as number;
-    let hour: number = _.get(req.query, "h", 7) as number;
-    let minutes: number = _.get(req.query, "m", 20) as number;
-    let seconds: number = _.get(req.query, "s", 0) as number;
-    let longitude: number = _.get(req.query, "long", 0) as number;
-    let latitude : number = _.get(req.query, "lat", 0) as number;
-    let elevation: number = _.get(req.query, "elv", 0) as number;
+    let year: number = _.toNumber(_.get(req.query, "y", 1970));
+    let month: number = _.toNumber(_.get(req.query, "m", 4));
+    let day: number = _.toNumber(_.get(req.query, "d", 1));
+    let hour: number = _.toNumber(_.get(req.query, "h", 7));
+    let minutes: number = _.toNumber(_.get(req.query, "min", 20));
+    let seconds: number = _.toNumber(_.get(req.query, "s", 0));
+    let longitude: number = _.toNumber(_.get(req.query, "long", 0));
+    let latitude : number = _.toNumber(_.get(req.query, "lat", 0));
+    let elevation: number = _.toNumber(_.get(req.query, "elv", 0));
     let hsys: string = _.get(req.query, "hsys", "P") as string;
     
     let name: string = _.get(req.query, "name", "") as string;    
@@ -98,7 +99,55 @@ app.post("/explain", async (req: Request, res: Response, next: NextFunction ) =>
     res.json({ result });
 });
 
+app.post("/save", async (req: Request, res: Response, next: NextFunction) => {
+    const entry = req.body; 
+    console.log(entry);
+    
+    const uri: string = process.env.MONGO_URI!;
+    const client = new MongoClient(uri);
+    async function run() {
+        try {
+            const database = client.db("astralka");
+            const people = database.collection("people");
+            await people.updateOne({
+                name: entry.name
+            },
+            {
+                $set: {
+                    ...entry
+                }
+            },
+            {
+                upsert: true
+            });
+        } finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
 
 app.listen(port, () => {
     console.log(`[server]: Astralka Server is listening on http://localhost:${port}`);
 });
+
+async function run() {
+    const uri: string = process.env.MONGO_URI!;
+    if (uri) {
+        const client = new MongoClient(uri);
+
+        try {
+            const database = client.db("astralka");
+            const people = database.collection("people");
+            await people.createIndex({
+                "name": 1
+            },
+            {
+                unique: true
+            });            
+        } finally {
+            await client.close();
+        }
+    }
+}
+run().catch(console.dir);

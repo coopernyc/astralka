@@ -46,6 +46,7 @@ export class RestService implements OnDestroy {
     }
 
     public do_explain(load: any): void {
+        this.explain$.next({ result: '... processing ...' });
         const obs = this.http.post(`${this.serverUrl}/explain`, {prompt: load.prompt});
         obs.pipe( 
             switchMap((x: any) => of(x.result)),          
@@ -58,6 +59,17 @@ export class RestService implements OnDestroy {
 
     public explain(prompt: any): Observable<any> {        
         const obs = this.http.post(`${this.serverUrl}/explain`, prompt);
+        return obs ? obs.pipe(
+            map((x: any) => x.result),
+            catchError(err => {
+                console.log(err);
+                return of(null);
+            })
+        ) : of(null);
+    }
+
+    public save(entry: any): Observable<any> {        
+        const obs = this.http.post(`${this.serverUrl}/save`, entry);
         return obs ? obs.pipe(
             map((x: any) => x.result),
             catchError(err => {

@@ -15,3 +15,36 @@ svg {
     font-style: normal;
     font-size: 11px;
 }   
+form { 
+    border: 1px solid #ccc;
+    padding: 1em;
+    &.entry-form {
+        display: flex;
+        flex-direction: column;
+        .entry-body {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            .entry-group {            
+                margin: 4px;
+                label {
+                    font-size: 10px;
+                    display: block;
+                }
+                input {
+                    &.single {
+                        width: 80px;
+                    }
+                    &.double {
+                        width: 120px;
+                    }
+                }
+            }
+        }    
+        .entry-footer {
+            margin: 12px 0 0 4px;
+            flex: 0 22px;
+        }            
+    }    
+}
