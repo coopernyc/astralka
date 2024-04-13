@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ChartSymbol } from './chart-symbol';
 import _ from "lodash";
 import { COLLISION_RADIUS, SYMBOL_HOUSE, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
@@ -11,6 +11,7 @@ import { ChartText } from './chart-text';
 import { StatsLine } from './stats-line';
 import { StatsAspect } from './stats-aspect';
 import { RestService } from './services/rest.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'astralka-root',
@@ -32,10 +33,10 @@ import { RestService } from './services/rest.service';
       <button (click)="draw('Lana')">Lana</button>
       <button (click)="draw('Maria')">Maria</button>
       <button (click)="draw('Jenna')">Jenna</button>
-      <button (click)="draw('Samantha')">Samantha</button>
+      <button (click)="draw('Samantha')">Sam</button>
       <div style="display: inline-block; margin-left: 8px;">        
         <select [ngModel]="hsy" (ngModelChange)="hsy_change($event)">
-          <option *ngFor="let sh of house_system" [selected]="sh.value === hsy" [value]="sh.value">{{sh.display}}</option>
+          <option *ngFor="let sh of house_systems" [selected]="sh.value === hsy" [value]="sh.value">{{sh.display}}</option>
         </select>
       </div>      
     </div>    
@@ -116,7 +117,7 @@ import { RestService } from './services/rest.service';
   `,
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   public width: number = 600;
   public height: number = 600;
@@ -137,18 +138,15 @@ export class AppComponent {
   private _lines: any[] = [];
   private _stat_lines: any[] = [];
   private _aspects: any[] = [];
-  
+  private _house_systems: any[] = [];
+
   private serverUrl: string = "";
+
   public data: any = {};
-
-  public house_system = [
-    { display: "Placidus", value: "P" },
-    { display: "Koch", value: "K" }
-  ];
-
-  public hsy = _.first(this.house_system)?.value;
+  public hsy: string = "P";
 
   constructor(private responsive: BreakpointObserver, private rest: RestService ) {
+
     const responsive_matrix = [
       {
         breakpoint: '(min-width: 375px)',        
@@ -182,7 +180,31 @@ export class AppComponent {
       }
       this.init();
     });
+
+    
+
   }
+
+  ngOnInit(): void {
+    this.rest.ready$.pipe(take(1)).subscribe(() => {
+      this.rest.house_systems().subscribe((data: any[]) => {
+        console.log(data);
+        this._house_systems = data.map(x => {
+          return {
+            display: x.name,
+            value: x.id
+          };
+        });
+        this.hsy = _.find(this.house_systems, x => x.value === "P")?.value;        
+      });
+    });    
+  }
+
+  public get house_systems(): any[] {
+    return this._house_systems;
+  }
+
+  
 
   public format_position(p: number): string {
     return format_pos_in_zodiac(p);
@@ -257,7 +279,6 @@ export class AppComponent {
 
   public draw(name: string) {  
     this.rest.natal_data(`name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
-      //this.http.get(`${this.serverUrl}/natal?name=${name}&hsys=${this.hsy}`).subscribe((data: any) => {
       
       this.init();
 

@@ -1,5 +1,8 @@
 import swisseph from "swisseph";
 
+/**
+ * The list of real and fantastic calculated sky bodies flying over earthman head
+ */
 export const SkyObject = {
     Sun: "Sun",
     Moon: "Moon",
@@ -24,6 +27,9 @@ export const SkyObject = {
     Vesta: "Vesta"
 };
 
+/**
+ * List of Zodiac signs
+ */
 export const ZodiacSign = {
     Aries: "Aries",
     Taurus: "Taurus",
@@ -38,41 +44,73 @@ export const ZodiacSign = {
     Aquarius: "Aquarius",
     Pisces: "Pisces"
 }
-/*
- * <CODE><BLOCKQUOTE>
-	 * (int)'A'&nbsp;&nbsp;equal (cusp 1 is ascendant)<BR>
-	 * (int)'E'&nbsp;&nbsp;equal (cusp 1 is ascendant)<BR>
-	 * (int)'B'&nbsp;&nbsp;Alcabitius
-	 * (int)'C'&nbsp;&nbsp;Campanus<BR>
-	 * (int)'G'&nbsp;&nbsp;36 Gauquelin sectors
-	 * (int)'H'&nbsp;&nbsp;azimuthal or horizontal system<BR>
-	 * (int)'K'&nbsp;&nbsp;Koch<BR>
-	 * (int)'M'&nbsp;&nbsp;Morinus
-	 * (int)'O'&nbsp;&nbsp;Porphyrius<BR>
-	 * (int)'P'&nbsp;&nbsp;Placidus<BR>
-	 * (int)'R'&nbsp;&nbsp;Regiomontanus<BR>
-	 * (int)'T'&nbsp;&nbsp;Polich/Page ('topocentric' system)<BR>
-	 * (int)'U'&nbsp;&nbsp;Krusinski-Pisa-Goelzer
-	 * (int)'V'&nbsp;&nbsp;Vehlow equal (asc. in middle of house 1)<BR>
-	 * (int)'X'&nbsp;&nbsp;axial rotation system/ Meridian houses<BR>
-	 * (int)'W'&nbsp;&nbsp;equal, whole sign
-	 * (int)'X'&nbsp;&nbsp;axial rotation system/ Meridian houses
-	 * (int)'Y'&nbsp;&nbsp;APC houses
-	 * </BLOCKQUOTE></CODE>
-     * */
+
+/**
+ * List of commonly know House Systems
+ * 
+ * 'A' equal (cusp 1 is ascendant)
+ * 'E' equal (cusp 1 is ascendant)
+ * 'B' Alcabitius
+ * 'C' Campanus
+ * 'G' 36 Gauquelin sectors
+ * 'H' azimuthal or horizontal system
+ * 'K' Koch
+ * 'M' Morinus
+ * 'O' Porphyrius
+ * 'P' Placidus
+ * 'R' Regiomontanus
+ * 'T' Polich/Page ('topocentric' system)
+ * 'U' Krusinski-Pisa-Goelzer
+ * 'V' Vehlow equal (asc. in middle of house 1)
+ * 'X' axial rotation system/ Meridian houses
+ * 'W' equal, whole sign
+ * 'X' axial rotation system/ Meridian houses
+ * 'Y' APC houses
+*/
 export const HouseSystem = {
+    Equal: { id: "E", name: "Equal (cusp 1 is asc)" },
     Alcabitius: { id: "B", name: "Alcabitius" },
     Campanus: { id: "C", name: "Campanus" },
-    Placidus: { id: "P", name: "Placidus" },
+    Gauquelin36Sectors: { id: "G", name: "36 Gauquelin sectors" },
+    Azimuthal: { id: "H", name: "Azimuthal" },
     Koch: { id: "K", name: "Koch" },
+    Morinus: { id: "M", name: "Morinus" },
     Parphyrius: { id: "O", name: "Parphyrius" },
-    Krusinski: { id: "U", name: "Krusinski" }
+    Placidus: { id: "P", name: "Placidus" },
+    Regiomontanus: { id: "R", name: "Regiomontanus" },
+    PolichPage: { id: "T", name: "Polich/Page" },
+    KrusinskiPisaGoelzer: { id: "U", name: "Krusinski/Pisa/Goelzer" },
+    VehlowEqual: { id: "V", name: "Vehlow Equal" },
+    Meridian: { id: "X", name: "Meridian" },
+    EqualWholeSign: { id: "W", name: "Equal, whole sign" }
 }
-export const RomanNumbers = ['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ','Ⅶ','Ⅷ','Ⅸ','Ⅹ','Ⅺ','Ⅻ'];
-export const AspectKind = {
-    Major: "Major",
-    Minor: "Monor"
-}
+
+/**
+ * Orderred array of Zodiac signs
+ */
+export const ZodiacSigns: string[] = [
+    ZodiacSign.Aries,
+    ZodiacSign.Taurus,
+    ZodiacSign.Gemini,
+    ZodiacSign.Cancer,
+    ZodiacSign.Leo,
+    ZodiacSign.Virgo,
+    ZodiacSign.Libra,
+    ZodiacSign.Scorpio,
+    ZodiacSign.Sagittarius,
+    ZodiacSign.Capricorn,
+    ZodiacSign.Aquarius,
+    ZodiacSign.Pisces
+];
+
+/**
+ * Order array of Zodiac signs symbols
+ */
+export const ZodiaSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
+
+/**
+ * Hardcoded configuration
+ */
 export const AstralkaConfig = {
     Planets: [
         {
@@ -256,141 +294,62 @@ export const AstralkaConfig = {
         // }
     ],
     Aspects: [
-        {            
+        {
             name: "Conjunction",
             angle: 0,
-            kind: AspectKind.Major,
-            delta: 8,
-            symbol: '☌',
-            keywords: [
-                "intencity",
-                "strengthening",
-                "fusion",
-                "integration",
-                "conjunction"
-            ]            
+            delta: 8            
         },
         {
             name: "Opposition",
             angle: 180,
-            kind: AspectKind.Major,
-            delta: 8,
-            symbol: '☍',
-            keywords: [
-                "opposition",
-                "balance",
-                "cooperation"            
-            ]
+            delta: 8            
         },
         {
             name: "Trine",
             angle: 120,
-            kind: AspectKind.Major,
-            delta: 6,
-            symbol: '△',
-            keywords: [
-                "easy going",
-                "good luck"
-            ]
+            delta: 6            
         },
         {
             name: "Square",
-            angle: 90,            
-            kind: AspectKind.Major,
-            delta: 6,
-            symbol: '□',
-            keywords: [
-                "difficulties",
-                "tension"
-            ]
+            angle: 90,
+            delta: 6            
         },
         {
             name: "Sextile",
-            angle: 60,            
-            kind: AspectKind.Major,
-            delta: 4,
-            symbol: '✶',
-            keywords: [
-                "possibility",
-                "opportunity"
-            ]
+            angle: 60,
+            delta: 4            
         },
         {
             name: "Quincunx",
             angle: 150,
-            kind: AspectKind.Minor,
-            delta: 2,
-            symbol: '⊼',
-            keywords: [
-                "growth"
-            ]
+            delta: 2
         },
         {
             name: "Sesquiquadrate",
             angle: 135,
-            kind: AspectKind.Minor,
-            delta: 2,
-            symbol: '⛋',
-            keywords: [
-                "trouble",
-                "concern"
-            ]
-        },        
+            delta: 2
+        },
         {
             name: "Semisquare",
             angle: 45,
-            kind: AspectKind.Minor,
-            delta: 1,
-            symbol: '∠',
-            keywords: [
-                "tension"
-            ]
-        },        
+            delta: 1
+        },
         {
             name: "Semisextile",
             angle: 30,
-            kind: AspectKind.Minor,
-            delta: 1,
-            symbol: '⊻',
-            keywords: [
-                "cooperation"
-            ]
+            delta: 1
         },
         {
             name: "Quintile",
             angle: 72,
-            kind: AspectKind.Minor,
-            delta: 0.5,
-            symbol: '⬠',
-            keywords: [
-                "creativity"
-            ]
+            delta: 0.5
         },
         {
             name: "Biquintile",
             angle: 144,
-            kind: AspectKind.Minor,
-            delta: 0.5,
-            symbol: 'b',
-            keywords: [
-                "deep creative powers"
-            ]
+            delta: 0.5
         }
-        
+
     ]
 }
-export const ZodiacSigns: string[] = [
-    ZodiacSign.Aries, 
-    ZodiacSign.Taurus, 
-    ZodiacSign.Gemini, 
-    ZodiacSign.Cancer, 
-    ZodiacSign.Leo, 
-    ZodiacSign.Virgo, 
-    ZodiacSign.Libra, 
-    ZodiacSign.Scorpio, 
-    ZodiacSign.Sagittarius, 
-    ZodiacSign.Capricorn, 
-    ZodiacSign.Aquarius, 
-    ZodiacSign.Pisces
-];
-export const ZodiaSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
+

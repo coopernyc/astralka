@@ -1,20 +1,38 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable, Subject, catchError, map, of, switchMap } from "rxjs";
+import { Injectable, OnDestroy } from "@angular/core";
+import { Observable, ReplaySubject, Subject, catchError, map, of, switchMap } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
-export class RestService {
+export class RestService implements OnDestroy {
 
     private serverUrl: string = "";
 
     public explain$: Subject<any> = new Subject<any>();
+    public ready$: ReplaySubject<void> = new ReplaySubject<void>(1);
+
 
     constructor(private http: HttpClient) {
         this.http.get("config.json").subscribe((data:any) => {
             this.serverUrl = data.server;
+            this.ready$.next();
           });
+    }
+
+    ngOnDestroy(): void {
+        this.explain$.complete();
+        this.ready$.complete();
+    }
+
+    public house_systems(): Observable<any> {
+        const obs = this.http.get(`${this.serverUrl}/hsys`);
+        return obs ? obs.pipe(            
+            catchError(err => {
+                console.log(err);
+                return of(null);
+            })
+        ) : of(null);
     }
 
     public natal_data(query: string): Observable<any> {
@@ -26,7 +44,6 @@ export class RestService {
             })
         ) : of(null);
     }
-
 
     public do_explain(load: any): void {
         const obs = this.http.post(`${this.serverUrl}/explain`, {prompt: load.prompt});

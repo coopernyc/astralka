@@ -2,7 +2,7 @@ import swisseph from "swisseph";
 import { IAspect, IAspectDef, IHouse, ISkyObject } from "./interfaces";
 import { AstralkaConfig, HouseSystem, SkyObject } from "./constants";
 import { AspectDef, House, Planet } from "./common";
-import { calculate_house, find_aspect, pad2 } from "./utils";
+import { calculate_house, find_aspect } from "./utils";
 
 export function natal_chart_data(year: number,
     month: number,

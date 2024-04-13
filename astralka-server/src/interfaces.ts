@@ -3,8 +3,6 @@ export interface IChartObject {
     label?: string;
     symbol: string;
     position: number;
-
-    print(): string;
 }
 export interface IDignities {
     domicile: string[];
@@ -20,23 +18,16 @@ export interface IHouse extends IChartObject {
 export interface ISkyObject extends IChartObject {
     swisseph_id?: number;
     speed: number;
-    sign: string;
-    isRetrograde: boolean;
     dignities?: IDignities;    
     house?: IHouse;
 }
 export interface IAspectDef {
     name: string;
     angle: number;
-    kind: string,
-    delta: number,
-    symbol: string,
-    keywords?: string[]
+    delta: number;
 }
 export interface IAspect {
     parties: IChartObject[];
     aspect: IAspectDef;
     angle: number;
-    is_precise: boolean;
-    print(): string;
 }
