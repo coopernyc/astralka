@@ -177,7 +177,7 @@ export class ChartSymbol {
                 shift = [2, 0];
                 break;
             case SYMBOL_ASPECT.Opposition:
-                shift = [-2.5, 6];
+                shift = [-0.8, 4];
                 break;
             case SYMBOL_ASPECT.Trine:
                 shift = [0, -5.5];
@@ -217,7 +217,7 @@ export class ChartSymbol {
         return `translate(${this.x + this.scale * shift[0]} ${this.y + this.scale * shift[1]}) ${rotate}scale(${this.scale}) `;
     }
 
-    @Input() name: string = SYMBOL_ASPECT.Septile;
+    @Input() name: string = SYMBOL_ASPECT.Opposition;
 
     public get need2paths() {
         return _.includes([
@@ -382,13 +382,13 @@ export class ChartSymbol {
                 p.push("m" + x + ", " + y + "c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0z m-1,-2.4l2.97,-2.95l-2.97,2.95z");			
                 break;
             case SYMBOL_ASPECT.Opposition:
-                p.push("m" + x + ", " + y + "c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0z m12,-12c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0z m-5.39,2.02l-8,8l8,-8z");			
+                p.push("m" + x + ", " + y + "c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0zm8,-8c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0zm-5.39,2.02l-4,4l4,-4z");	
                 break;
             case SYMBOL_ASPECT.Trine:
                 p.push("m" + x + ", " + y + "l-5.98,9.33l11.28,0l-5.3,-9.33z");			
                 break;
             case SYMBOL_ASPECT.Square:
-                p.push("m" + x + ", " + y + "m0,5l5,0l0,-10l-10,0l0,10z");			
+                p.push("m" + x + ", " + y + "m0,4l4,0l0,-8l-8,0l0,8z");			
                 break;
             case SYMBOL_ASPECT.Sextile:
                 p.push("m" + x + ", " + y + "m5,5l-10,-10m0,10l10,-10m-10,5l10,0z");			
