@@ -197,10 +197,10 @@ export function aspect_color(angle: number): any {
 
         case 102.8:            
         case 51.4:
-            options = { stroke_color: "#eebb00"};
+            options = { stroke_color: "#dcad00"};
             break;
         case 154.2:            
-            options = { stroke_color: "#eebb00", stroke_dasharray: "1,1"};
+            options = { stroke_color: "#dcad00", stroke_dasharray: "1,1"};
             break;
     }
     return options;    
