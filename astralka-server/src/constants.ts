@@ -103,6 +103,31 @@ export const ZodiacSigns: string[] = [
     ZodiacSign.Pisces
 ];
 
+export const AspectName = {
+    Conjunction: "Conjunction",
+    Opposition: "Opposition",
+    Trine: "Trine",
+    Square: "Square",
+    Sextile: "Sextile",
+    Quincunx: "Quincunx",
+    Sesquisquare: "Sesquisquare",
+    Semisquare: "Semisquare",
+    Semisextile: "Semisextile",
+    Quintile: "Quintile",
+    Biquintile: "Biquintile",
+    Nonile: "Nonile",
+    Septile: "Septile",
+
+    /* those are rare */
+    Septagon: "Septagon",
+    Binonile: "Binonile",
+    Seminonile: "Seminonile",
+    Sesquiquintile: "Sesquiquintile",
+    Semiquintile: "Semiquintile",    
+    Biseptile: "Biseptile",
+    Triseptile: "Triseptile"   
+}
+
 /**
  * Order array of Zodiac signs symbols
  */
@@ -129,7 +154,7 @@ export const AstralkaConfig = {
         {
             name: SkyObject.Moon,
             symbol: "☽",
-            swisseph_id: swisseph.SE_MOON,
+            swisseph_id: swisseph.SE_MOON,            
             dignities: {
                 domicile: [ZodiacSign.Cancer],
                 exaltation: [ZodiacSign.Taurus],
@@ -142,7 +167,7 @@ export const AstralkaConfig = {
         {
             name: SkyObject.Mercury,
             symbol: "☿",
-            swisseph_id: swisseph.SE_MERCURY,
+            swisseph_id: swisseph.SE_MERCURY,            
             dignities: {
                 domicile: [ZodiacSign.Gemini, ZodiacSign.Virgo],
                 exaltation: [ZodiacSign.Virgo],
@@ -155,7 +180,7 @@ export const AstralkaConfig = {
         {
             name: SkyObject.Venus,
             symbol: "♀",
-            swisseph_id: swisseph.SE_VENUS,
+            swisseph_id: swisseph.SE_VENUS,            
             dignities: {
                 domicile: [ZodiacSign.Taurus, ZodiacSign.Libra],
                 exaltation: [ZodiacSign.Pisces],
@@ -168,7 +193,7 @@ export const AstralkaConfig = {
         {
             name: SkyObject.Mars,
             symbol: "♂",
-            swisseph_id: swisseph.SE_MARS,
+            swisseph_id: swisseph.SE_MARS,        
             dignities: {
                 domicile: [ZodiacSign.Aries, ZodiacSign.Scorpio],
                 exaltation: [ZodiacSign.Capricorn],
@@ -265,91 +290,158 @@ export const AstralkaConfig = {
         // {
         //     name: SkyObject.TrueBalckMoon,
         //     symbol: "☪︎",
-        //     swisseph_id: swisseph.SE_OSCU_APOG
+        //     swisseph_id: swisseph.SE_OSCU_APOG,
+            // orb: 5
+        
         // },
         {
             name: SkyObject.Chiron,
             symbol: "k",
-            swisseph_id: swisseph.SE_CHIRON
+            swisseph_id: swisseph.SE_CHIRON          
         },
         // {
         //     name: SkyObject.Vesta,
         //     symbol: "v",
-        //     swisseph_id: swisseph.SE_VESTA
+        //     swisseph_id: swisseph.SE_VESTA,
         // },
         // {
         //     name: SkyObject.Ceres,
         //     symbol: "v",
-        //     swisseph_id: swisseph.SE_CERES
+        //     swisseph_id: swisseph.SE_CERES,
         // },
         // {
         //     name: SkyObject.Pallas,
         //     symbol: "v",
-        //     swisseph_id: swisseph.SE_PALLAS
+        //     swisseph_id: swisseph.SE_PALLAS,
         // },
         // {
         //     name: SkyObject.Juno,
         //     symbol: "v",
-        //     swisseph_id: swisseph.SE_JUNO
+        //     swisseph_id: swisseph.SE_JUNO,
         // }
     ],
     Aspects: [
         {
-            name: "Conjunction",
+            name: AspectName.Conjunction,
             angle: 0,
-            delta: 8            
+            delta: 8,
+            orbs: [7, 5, 6]           
         },
         {
-            name: "Opposition",
+            name: AspectName.Opposition,
             angle: 180,
-            delta: 8            
+            delta: 8,
+            orbs: [7, 5, 6]
         },
         {
-            name: "Trine",
+            name: AspectName.Trine,
             angle: 120,
-            delta: 6            
+            delta: 6,
+            orbs: [7, 5, 6]     
         },
         {
-            name: "Square",
+            name: AspectName.Square,
             angle: 90,
-            delta: 6            
+            delta: 6,
+            orbs: [6, 4, 5]            
         },
         {
-            name: "Sextile",
+            name: AspectName.Sextile,
             angle: 60,
-            delta: 4            
+            delta: 4,
+            orbs: [7, 5, 6]          
         },
         {
-            name: "Quincunx",
+            name: AspectName.Quincunx,
             angle: 150,
-            delta: 2
+            delta: 2,
+            orbs: [3.5, 2, 3]
         },
         {
-            name: "Sesquiquadrate",
+            name: AspectName.Sesquisquare,
             angle: 135,
-            delta: 2
+            delta: 2,
+            orbs: [3.5, 2, 3]
         },
         {
-            name: "Semisquare",
+            name: AspectName.Semisquare,
             angle: 45,
-            delta: 1
+            delta: 1,
+            orbs: [1.5, 0.7, 1]
         },
         {
-            name: "Semisextile",
+            name: AspectName.Semisextile,
             angle: 30,
-            delta: 1
+            delta: 1,
+            orbs: [1.5, 0.7, 1]
         },
         {
-            name: "Quintile",
+            name: AspectName.Quintile,
             angle: 72,
-            delta: 0.5
+            delta: 0.5,
+            orbs: [3, 2, 2]
         },
         {
-            name: "Biquintile",
+            name: AspectName.Biquintile,
             angle: 144,
-            delta: 0.5
-        }
+            delta: 0.5,
+            orbs: [1.5, 1, 1]
+        },
+        {
+            name: AspectName.Nonile,
+            angle: 40,
+            delta: 0.5,
+            orbs: [3, 2, 2]
+        },    
+        {
+            name: AspectName.Septile,
+            angle: 51.4,
+            delta: 0.5,
+            orbs: [3, 2, 2]
+        },
 
+        // {
+        //     name: AspectName.Binonile,
+        //     angle: 80,
+        //     delta: 0.5,
+        //     orbs: [1.5, 1, 1]
+        // },
+        // {
+        //     name: AspectName.Seminonile,
+        //     angle: 20,
+        //     delta: 0.5,
+        //     orbs: [1, 0.5, 0.5]
+        // },
+        // {
+        //     name: AspectName.Septagon,
+        //     angle: 100,
+        //     delta: 0.5,
+        //     orbs: [2, 1.5, 1.5]
+        // },
+        // {
+        //     name: AspectName.Sesquiquintile,
+        //     angle: 108,
+        //     delta: 0.5,
+        //     orbs: [2, 1.5, 1.5]
+        // },
+        // {
+        //     name: AspectName.Semiquintile,
+        //     angle: 36,
+        //     delta: 0.5,
+        //     orbs: [1, 0.5, 0.5]
+        // },        
+        // {
+        //     name: AspectName.Biseptile,
+        //     angle: 102.8,
+        //     delta: 0.5,
+        //     orbs: [0.25, 0.1, 0.1]
+        // },
+        // {
+        //     name: AspectName.Triseptile,
+        //     angle: 154.2,
+        //     delta: 0.5,
+        //     orbs: [0.25, 0.1, 0.1]
+        // }        
     ]
 }
 

@@ -71,12 +71,23 @@ export const SYMBOL_ASPECT = {
     Trine: "Trine",
     Square: "Square",
     Sextile: "Sextile",
-    Semisextile: "Semisextile",
     Quincunx: "Quincunx",
-    Semisquare: "Semisquare",
-    Sesquiquadrate: "Sesquiquadrate",
+    Sesquisquare: "Sesquisquare",
+    Semisquare: "Semisquare",    
+    Semisextile: "Semisextile",
     Quintile: "Quintile",
-    Biquintile: "Biquintile"
+    Biquintile: "Biquintile",
+
+    // need symbols
+    Nonile: "Nonile",
+    Septagon: "Septagon",
+    Binonile: "Binonile",
+    Seminonile: "Seminonile",
+    Sesquiquintile: "Sesquiquintile",
+    Semiquintile: "Semiquintile",
+    Septile: "Septile",
+    Biseptile: "Biseptile",
+    Triseptile: "Triseptile"
 }
 export const ZodiacSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
 export const ZodiacSigns: string[] = [
@@ -96,12 +107,18 @@ export const ZodiacSigns: string[] = [
 export function pad2(n: number | string): string {
     return _.padStart(n + '', 2);
 }
-export function convert_DD_to_DMS(degrees: number, sign = "°") {
+export function convert_DD_to_DMS(degrees: number, sign = "°"): string {
     var deg = degrees | 0;
     var frac = Math.abs(degrees - deg);
     var min = (frac * 60) | 0;
     var sec = Math.round(frac * 3600 - min * 60);
     return pad2(deg) + sign + pad2(min) + "'" + pad2(sec) + "\"";
+}
+export function convert_DD_to_D(degrees: number, sign = "°"): string {
+    var deg = degrees | 0;
+    var frac = Math.abs(degrees - deg);
+    var dec = (frac * 10)|0;
+    return `${deg}${dec!==0?'.'+dec:''}${sign}`;    
 }
 export function pos_in_zodiac_sign(longitude: number): number {
     return longitude % 30;
@@ -139,26 +156,54 @@ export function aspect_color(angle: number): any {
         case 0:
             options = { stroke_color: "#804f14" };
             break;
+
         case 180:
-            options = { stroke_color: "#bb0000", stroke_dasharray: "5,3" };
-            break;
-        case 90: 
+        case 90:
             options = { stroke_color: "#bb0000" };
-            break;
-        case 120: 
-            options = { stroke_color: "#009900" };
-            break;
-        case 60: 
-            options = { stroke_color: "#009900", stroke_dasharray: "1,1" };
-            break;
-        case 150:
-        case 30: 
-            options = { stroke_color: "#ff00dd", stroke_dasharray: "1,1" };
             break;
         case 45:
         case 135: 
-            options = { stroke_color: "#8888ff", stroke_dasharray: "1,1" };
+            options = { stroke_color: "#bb0000", stroke_dasharray: "1,2" };
             break;
-        }
+            
+        case 120: 
+        case 60:
+            options = { stroke_color: "#009900" };
+            break;
+        case 150:
+        case 30: 
+            options = { stroke_color: "#009900", stroke_dasharray: "1,2" };
+            break;
+
+
+        case 144: 
+        case 72: 
+            options = { stroke_color: "#000099" };
+            break;
+        case 36:     
+        case 108:
+            options = { stroke_color: "#000099", stroke_dasharray: "1,2" };
+            break;  
+
+        case 80: 
+        case 40: 
+            options = { stroke_color: "#cc0099" };
+            break;
+        case 100:     
+        case 20:
+            options = { stroke_color: "#cc0099", stroke_dasharray: "1,2" };
+            break;  
+
+
+        case 102.8:            
+        case 51.4:
+            options = { stroke_color: "#eebb00"};
+            break;
+        case 154.2:            
+            options = { stroke_color: "#eebb00", stroke_dasharray: "1,1"};
+            break;
+    }
     return options;    
 }
+
+//stroke_dasharray: "5,3"

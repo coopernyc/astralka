@@ -54,6 +54,7 @@ export class AspectDef implements IAspectDef {
     public symbol: string;
     public angle: number;
     public delta: number;
+    public orbs: number[];
     public keywords?: string[];
     constructor(name: string) {
         const conf: any = _.find(_.get(AstralkaConfig, "Aspects", []), (x: any) => x.name === name);
@@ -61,12 +62,13 @@ export class AspectDef implements IAspectDef {
         this.symbol = conf.symbol;
         this.angle = conf.angle;
         this.delta = conf.delta;
+        this.orbs = conf.orbs;
         this.keywords = conf?.keywords;
     }
 }
 export class Aspect implements IAspect {
     public parties: [IChartObject, IChartObject];
-    public angle: number;
+    public angle: number;    
     public aspect: IAspectDef
     constructor(parties: [IChartObject, IChartObject], angle: number, aspect: IAspectDef) {
         this.parties = parties;

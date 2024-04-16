@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, SimpleChanges } from "@angular/core";
 import { ChartSymbol } from "./chart-symbol";
 import { ChartText } from "./chart-text";
-import { SYMBOL_CUSP, SYMBOL_PLANET, aspect_color, convert_DD_to_DMS } from "./common";
+import { SYMBOL_CUSP, SYMBOL_PLANET, aspect_color, convert_DD_to_D, convert_DD_to_DMS } from "./common";
 import _ from "lodash";
 import { RestService } from "./services/rest.service";
 import { StatsLine } from "./stats-line";
@@ -13,7 +13,7 @@ import { StatsLine } from "./stats-line";
     imports: [CommonModule, ChartSymbol, ChartText, StatsLine],
     template: `
         <svg:g>
-            <g *ngIf="selected" transform="translate(160, 26)">
+            <g *ngIf="selected" transform="translate(10, 400)">
                 <!--<rect x="0" y="0" width="40" height="40" stroke="#cccccc" fill="#ffffff"></rect>-->
                 <g svgg-symbol [x]="0" [y]="0" [name]="selected.aspect.parties[0].name" [options]="{scale: 0.7}"></g>
                 <g svgg-symbol [x]="13" [y]="0" [name]="selected.name" [options]="options(selected)"></g>
@@ -26,7 +26,7 @@ import { StatsLine } from "./stats-line";
                     ></g>
                 
             </g>
-            <g *ngIf="has_response" transform="translate(240, 110)">
+            <g *ngIf="has_response" transform="translate(10, 500)">
                 <g svgg-stat-line [x]="0" [y]="0" [stats]="stats"></g>
                 <g *ngFor="let line of formatted_response2; let i = index;" svgg-text 
                     [x]="-5.5" [y]="18 + i * (18)" 
@@ -36,7 +36,14 @@ import { StatsLine } from "./stats-line";
                 
             </g>
             <g *ngFor="let m of matrix" transform="translate(4, 4)">
-                <rect *ngIf="m.type == 1" [attr.x]="m.x - 9" [attr.y]="m.y - 9" width="18" height="18"                     
+                <rect *ngIf="m.type == 1" [attr.x]="m.x - step/2" [attr.y]="m.y - step/2" [attr.width]="step" [attr.height]="step"                     
+                    (click)="show_aspect_details(m)"
+                    cursor="pointer"   
+                    class="rect"   
+                    [class.selected]="selected === m"              
+                >
+                </rect>
+                <rect *ngIf="m.type == 1" [attr.y]="m.x - step/2" [attr.x]="m.y - step/2" [attr.width]="step" [attr.height]="step"                     
                     (click)="show_aspect_details(m)"
                     cursor="pointer"   
                     class="rect"   
@@ -44,6 +51,7 @@ import { StatsLine } from "./stats-line";
                 >
                 </rect>
                 <g pointer-events="none" svgg-symbol [x]="m.x" [y]="m.y" [name]="m.name" [options]="options(m)"></g>
+                <g pointer-events="none" class="angle" svgg-text [y]="m.x" [x]="m.y" [text]="m.aspect ? convert_DD_ro_D(m.aspect.angle) : ''" ></g>
                 <g *ngIf="m.type===0 && m.retrograde" svgg-text [x]="m.x + 6" [y]="m.y + 3" [text]="'r'" [options]="{stroke_color: '#000'}"></g>                
             </g>
             
@@ -63,6 +71,12 @@ import { StatsLine } from "./stats-line";
             .rect:hover {
                 fill: #e5e7e7;        
             }
+            ::ng-deep .angle {
+                text {
+                    font-size: 7px !important;   
+                    text-anchor: middle;             
+                }
+            }
         `
     ]
 })
@@ -71,11 +85,13 @@ export class StatsAspect implements OnChanges {
     @Input() y: number = 0;    
     @Input() data: any = {};
 
-    private readonly step: number = 18;
+    public readonly step: number = 22;
     public selected: any = null;
     private pool: any[] = [];
     private loaded: boolean = false;
     private _stats: any = {};
+
+    public convert_DD_ro_D = convert_DD_to_D;
 
     constructor(private rest: RestService) {
         this.rest.explain$.subscribe((data: any) => {    
@@ -124,9 +140,11 @@ export class StatsAspect implements OnChanges {
             retrograde: false            
         });
         const planets: any[] = _.values(SYMBOL_PLANET);
+        //const len = planets.length;
         planets.push(SYMBOL_CUSP.Cusp1, SYMBOL_CUSP.Cusp10);        
         for(let i = 1; i < planets.length; i++) {
             let j = 0;
+            //for(j; j < Math.min(i, len); j++) {
             for(j; j < i; j++) {
                 const found: any = _.find(this.aspects, x => {
                     const parties = x.parties.map(z => z.name).sort();
@@ -156,7 +174,7 @@ export class StatsAspect implements OnChanges {
         return this.pool;       
     }
     public options(m: any): any {
-        let options = { scale: 0.7 };
+        let options = { scale: 1 };
         if (m.type === 0) {
             return options;
         }
@@ -223,7 +241,7 @@ export class StatsAspect implements OnChanges {
             const test = _.reduce(chunks, (acc: string[], v: string) => {
                 if (acc.length == 0) {
                     acc.push(v);
-                } else if (acc[i].length + v.length > 60) {
+                } else if (acc[i].length + v.length > 75) {
                     acc.push(v);
                     i++;
                 } else {

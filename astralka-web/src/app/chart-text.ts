@@ -15,6 +15,7 @@ import _ from "lodash";
             [attr.stroke]="stroke_color"
             [attr.stroke-width]="stroke_width"
             [attr.stroke-dasharray]="stroke_dasharray"
+            [attr.font-size]="font_size"
         >
         {{text}}
         </svg:text>

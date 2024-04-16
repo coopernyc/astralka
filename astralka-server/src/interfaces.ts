@@ -25,6 +25,7 @@ export interface IAspectDef {
     name: string;
     angle: number;
     delta: number;
+    orbs: number[];
 }
 export interface IAspect {
     parties: IChartObject[];

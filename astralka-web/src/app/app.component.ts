@@ -101,8 +101,8 @@ import { take } from 'rxjs';
           <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
           <g svgg-symbol *ngFor="let p of houses" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.75, stroke_color: '#336699'}"></g>
           
-          <!--
-          <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
+          
+          <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
           <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
           <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
 
@@ -115,10 +115,20 @@ import { take } from 'rxjs';
           <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
 
           <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
-          <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g>
-          //-->
-          
+          <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
         </g>        
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" 
+          xmlns:xlink="http://www.w3.org/1999/xlink" 
+          version="1.1"
+          [attr.width]="400"
+          [attr.height]="height"
+          [attr.viewBox]="'0 0 ' + '400' + ' ' + height"             
+          >
+          <g>
+            <rect x="0" y="0" [attr.width]="400" [attr.height]="height" fill="none" stroke="#0004"></rect>             
+            <g svgg-stat-aspect [x]="10" [y]="10" [data]="data"></g>
+          </g>
       </svg>
     </div>
     <div id="stats">
@@ -134,19 +144,7 @@ import { take } from 'rxjs';
             <g svgg-text *ngIf="has_name" [x]="12" [y]="12" [text]="formatted_header"></g>
             <g svgg-stat-line *ngFor="let s of stat_lines" [x]="s.x" [y]="s.y" [stats]="s.stats"></g>
           </g>
-      </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" 
-          xmlns:xlink="http://www.w3.org/1999/xlink" 
-          version="1.1"
-          [attr.width]="width"
-          [attr.height]="320"
-          [attr.viewBox]="'0 0 ' + width + ' 320'"        
-          >
-          <g>
-            <rect x="0" y="0" [attr.width]="width" [attr.height]="320" fill="none" stroke="#0004"></rect>             
-            <g svgg-stat-aspect [x]="10" [y]="10" [data]="data"></g>
-          </g>
-      </svg>
+      </svg>      
     </div>    
   `,
   styleUrls: ['./app.component.scss'],
@@ -336,7 +334,7 @@ export class AppComponent implements OnInit {
       this.init();
 
       this.data = _.clone(data);
-      //console.log(data);
+      console.log(data);
 
       for (let i = 0; i < 12; i++) {
         // assemble houses
@@ -352,8 +350,8 @@ export class AppComponent implements OnInit {
               ? { stroke_color: "#090", stroke_width: 1.5 }
               : house.index == 9
                 ? { stroke_color: "#900", stroke_width: 1.5 }
-                : {} 
-            : { stroke_dasharray: "3, 2" }
+                : { stroke_color: "#000", stroke_width: 1}
+            : { stroke_color: "#000", stroke_width: 1}
         }); 
         const b = i == 11 
           ? _.find(data.Houses, (x: any) => x.index == 0 )
@@ -405,8 +403,8 @@ export class AppComponent implements OnInit {
       });
 
       const aspects = this.data.Aspects.filter((x: any) => 
-        _.includes([0, 180, 90, 120, 60, 150, 30, 45, 135], x.aspect.angle) && !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
-      );
+        _.includes([0, 180, 90, 120, 60, 150, 30, 45, 135, 40, 51.4, 72, 144], x.aspect.angle) && !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
+      );      
       _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name').forEach((x: any) => {
         const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
         const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.position);
@@ -461,7 +459,7 @@ export class AppComponent implements OnInit {
         });
         cnt++;
       });
-      this._aspects = this.data.Aspects;  
+      this._aspects = aspects;  
     });
   }
 
@@ -538,7 +536,7 @@ export class AppComponent implements OnInit {
           is_collision = true;
           cp = points[i];
           cp.index = i;
-          console.log(`Resolve conflict: ${cp.name} vs ${point.name}`);
+          //console.log(`Resolve conflict: ${cp.name} vs ${point.name}`);
           break;
         }
     }
