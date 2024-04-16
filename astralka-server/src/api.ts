@@ -37,7 +37,9 @@ export function natal_chart_data(
     let fl: number = swisseph.SEFLG_SPEED | swisseph.SEFLG_TOPOCTR;
     fl = fl | flag;
 
-    const hse: any = swisseph.swe_houses_ex(julian_ut, swisseph.SEFLG_SIDEREAL, latitude, longitude, hsy);
+    const sid = swisseph.swe_sidtime(julian_ut);
+    //const hse: any = swisseph.swe_houses_ex(julian_ut, swisseph.SEFLG_SIDEREAL, latitude, longitude, hsy);
+    const hse: any = swisseph.swe_houses_ex(julian_ut, 0, latitude, longitude, hsy);
     const houses: IHouse[] = [];
     hse.house.forEach((x: number, index: number) => {
         const h = new House({
