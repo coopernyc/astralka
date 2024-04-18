@@ -117,15 +117,19 @@ export const AspectName = {
     Biquintile: "Biquintile",
     Nonile: "Nonile",
     Septile: "Septile",
+    Centile: "Centile",
+    Decile: "Decile", 
+    Tridecile: "Tridecile",
+    Vigintile: "Vigintile",
+    Biseptile: "Biseptile",
+    Triseptile: "Triseptile", 
 
     /* those are rare */
-    Septagon: "Septagon",
+    
     Binonile: "Binonile",
-    Seminonile: "Seminonile",
-    Sesquiquintile: "Sesquiquintile",
-    Semiquintile: "Semiquintile",    
-    Biseptile: "Biseptile",
-    Triseptile: "Triseptile"   
+    Seminonile: "Seminonile"
+           
+      
 }
 
 /**
@@ -271,12 +275,20 @@ export const AstralkaConfig = {
         {
             name: SkyObject.NorthNode,
             symbol: "☊",
-            swisseph_id: swisseph.SE_TRUE_NODE
+            swisseph_id: swisseph.SE_TRUE_NODE,
+            dignities: {
+                exaltation: [ZodiacSign.Gemini],
+                detriment: [ZodiacSign.Sagittarius],                
+            }
         },
         {
             name: SkyObject.SouthNode,
             symbol: "☋",
-            swisseph_id: swisseph.SE_TRUE_NODE
+            swisseph_id: swisseph.SE_TRUE_NODE,
+            dignities: {
+                exaltation: [ZodiacSign.Sagittarius],
+                detriment: [ZodiacSign.Gemini],                
+            }
         },
         {
             name: SkyObject.ParsForuna,
@@ -399,49 +411,60 @@ export const AstralkaConfig = {
             delta: 0.5,
             orbs: [3, 2, 2]
         },
-
-        // {
-        //     name: AspectName.Binonile,
-        //     angle: 80,
-        //     delta: 0.5,
-        //     orbs: [1.5, 1, 1]
-        // },
+        {
+            name: AspectName.Binonile,
+            angle: 80,
+            delta: 0.5,
+            orbs: [1.5, 1, 1]
+        },
         // {
         //     name: AspectName.Seminonile,
         //     angle: 20,
         //     delta: 0.5,
         //     orbs: [1, 0.5, 0.5]
         // },
-        // {
-        //     name: AspectName.Septagon,
-        //     angle: 100,
-        //     delta: 0.5,
-        //     orbs: [2, 1.5, 1.5]
-        // },
-        // {
-        //     name: AspectName.Sesquiquintile,
-        //     angle: 108,
-        //     delta: 0.5,
-        //     orbs: [2, 1.5, 1.5]
-        // },
-        // {
-        //     name: AspectName.Semiquintile,
-        //     angle: 36,
-        //     delta: 0.5,
-        //     orbs: [1, 0.5, 0.5]
-        // },        
-        // {
-        //     name: AspectName.Biseptile,
-        //     angle: 102.8,
-        //     delta: 0.5,
-        //     orbs: [0.25, 0.1, 0.1]
-        // },
-        // {
-        //     name: AspectName.Triseptile,
-        //     angle: 154.2,
-        //     delta: 0.5,
-        //     orbs: [0.25, 0.1, 0.1]
-        // }        
+        {
+            name: AspectName.Centile,
+            angle: 100,
+            delta: 0.5,
+            orbs: [2, 1.5, 1.5]
+        },
+        {
+            name: AspectName.Tridecile,
+            angle: 108,
+            delta: 0.5,
+            orbs: [2, 1.5, 1.5]
+        },
+        {
+            name: AspectName.Decile,
+            angle: 36,
+            delta: 0.5,
+            orbs: [1, 0.5, 0.5]
+        },    
+        {
+            name: AspectName.Decile,
+            angle: 36,
+            delta: 0.5,
+            orbs: [1, 0.5, 0.5]
+        },    
+        {
+            name: AspectName.Biseptile,
+            angle: 102.8,
+            delta: 0.5,
+            orbs: [1, 0.5, 0.5]
+        },
+        {
+            name: AspectName.Triseptile,
+            angle: 154.2,
+            delta: 0.5,
+            orbs: [1, 0.5, 0.5]
+        },
+        {
+            name: AspectName.Vigintile,
+            angle: 18,
+            delta: 0.5,
+            orbs: [1, 0.5, 0.5]
+        }      
     ]
 }
 

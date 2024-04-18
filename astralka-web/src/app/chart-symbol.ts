@@ -177,7 +177,7 @@ export class ChartSymbol {
                 shift = [2, 0];
                 break;
             case SYMBOL_ASPECT.Opposition:
-                shift = [-0.8, 4];
+                shift = [-1.5, 4];
                 break;
             case SYMBOL_ASPECT.Trine:
                 shift = [0, -5.5];
@@ -207,9 +207,30 @@ export class ChartSymbol {
                 shift = [0.5, -6.5];
                 break;
             case SYMBOL_ASPECT.Nonile:
-                shift = [0, 0];
+                shift = [2, 1];
                 break;
             case SYMBOL_ASPECT.Septile:
+                shift = [0, 0];
+                break;
+            case SYMBOL_ASPECT.Binonile:
+                shift = [0, 0];
+                break;
+            case SYMBOL_ASPECT.Decile:
+                shift = [-4, -4];
+                break;
+            case SYMBOL_ASPECT.Centile:
+                shift = [0, 0];
+                break;
+            case SYMBOL_ASPECT.Tridecile:
+                shift = [0, 0];
+                break;
+            case SYMBOL_ASPECT.Biseptile:
+                shift = [0, 0];
+                break;
+            case SYMBOL_ASPECT.Triseptile:
+                shift = [0, 0];
+                break;
+            case SYMBOL_ASPECT.Vigintile:
                 shift = [0, 0];
                 break;
 
@@ -217,7 +238,7 @@ export class ChartSymbol {
         return `translate(${this.x + this.scale * shift[0]} ${this.y + this.scale * shift[1]}) ${rotate}scale(${this.scale}) `;
     }
 
-    @Input() name: string = SYMBOL_ASPECT.Opposition;
+    @Input() name: string = SYMBOL_ASPECT.Nonile;
 
     public get need2paths() {
         return _.includes([
@@ -382,7 +403,7 @@ export class ChartSymbol {
                 p.push("m" + x + ", " + y + "c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0z m-1,-2.4l2.97,-2.95l-2.97,2.95z");			
                 break;
             case SYMBOL_ASPECT.Opposition:
-                p.push("m" + x + ", " + y + "c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0zm8,-8c0.06,-4.38,-6.81,-4.38,-6.75,0c-0.06,4.38,6.81,4.38,6.75,0zm-5.39,2.02l-4,4l4,-4z");	
+                p.push("m" + x + ", " + y + "c0.05,-3.28,-5.11,-3.28,-5.06,0c-0.05,3.28,5.11,3.28,5.06,0zm8,-8c0.05,-3.28,-5.11,-3.28,-5.06,0c-0.05,3.28,5.11,3.28,5.06,0zm-4.54,2.02l-4,4l4,-4z");	
                 break;
             case SYMBOL_ASPECT.Trine:
                 p.push("m" + x + ", " + y + "l-5.98,9.33l11.28,0l-5.3,-9.33z");			
@@ -415,10 +436,31 @@ export class ChartSymbol {
                 p.push("m" + x + ", " + y + "c-0.31,-0.23,-0.73,-0.23,-1.04,0l-2.53,1.84l-2.14,1.55c-0.31,0.23,-0.44,0.62,-0.32,0.99l1.78,5.49c0.12,0.36,0.46,0.61,0.84,0.61h5.77c0.38,0,0.72,-0.25,0.84,-0.61l1.78,-5.49c0.12,-0.36,-0.01,-0.76,-0.32,-0.99l-4.67,-3.39z m5,12l-11,0z");			
                 break;
             case SYMBOL_ASPECT.Nonile:
-                p.push("m" + x + ", " + y + "m-5,-5l10,0l-5,10l-5,-10z m0,10l10,0l-5-10l-5,10z");			                    
+                p.push("m" + x + ", " + y + "m-5,-5l8,0l-5,8l-5,-8z m0,8l8,0l-5-8l-5,8z");			                    
                 break;
             case SYMBOL_ASPECT.Septile:                                    
-                p.push("m" + x + ", " + y + "m2,-3l0,-1l-4,0l0,4l4,0l0,4,l-4,0l0,-1");
+                p.push("m" + x + ", " + y + "m2,-2l0,-1l-4,0l0,3l4,0l0,3,l-4,0l0,-1");
+                break;
+            case SYMBOL_ASPECT.Binonile:                                    
+                p.push("m" + x + ", " + y + "m-4,-4l8,0l0,4l-8,0zm4,0l0,8m-4,0l8,0");
+                break;
+            case SYMBOL_ASPECT.Decile:                                    
+                p.push("m" + x + ", " + y + "m4,0l0,8m-4,0l8,0");
+                break;
+            case SYMBOL_ASPECT.Centile:                                    
+                p.push("m" + x + ", " + y + "m-4,-4l8,8l-8,0l8,-8");
+                break;
+            case SYMBOL_ASPECT.Tridecile:                                    
+                p.push("m" + x + ", " + y + "m-4,0l8,0m-4,-4l0,8m-4,0l4,-4l4,4");
+                break;
+            case SYMBOL_ASPECT.Biseptile:                                    
+                p.push("m" + x + ", " + y + "m2,-2l0,-1l-4,0l0,3l4,0l0,3,l-4,0l0,-1m-1,-7l2,0m2,0l2,0");
+                break;
+            case SYMBOL_ASPECT.Triseptile:                                    
+                p.push("m" + x + ", " + y + "m2,-2l0,-1l-4,0l0,3l4,0l0,3,l-4,0l0,-1m-2,-7l2,0m1,0l2,0m1,0l2,0");
+                break;
+            case SYMBOL_ASPECT.Vigintile:                                    
+                p.push("m" + x + ", " + y + "l-3,0l0,-4l6,0l0,4l-3,0l-4,4m4,-4l4,4");
                 break;
         }
         return p;

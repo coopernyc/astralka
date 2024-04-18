@@ -26,6 +26,7 @@ export class House implements IHouse {
 export class Planet implements ISkyObject {
     public position: number;
     public speed: number;
+    public declination: number;
     public name: string;
     public symbol: string;
     public label: string;
@@ -42,6 +43,7 @@ export class Planet implements ISkyObject {
         this.label = _.get(conf, "label", this.name);
         this.symbol = _.get(conf, "symbol", this.name);
         this.speed = 0;
+        this.declination = 0;
         this.position = 0;
         const dignities = _.get(conf, "dignities", null);
         if (dignities) {

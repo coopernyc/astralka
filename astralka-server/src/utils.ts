@@ -36,7 +36,11 @@ export function find_aspect(a: IChartObject, b: IChartObject, angle: number, def
     }    
     let def: IAspectDef | undefined = undefined;
     if (is_cusp(a.name) || is_cusp(b.name)) {        
-        def = _.find(defs, (x: IAspectDef) => Math.abs(swisseph.swe_difdeg2n(x.angle, angle).degreeDistance180) <= 5);
+        def = _.find(defs, (x: IAspectDef) => {            
+            let delta = is_cusp(a.name) ? x.orbs[orb_index(b.name)] : x.orbs[orb_index(a.name)];
+            delta = delta > 5 ? 5 : delta;
+            return Math.abs(swisseph.swe_difdeg2n(x.angle, angle).degreeDistance180) <= delta;
+        });                
     } else {
         const o_index = Math.max(orb_index(a.name), orb_index(b.name));
         def = _.find(defs, (x: IAspectDef) => Math.abs(swisseph.swe_difdeg2n(x.angle, angle).degreeDistance180) <= x.orbs[o_index]);

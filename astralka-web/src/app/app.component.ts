@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChartSymbol } from './chart-symbol';
 import _ from "lodash";
 import moment from "moment-timezone";
-import { COLLISION_RADIUS, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
+import { COLLISION_RADIUS, SYMBOL_CUSP, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, claculate_arrow, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
 import { CommonModule } from '@angular/common';
 import { ChartCircle } from './chart-circle';
 import { ChartLine } from './chart-line';
@@ -28,8 +28,9 @@ import { take } from 'rxjs';
     FormsModule, 
     LayoutModule
   ],
-  template: `
-    <div style="margin: 2px;">
+  template: `      
+    
+    <div style="margin: 2px; position: fixed; height: 32px; z-index: 1; top: 0">      
       <button (click)="draw('Sasha')">Sasha</button>
       <button (click)="draw('Lana')">Lana</button>
       <button (click)="draw('Maria')">Maria</button>
@@ -81,7 +82,10 @@ import { take } from 'rxjs';
       </form>
     </ng-container>
 
-    <div id="container">
+    <div id="container" style="position: relative; margin-top: 26px;">
+      <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
+        <img src="assets/astralka-logo.svg">
+      </div>
       <svg xmlns="http://www.w3.org/2000/svg" 
         xmlns:xlink="http://www.w3.org/1999/xlink" 
         version="1.1"
@@ -99,7 +103,7 @@ import { take } from 'rxjs';
           <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
           <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
           <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-          <g svgg-symbol *ngFor="let p of houses" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.75, stroke_color: '#336699'}"></g>
+          <g svgg-symbol *ngFor="let p of houses" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.8, stroke_color: '#336699'}"></g>
           
           
           <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
@@ -112,7 +116,7 @@ import { take } from 'rxjs';
 
           <g svgg-symbol [x]="90" [y]="30" [options]="{ scale: 0.5 }"></g>
           <g svgg-line [x1]="80" [y1]="30" [x2]="100" [y2]="30"></g>
-          <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
+          <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g> 
 
           <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
           <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
@@ -121,12 +125,12 @@ import { take } from 'rxjs';
       <svg xmlns="http://www.w3.org/2000/svg" 
           xmlns:xlink="http://www.w3.org/1999/xlink" 
           version="1.1"
-          [attr.width]="400"
+          [attr.width]="width"
           [attr.height]="height"
-          [attr.viewBox]="'0 0 ' + '400' + ' ' + height"             
+          [attr.viewBox]="'0 0 ' + width + ' ' + height"             
           >
           <g>
-            <rect x="0" y="0" [attr.width]="400" [attr.height]="height" fill="none" stroke="#0004"></rect>             
+            <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="none" stroke="#0004"></rect>             
             <g svgg-stat-aspect [x]="10" [y]="10" [data]="data"></g>
           </g>
       </svg>
@@ -145,7 +149,7 @@ import { take } from 'rxjs';
             <g svgg-stat-line *ngFor="let s of stat_lines" [x]="s.x" [y]="s.y" [stats]="s.stats"></g>
           </g>
       </svg>      
-    </div>    
+    </div>        
   `,
   styleUrls: ['./app.component.scss'],
 })
@@ -353,6 +357,29 @@ export class AppComponent implements OnInit {
                 : { stroke_color: "#000", stroke_width: 1}
             : { stroke_color: "#000", stroke_width: 1}
         }); 
+
+        if (_.includes([0, 3, 6, 9], i)) {
+          const p1 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius, a);
+          const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15, a);
+          const options = _.includes([0, 3, 6, 9], house.index) 
+          ? house.index == 0 
+            ? { stroke_color: "#090", stroke_width: 1.5 }
+            : house.index == 9
+              ? { stroke_color: "#900", stroke_width: 1.5 }
+              : { stroke_color: "#000", stroke_width: 1}
+          : { stroke_color: "#000", stroke_width: 1};
+          this._lines.push({
+            p1,
+            p2,
+            options
+          }); 
+          if (i == 0 || i == 9) {
+            this._lines.push(
+              ...claculate_arrow(9, 4, p1, p2, options)
+            );          
+          }
+        }
+
         const b = i == 11 
           ? _.find(data.Houses, (x: any) => x.index == 0 )
           : _.find(data.Houses, (x: any) => x.index == i + 1 );          
@@ -366,8 +393,7 @@ export class AppComponent implements OnInit {
         ); 
         if (_.includes([0, 3, 6, 9], i)) {
           const c = house.position;
-          const delta = (this.inner_radius - this.house_radius) / 3;
-          let p = this.get_point_on_circle(this.cx, this.cy, this.house_radius + delta, c);
+          let p = this.get_point_on_circle(this.cx + 15, this.cy, this.outer_radius + 5, c);
           this._houses.push({
             name: i == 0 
               ? SYMBOL_HOUSE.Ascendant 
@@ -403,9 +429,10 @@ export class AppComponent implements OnInit {
       });
 
       const aspects = this.data.Aspects.filter((x: any) => 
-        _.includes([0, 180, 90, 120, 60, 150, 30, 45, 135, 40, 51.4, 72, 144], x.aspect.angle) && !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
+        _.includes([0, 180, 90, 120, 60, 150, 30, 45, 135, 40, 51.4, 72, 144, 36, 100, 108, 102.8, 154.2, 18], x.aspect.angle) && !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
       );      
-      _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name').forEach((x: any) => {
+      _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name')           
+      .forEach((x: any) => {
         const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
         const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.position);
         this.lines.push({
@@ -474,7 +501,11 @@ export class AppComponent implements OnInit {
       result.push("Det");
     } else if (_.some(_.get(so, "dignities.fall", []), x => x === sign)) {
       result.push("Fall");
-    } 
+    } else if (_.some(_.get(so, "dignities.friend", []), x => x === sign)) {
+      result.push("Fnd");
+    } else if (_.some(_.get(so, "dignities.enemy", []), x => x === sign)) {
+      result.push("Emy");
+    }
     return result.join('.');
   } 
 

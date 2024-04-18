@@ -18,6 +18,7 @@ export interface IHouse extends IChartObject {
 export interface ISkyObject extends IChartObject {
     swisseph_id?: number;
     speed: number;
+    declination: number;
     dignities?: IDignities;    
     house?: IHouse;
 }

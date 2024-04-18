@@ -13,10 +13,9 @@ import { StatsLine } from "./stats-line";
     imports: [CommonModule, ChartSymbol, ChartText, StatsLine],
     template: `
         <svg:g>
-            <g *ngIf="selected" transform="translate(10, 400)">
-                <!--<rect x="0" y="0" width="40" height="40" stroke="#cccccc" fill="#ffffff"></rect>-->
+            <g *ngIf="selected" transform="translate(10, 400)">                
                 <g svgg-symbol [x]="0" [y]="0" [name]="selected.aspect.parties[0].name" [options]="{scale: 0.7}"></g>
-                <g svgg-symbol [x]="13" [y]="0" [name]="selected.name" [options]="options(selected)"></g>
+                <g svgg-symbol [x]="13" [y]="0" [name]="selected.name" [options]="options_for_explain(selected)"></g>
                 <g svgg-symbol [x]="26" [y]="0" [name]="selected.aspect.parties[1].name" [options]="{scale: 0.7}"></g>
                 <g svgg-text [x]="39" [y]="0" [text]="formatted_selected"></g>
                 <g *ngFor="let line of formatted_response; let i = index;" svgg-text 
@@ -35,6 +34,7 @@ import { StatsLine } from "./stats-line";
                     ></g>
                 
             </g>
+            <!-- MATRIX -->
             <g *ngFor="let m of matrix" transform="translate(4, 4)">
                 <rect *ngIf="m.type == 1" [attr.x]="m.x - step/2" [attr.y]="m.y - step/2" [attr.width]="step" [attr.height]="step"                     
                     (click)="show_aspect_details(m)"
@@ -182,13 +182,21 @@ export class StatsAspect implements OnChanges {
         return options;
         
     }
+    public options_for_explain(m: any): any {
+        let options = { scale: 0.7 };
+        if (m.type === 0) {
+            return options;
+        }
+        _.merge(options, aspect_color(m.aspect_angle));
+        return options;
+    }
     public show_aspect_details(m: any): void {
         this.pool = _.flatten(_.partition(this.pool, x => x !== m));
         if (m && m.type === 1 && m.aspect) {  
             this.selected = m;
             const [r0, r1] = [
-                _.isUndefined(this.selected.aspect.parties[0].speed) || this.selected.aspect.parties[0].speed > 0 ? '' : 'retrograde ',
-                _.isUndefined(this.selected.aspect.parties[0].speed) || this.selected.aspect.parties[0].speed > 0 ? '' : 'retrograde '
+                _.isUndefined(this.selected.aspect.parties[0].speed) || this.selected.aspect.parties[0].speed >= 0 ? '' : 'retrograde ',
+                _.isUndefined(this.selected.aspect.parties[0].speed) || this.selected.aspect.parties[0].speed >= 0 ? '' : 'retrograde '
             ];
             const prompt = { prompt: `Write in maximum 30 words interpretation of ${r0}${this.selected.aspect.parties[0].name} is in ${this.selected.aspect.aspect.name} with ${r1}${this.selected.aspect.parties[1].name} in?`};
             this._response = "... processing ...";

@@ -77,17 +77,19 @@ export const SYMBOL_ASPECT = {
     Semisextile: "Semisextile",
     Quintile: "Quintile",
     Biquintile: "Biquintile",
-
-    // need symbols
     Nonile: "Nonile",
-    Septagon: "Septagon",
-    Binonile: "Binonile",
-    Seminonile: "Seminonile",
-    Sesquiquintile: "Sesquiquintile",
-    Semiquintile: "Semiquintile",
+    Decile: "Decile",
     Septile: "Septile",
+    Centile: "Centile",
+    Tridecile: "Tridecile",
     Biseptile: "Biseptile",
-    Triseptile: "Triseptile"
+    Triseptile: "Triseptile",
+    Vigintile: "Vigintile",
+    Binonile: "Binonile",
+
+    // need symbols            
+    Semiquintile: "Semiquintile"
+    
 }
 export const ZodiacSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
 export const ZodiacSigns: string[] = [
@@ -180,7 +182,8 @@ export function aspect_color(angle: number): any {
         case 72: 
             options = { stroke_color: "#000099" };
             break;
-        case 36:     
+        case 36:  
+        case 18:   
         case 108:
             options = { stroke_color: "#000099", stroke_dasharray: "1,2" };
             break;  
@@ -197,13 +200,32 @@ export function aspect_color(angle: number): any {
 
         case 102.8:            
         case 51.4:
-            options = { stroke_color: "#dcad00"};
+            options = { stroke_color: "#a79720"};
             break;
         case 154.2:            
-            options = { stroke_color: "#dcad00", stroke_dasharray: "1,1"};
+            options = { stroke_color: "#a79720", stroke_dasharray: "1,1"};
             break;
     }
     return options;    
 }
 
 //stroke_dasharray: "5,3"
+
+export function claculate_arrow(L: number, W: number, p1: any, p2: any, options: any): any[]  {
+    const [dx, dy] = [p2.x - p1.x, p2.y - p1.y];
+    const Norm = Math.sqrt(dx*dx + dy*dy);
+    const [udx, udy] = [dx/Norm, dy/Norm];
+    const [upx, upy] = [-udy, udx];
+    return [
+        {
+            p1: { x:  p2.x - udx * L + W * upx, y: p2.y - udy * L + W * upy},
+            p2,
+            options,
+        },
+        {
+            p1: { x: p2.x - udx * L - W * upx, y: p2.y - udy * L - W * upy},
+            p2,
+            options
+        }
+    ];    
+}

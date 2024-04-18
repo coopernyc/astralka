@@ -1,4 +1,4 @@
-import swisseph from "swisseph";
+import swisseph, { SEFLG_EQUATORIAL } from "swisseph";
 import { IAspect, IAspectDef, IHouse, ISkyObject } from "./interfaces";
 import { AstralkaConfig, HouseSystem, SkyObject } from "./constants";
 import { AspectDef, House, Planet } from "./common";
@@ -55,9 +55,12 @@ export function natal_chart_data(
         let calc: any;
         if (x.name !== SkyObject.ParsForuna) {
             const id = x.name === SkyObject.SouthNode ? swisseph.SE_TRUE_NODE : x.swisseph_id!;
-            calc = swisseph.swe_calc_ut(julian_ut, id, fl);            
+            calc = swisseph.swe_calc_ut(julian_ut, id, fl);
             x.position = x.name === SkyObject.SouthNode ? swisseph.swe_degnorm(calc.longitude + 180).x360 : calc.longitude;        
             x.speed = calc.longitudeSpeed;
+            //console.log(calc.latitude);
+            calc = swisseph.swe_calc_ut(julian_ut, id, swisseph.SEFLG_EQUATORIAL);                        
+            //x.declination = calc.declination;
         } else {
             const sun = sky_objects.find(x => x.name === SkyObject.Sun)!.position;
             const moon = sky_objects.find(x => x.name === SkyObject.Moon)!.position;
