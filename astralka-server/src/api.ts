@@ -3,6 +3,8 @@ import { IAspect, IAspectDef, IHouse, ISkyObject } from "./interfaces";
 import { AstralkaConfig, HouseSystem, SkyObject } from "./constants";
 import { AspectDef, House, Planet } from "./common";
 import { calculate_house, find_aspect } from "./utils";
+import moment from "moment";
+import _ from "lodash";
 
 export function natal_chart_data(
     year: number,
@@ -16,6 +18,7 @@ export function natal_chart_data(
     elevation: number = 0,
     hsy: string = HouseSystem.Placidus.id,
     flag: number = swisseph.SEFLG_SWIEPH,
+    transit: boolean = false
     )
     : { SkyObjects: ISkyObject[], Houses: IHouse[], Aspects: IAspect[] } {
 
@@ -30,15 +33,13 @@ export function natal_chart_data(
         aspect_defs.push(new AspectDef(aspect.name));
     });
     
-    const julian: any = swisseph.swe_utc_to_jd(year, month, day, hour, minutes, seconds, swisseph.SE_GREG_CAL);
-    const julian_ut: number = julian.julianDayUT;
+    let julian: any = swisseph.swe_utc_to_jd(year, month, day, hour, minutes, seconds, swisseph.SE_GREG_CAL);
+    let julian_ut: number = julian.julianDayUT;
 
     swisseph.swe_set_topo(latitude, longitude, elevation);
     let fl: number = swisseph.SEFLG_SPEED | swisseph.SEFLG_TOPOCTR;
     fl = fl | flag;
-
-    const sid = swisseph.swe_sidtime(julian_ut);
-    //const hse: any = swisseph.swe_houses_ex(julian_ut, swisseph.SEFLG_SIDEREAL, latitude, longitude, hsy);
+        
     const hse: any = swisseph.swe_houses_ex(julian_ut, 0, latitude, longitude, hsy);
     const houses: IHouse[] = [];
     hse.house.forEach((x: number, index: number) => {
@@ -100,9 +101,59 @@ export function natal_chart_data(
             }
         }
     }
-    return {
+
+    const result: any = {
         SkyObjects: sky_objects,
         Houses: houses.sort((a: IHouse, b: IHouse) => a.index - b.index),
-        Aspects: aspects
+        Aspects: aspects        
     }
+
+    if (transit) {
+        const now = moment().utc();
+        julian = swisseph.swe_utc_to_jd(now.year(), now.month() + 1, now.date(), now.hours(), now.minutes(), now.seconds(), swisseph.SE_GREG_CAL);
+        julian_ut = julian.julianDayUT;
+        [latitude, longitude, elevation] = [40.922794, -73.79180, 70];
+        swisseph.swe_set_topo(latitude, longitude, elevation);
+        const hse1: any = swisseph.swe_houses_ex(julian_ut, 0, latitude, longitude, hsy);
+        const houses1: IHouse[] = [];
+        hse1.house.forEach((x: number, index: number) => {
+            const h = new House({
+                index,
+                name: 'Cusp' + (index + 1),
+                symbol: (index + 1)+'',
+                position: x            
+            });
+            houses1.push(h);
+        });    
+
+        result.Transit = {};
+        result.Transit.Houses = houses1;
+
+        const sky_objects1 = _.cloneDeep(sky_objects);
+        sky_objects1.forEach((x: ISkyObject) => {
+            let calc: any;
+            if (x.name !== SkyObject.ParsForuna) {
+                const id = x.name === SkyObject.SouthNode ? swisseph.SE_TRUE_NODE : x.swisseph_id!;
+                calc = swisseph.swe_calc_ut(julian_ut, id, fl);
+                x.position = x.name === SkyObject.SouthNode ? swisseph.swe_degnorm(calc.longitude + 180).x360 : calc.longitude;        
+                x.speed = calc.longitudeSpeed;
+                //console.log(calc.latitude);
+                calc = swisseph.swe_calc_ut(julian_ut, id, swisseph.SEFLG_EQUATORIAL);                        
+                //x.declination = calc.declination;
+            } else {
+                const sun = sky_objects1.find(x => x.name === SkyObject.Sun)!.position;
+                const moon = sky_objects1.find(x => x.name === SkyObject.Moon)!.position;
+                const asc = hse1.ascendant;  
+                const sun_house = calculate_house(sun, houses1); 
+                const is_night = 0 <= sun_house.index && sun_house.index <= 5;                      
+                x.position = is_night 
+                    ? swisseph.swe_degnorm(asc + sun - moon).x360
+                    : swisseph.swe_degnorm(asc + moon - sun).x360;
+                x.speed = 0;
+            }
+            x.house = calculate_house(x.position, houses1);        
+        });
+        result.Transit.SkyObjects = sky_objects1;
+    }
+    return result;
 }

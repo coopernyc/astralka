@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChartSymbol } from './chart-symbol';
 import _ from "lodash";
 import moment from "moment-timezone";
-import { COLLISION_RADIUS, SYMBOL_CUSP, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, claculate_arrow, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, zodiac_sign } from './common';
+import { COLLISION_RADIUS, SYMBOL_ASPECT, SYMBOL_CUSP, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, claculate_arrow, convert_DD_to_D, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, random_point_on_the_line, rotate_point_around_center, zodiac_sign } from './common';
 import { CommonModule } from '@angular/common';
 import { ChartCircle } from './chart-circle';
 import { ChartLine } from './chart-line';
@@ -83,28 +83,37 @@ import { take } from 'rxjs';
     </ng-container>
 
     <div id="container" style="position: relative; margin-top: 26px;">
-      <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
+      <!-- <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
         <img src="assets/astralka-logo.svg">
-      </div>
+      </div> -->
       <svg xmlns="http://www.w3.org/2000/svg" 
         xmlns:xlink="http://www.w3.org/1999/xlink" 
         version="1.1"
         [attr.width]="width"
         [attr.height]="height"
-        [attr.viewBox]="'0 0 ' + width + ' ' + height"        
+        [attr.viewBox]="'0 0 ' + width + ' ' + height"
         >
         <g>
-          <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="none" stroke="#0004"></rect> 
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius"></g>
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
+          <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="#0004"></rect>           
+          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius" [options]="{stroke_width: 2}"></g>
+          <g [attr.transform-origin]="cx + ' ' + cy"  [attr.transform]="'rotate(' + offset_angle + ')'">
+            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#009900" stroke-width="5" pathLength="360" stroke-dasharray="30 90 30 90 30 90" fill="none" />
+            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#cc0000" stroke-width="5" pathLength="360" stroke-dasharray="0 30 30 90 30 90 30 60" fill="none" />
+            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#336699" stroke-width="5" pathLength="360" stroke-dasharray="0 60 30 90 30 90 30 30" fill="none" />
+            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#ffd900" stroke-width="5" pathLength="360" stroke-dasharray="0 90 30 90 30 90 30" fill="none" />
+          </g>
+          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>   
           <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
-          <g svgg-line *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
+
+          <g [attr.transform-origin]="cx + ' ' + cy"  [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
           <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
           <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
+          <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle" class="planets-angle"></g>
           <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
           <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-          <g svgg-symbol *ngFor="let p of houses" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.8, stroke_color: '#336699'}"></g>
-          
+          <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle" class="planets-angle"></g>
+          <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.8, stroke_color: '#333'}"></g>
+          <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name" [options]="p.options"></g>
           
           <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
           <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
@@ -155,15 +164,17 @@ import { take } from 'rxjs';
 })
 export class AppComponent implements OnInit {
 
-  public width: number = 600;
-  public height: number = 600;
-  public margin: number = 50;
+  public width: number = 800;
+  public height: number = 800;
+  public margin: number = 100;
   public show_entry_form: boolean = false;
   public cx: number = 0;
   public cy: number = 0;
   public outer_radius: number = 0;
   public inner_radius: number = 0;
   public house_radius: number = 0;
+
+  public offset_angle: number = 90;
 
   public entry = {
     name: '',
@@ -181,6 +192,7 @@ export class AppComponent implements OnInit {
   private _houses: any[] = [];
   private _cusps: any[] = [];
   private _lines: any[] = [];
+  private _aspect_labels: any[] = [];
   private _stat_lines: any[] = [];
   private _aspects: any[] = [];
   private _house_systems: any[] = [];
@@ -208,9 +220,9 @@ export class AppComponent implements OnInit {
       },
       {
         breakpoint: '(min-width: 600px)',        
-        width: 590,
-        height: 590,
-        margin: 50        
+        width: 800,
+        height: 800,
+        margin: 100       
       }
     ];
     this.responsive.observe(responsive_matrix.map(x => x.breakpoint)).subscribe(result => {
@@ -257,7 +269,7 @@ export class AppComponent implements OnInit {
   }
 
   public zodiac_options(p: any): any {
-    let color = "#000";
+    let color = "#ffdd00";
     switch (p.name) {
       case SYMBOL_ZODIAC.Aries:
       case SYMBOL_ZODIAC.Leo:
@@ -272,7 +284,7 @@ export class AppComponent implements OnInit {
       case SYMBOL_ZODIAC.Gemini:
       case SYMBOL_ZODIAC.Libra:
       case SYMBOL_ZODIAC.Aquarius:
-          color = "#069";
+          color = "#930";
           break;  
       case SYMBOL_ZODIAC.Cancer:
       case SYMBOL_ZODIAC.Scorpio:
@@ -288,6 +300,7 @@ export class AppComponent implements OnInit {
     this._zodiac = [];
     this._cusps = [];
     this._lines = [];
+    this._aspect_labels = [];
     this._houses = [];
     this._aspects = [];
     this.data = {};
@@ -297,8 +310,8 @@ export class AppComponent implements OnInit {
     this.cx = Math.trunc(this.width/2);
     this.cy = Math.trunc(this.height/2);
     this.outer_radius = Math.min(this.width/2, this.height/2) - this.margin;
-    this.inner_radius = this.outer_radius - this.outer_radius / 5;
-    this.house_radius = this.inner_radius * 2 / 3;
+    this.inner_radius = this.outer_radius - this.outer_radius / 6;
+    this.house_radius = this.inner_radius * 5 / 7;
     
     //  assemble ruller lines
     for (let i = 0; i < 360; i++) {
@@ -314,7 +327,7 @@ export class AppComponent implements OnInit {
     // assemble zodiac signs
     let index = 0;
     _.forOwn(SYMBOL_ZODIAC, (name) => {
-      const p = this.get_point_on_circle(this.cx, this.cy, (this.outer_radius - this.inner_radius) / 2 + this.inner_radius, index * 30 + 15);
+      const p = this.get_point_on_circle(this.cx, this.cy, (this.outer_radius - this.inner_radius) / 2 + this.inner_radius, index * 30 + 15 - this.offset_angle);
       this._zodiac.push({
         name,
         ...p        
@@ -335,6 +348,8 @@ export class AppComponent implements OnInit {
     } 
     this.rest.natal_data(params).subscribe((data: any) => {
       
+      this.offset_angle = data.Houses[0].position;
+
       this.init();
 
       this.data = _.clone(data);
@@ -360,7 +375,7 @@ export class AppComponent implements OnInit {
 
         if (_.includes([0, 3, 6, 9], i)) {
           const p1 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius, a);
-          const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15, a);
+          const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 25, a);
           const options = _.includes([0, 3, 6, 9], house.index) 
           ? house.index == 0 
             ? { stroke_color: "#090", stroke_width: 1.5 }
@@ -382,18 +397,26 @@ export class AppComponent implements OnInit {
 
         const b = i == 11 
           ? _.find(data.Houses, (x: any) => x.index == 0 )
-          : _.find(data.Houses, (x: any) => x.index == i + 1 );          
-        const c = nl360(a + nl180(b.position - a)/2);
+          : _.find(data.Houses, (x: any) => x.index == i + 1 );     
+             
+        const c = nl360(a + nl180(b.position - a)/2) - this.offset_angle;
         let p = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 10, c);
+        const p_label = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 22, c);
         this._cusps.push(
           {
             name: 'Cusp' + house.symbol,
-            ...p
+            ...p,
+            label: {
+              angle: convert_DD_to_D(pos_in_zodiac_sign(a)),
+              pos: {
+                ...p_label
+              }
+            }
           }
         ); 
         if (_.includes([0, 3, 6, 9], i)) {
-          const c = house.position;
-          let p = this.get_point_on_circle(this.cx + 15, this.cy, this.outer_radius + 5, c);
+          const c = house.position - this.offset_angle;
+          let p = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 35, c);
           this._houses.push({
             name: i == 0 
               ? SYMBOL_HOUSE.Ascendant 
@@ -409,14 +432,13 @@ export class AppComponent implements OnInit {
       
       // resolve sky objects collision
       const skyObjectsAdjusted = this.adjust(data.SkyObjects);
-
       skyObjectsAdjusted.forEach((so: any) => {
         // assemble sky objects
         const x = _.find(data.SkyObjects, x => x.name === so.name);        
-        const p = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15, so.angle);
-
+        const p = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15, so.angle - this.offset_angle);
         const p1 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius, x.position);
         const p2 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius -5, x.position);
+        const p_label = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 32.5, so.angle - this.offset_angle);
         this._lines.push({
           p1,
           p2
@@ -424,9 +446,57 @@ export class AppComponent implements OnInit {
         this._planets.push({
           name: x.name,
           ...p,
-          text: (x.speed < 0 ? 'r': '')
+          text: (x.speed < 0 ? 'r': ''),
+          label: {
+            angle: convert_DD_to_D(pos_in_zodiac_sign(x.position)),
+            pos: {
+              ...p_label
+            }
+          }
         });
       });
+
+      if (data.Transit) {
+        const skyObjectsTransitAdjusted = this.adjust(data.Transit.SkyObjects.filter(x => {
+          return _.includes([
+            SYMBOL_PLANET.Sun,
+            SYMBOL_PLANET.Moon,
+            SYMBOL_PLANET.Mercury,
+            SYMBOL_PLANET.Venus,
+            SYMBOL_PLANET.Mars,
+            SYMBOL_PLANET.Jupiter,
+            SYMBOL_PLANET.Saturn,
+            SYMBOL_PLANET.Uranus,
+            SYMBOL_PLANET.Neptune,
+            SYMBOL_PLANET.Pluto,
+            SYMBOL_PLANET.Lilith,
+            SYMBOL_PLANET.Chiron
+          ], x.name)
+        }));
+        skyObjectsTransitAdjusted.forEach((so: any) => {
+          // assemble sky objects
+          const x = _.find(data.Transit.SkyObjects, x => x.name === so.name);        
+          const p = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15, so.angle - this.offset_angle);
+          const p1 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius, x.position);
+          const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius +5, x.position);
+          const p_label = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 32.5, so.angle - this.offset_angle);
+          this._lines.push({
+            p1,
+            p2
+          })
+          this._planets.push({
+            name: x.name,
+            ...p,
+            text: (x.speed < 0 ? 'r': ''),
+            label: {
+              angle: convert_DD_to_D(pos_in_zodiac_sign(x.position)),
+              pos: {
+                ...p_label
+              }
+            }
+          });
+        });
+      }
 
       const aspects = this.data.Aspects.filter((x: any) => 
         _.includes([0, 180, 90, 120, 60, 150, 30, 45, 135, 40, 51.4, 72, 144, 36, 100, 108, 102.8, 154.2, 18], x.aspect.angle) && !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
@@ -451,6 +521,16 @@ export class AppComponent implements OnInit {
           p2,
           options
         });
+
+        if (x.aspect.name !== SYMBOL_ASPECT.Conjunction) {
+          const rnd_p = random_point_on_the_line(p1, p2);
+          const p = rotate_point_around_center({x: this.cx, y: this.cy}, rnd_p, this.offset_angle);
+          this.aspect_labels.push({
+            ...p,
+            name: x.aspect.name,
+            options
+          });
+        }
       });
 
       // stat lines
@@ -520,8 +600,8 @@ export class AppComponent implements OnInit {
     }) || [];
   }
 
-  private adjust(sos: any[]): any[] {
-    const so_radius = this.inner_radius - 15;
+  private adjust(sos: any[], transit: boolean = false): any[] {
+    const so_radius = transit ? this.outer_radius + 15 : this.inner_radius - 15;
     let points: any[] = [];
     sos.forEach(so => {
       const position = this.get_point_on_circle(this.cx, this.cy, so_radius, so.position);
@@ -604,6 +684,9 @@ export class AppComponent implements OnInit {
 
   public get lines(): any[] {
     return this._lines;
+  }
+  public get aspect_labels(): any[] {
+    return this._aspect_labels;
   }
 
   public get aspects(): any[] {

@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { random } from "lodash";
 
 export const SYMBOL_SCALE = 1;
 export const COLLISION_RADIUS = 7.5;
@@ -135,6 +135,24 @@ export function format_pos_in_zodiac(position: number, sign_as_symbol: boolean =
     const sign = sign_as_symbol ? zodiac_symbol(position) : ' ' + zodiac_sign(position) + ' ';
     return convert_DD_to_DMS(pos_in_zodiac_sign(position), sign);
 }
+export function random_point_on_the_line(p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
+    const a = (p2.y - p1.y) / (p2.x - p1.x);
+    const b = p1.y - a * p1.x;  
+    const d = (p2.x - p1.x);  
+    const rnd_x = p1.x + d/5 + 3 * (p2.x - p1.x) / 5 * Math.random();
+    return {x: rnd_x, y: a * rnd_x + b};
+}
+export function rotate_point_around_center(c: {x: number, y: number}, p: {x: number, y: number}, angle: number) : {x: number, y: number} {
+    const d = { x: p.x - c.x, y: p.y - c.y };
+    
+    const n = { x: Math.cos(angle * Math.PI/180), y: Math.sin(angle* Math.PI/180) };
+    const r = { x: d.x * n.x - d.y * n.y, y: d.x * n.y + d.y * n.x };
+    return {
+        x: r.x + c.x,
+        y: r.y + c.y
+    }
+}
+
 export function pos_in_zodiac(position: number) : any {
     const z_pos = pos_in_zodiac_sign(position);
     var deg = z_pos | 0;

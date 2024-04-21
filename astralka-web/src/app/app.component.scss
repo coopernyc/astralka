@@ -14,7 +14,20 @@ svg {
     font-weight: 400;
     font-style: normal;
     font-size: 11px;
-}   
+}  
+.angle {
+    text {
+        font-size: 7px !important;   
+        text-anchor: middle;           
+    }
+} 
+::ng-deep .planets-angle {
+    text {
+        font-size: 7px !important;   
+        text-anchor: middle;  
+        fill: #225588;         
+    }
+} 
 form { 
     border: 1px solid #ccc;
     padding: 1em;

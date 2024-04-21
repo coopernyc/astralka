@@ -8,6 +8,7 @@ import multer from "multer";
 import { call_ai } from "./common";
 import { HouseSystem } from "./constants";
 import { MongoClient } from "mongodb";
+import { SEFLG_SWIEPH } from "swisseph";
 
 const logger = winston.createLogger({
     level: "info",
@@ -63,19 +64,19 @@ app.get("/natal", async (req: Request, res: Response, next: NextFunction) => {
     let nc: any = {};
     switch (name) {
         case "Sasha": 
-            nc = natal_chart_data(1970, 4, 1, 7, 20, 0, 37.545556, 55.431111, 160, hsys);
+            nc = natal_chart_data(1970, 4, 1, 7, 20, 0, 37.545556, 55.431111, 160, hsys, SEFLG_SWIEPH, true);
             break;
         case "Lana": 
-            nc = natal_chart_data(1973, 11, 21, 2, 0, 0, 40.500, 54.067, 156, hsys);
+            nc = natal_chart_data(1973, 11, 21, 2, 0, 0, 40.500, 54.067, 156, hsys, SEFLG_SWIEPH, true);
             break;
         case "Jenna": 
-            nc = natal_chart_data(2004, 2, 15, 0, 33, 0, -73.949997, 40.650002, 10, hsys);
+            nc = natal_chart_data(2004, 2, 15, 0, 33, 0, -73.949997, 40.650002, 10, hsys, SEFLG_SWIEPH, true);
             break;
         case "Maria": 
-            nc = natal_chart_data(2001, 11, 26, 10, 27, 0, -73.935242, 40.730610, 10, hsys);
+            nc = natal_chart_data(2001, 11, 26, 10, 27, 0, -73.935242, 40.730610, 10, hsys, SEFLG_SWIEPH, true);
             break;
         case "Samantha": 
-            nc = natal_chart_data(2010, 4, 15, 0, 58, 0, -73.935242, 40.730610, 10, hsys);
+            nc = natal_chart_data(2010, 4, 15, 0, 58, 0, -73.935242, 40.730610, 10, hsys, SEFLG_SWIEPH, true);
             break;
         default: 
             nc = natal_chart_data(year, month, day, hour, minutes, seconds, longitude, latitude, elevation, hsys);
