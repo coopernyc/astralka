@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, SimpleChanges } from "@angular/core";
 import { ChartSymbol } from "./chart-symbol";
 import { ChartText } from "./chart-text";
-import { SYMBOL_CUSP, SYMBOL_PLANET, aspect_color, convert_DD_to_D, convert_DD_to_DMS } from "./common";
+import { SYMBOL_CUSP, SYMBOL_PLANET, aspect_color, convert_DD_to_D, convert_DD_to_DMS, zodiac_sign } from "./common";
 import _ from "lodash";
 import { RestService } from "./services/rest.service";
 import { StatsLine } from "./stats-line";
@@ -190,15 +190,24 @@ export class StatsAspect implements OnChanges {
         _.merge(options, aspect_color(m.aspect_angle));
         return options;
     }
+    private format_party(party: any): string {
+        const r = _.isUndefined(party.speed) || party.speed >= 0 ? '' : 'retrograde ';
+        let result;
+        if (_.startsWith(party.name, 'Cusp')) {
+            result = `${party.symbol} House in ${zodiac_sign(party.position)}`;
+        } else {
+            result = `${r}${party.name} in ${zodiac_sign(party.position)} and in ${party.house.symbol} House in ${zodiac_sign(party.house.position)}`;
+        }
+        return result;
+    }
     public show_aspect_details(m: any): void {
         this.pool = _.flatten(_.partition(this.pool, x => x !== m));
         if (m && m.type === 1 && m.aspect) {  
             this.selected = m;
-            const [r0, r1] = [
-                _.isUndefined(this.selected.aspect.parties[0].speed) || this.selected.aspect.parties[0].speed >= 0 ? '' : 'retrograde ',
-                _.isUndefined(this.selected.aspect.parties[0].speed) || this.selected.aspect.parties[0].speed >= 0 ? '' : 'retrograde '
-            ];
-            const prompt = { prompt: `Write in maximum 30 words interpretation of ${r0}${this.selected.aspect.parties[0].name} is in ${this.selected.aspect.aspect.name} with ${r1}${this.selected.aspect.parties[1].name} in?`};
+            const party0 = this.format_party(this.selected.aspect.parties[0]);
+            const party1 = this.format_party(this.selected.aspect.parties[1]);            
+
+            const prompt = { prompt: `Write in 30-40 words interpretation of ${party0} is in ${this.selected.aspect.aspect.name} with ${party1}.`};
             this._response = "... processing ...";
             this.explain(prompt);
         }

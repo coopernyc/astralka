@@ -1,6 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import winston from "winston";
-import { natal_chart_data } from "./api";
+import { natal_chart_data, chart_data } from "./api";
 import _ from "lodash";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -9,6 +9,7 @@ import { call_ai } from "./common";
 import { HouseSystem } from "./constants";
 import { MongoClient } from "mongodb";
 import { SEFLG_SWIEPH } from "swisseph";
+import moment from "moment";
 
 const logger = winston.createLogger({
     level: "info",
@@ -47,6 +48,11 @@ app.get("/hsys", async (req: Request, res: Response, next: NextFunction) => {
     res.json(_.map(HouseSystem, (v, k) => v));
     next();
 });
+app.post("/chart-data", async (req: Request, res: Response, next: NextFunction) => {
+    const query = req.body;
+    const data = chart_data(query);
+    res.json(data);
+});
 app.get("/natal", async (req: Request, res: Response, next: NextFunction) => {
     let year: number = _.toNumber(_.get(req.query, "y", 1970));
     let month: number = _.toNumber(_.get(req.query, "m", 4));
@@ -58,10 +64,11 @@ app.get("/natal", async (req: Request, res: Response, next: NextFunction) => {
     let latitude : number = _.toNumber(_.get(req.query, "lat", 0));
     let elevation: number = _.toNumber(_.get(req.query, "elv", 0));
     let hsys: string = _.get(req.query, "hsys", "P") as string;
-    
+
     let name: string = _.get(req.query, "name", "") as string;    
     let data: any = { Name: name};
     let nc: any = {};
+
     switch (name) {
         case "Sasha": 
             nc = natal_chart_data(1970, 4, 1, 7, 20, 0, 37.545556, 55.431111, 160, hsys, SEFLG_SWIEPH, true);
@@ -103,7 +110,7 @@ app.post("/explain", async (req: Request, res: Response, next: NextFunction ) =>
 app.post("/save", async (req: Request, res: Response, next: NextFunction) => {
     const entry = req.body; 
     console.log(entry);
-    
+
     const uri: string = process.env.MONGO_URI!;
     const client = new MongoClient(uri);
     async function run() {
@@ -125,6 +132,30 @@ app.post("/save", async (req: Request, res: Response, next: NextFunction) => {
             await client.close();
         }
     }
+    run().catch(console.dir);
+});
+
+app.post("/people", async (req: Request, res: Response, next: NextFunction) => {
+    const name = req.body.name ?? ""; 
+    console.log(name);
+    if (_.isEmpty(name)) {
+        res.json([]);
+        return;
+    }
+    const uri: string = process.env.MONGO_URI!;
+    const client = new MongoClient(uri);
+    let result: any[];
+    async function run() {
+        try {
+            const database = client.db("astralka");
+            const people = database.collection("people");
+            result = await people.find({ name: { $regex: name, $options: "i" } }).toArray();            
+        } finally {
+            await client.close();
+            console.log('result', result);
+            res.json(result);
+        }
+    }    
     run().catch(console.dir);
 });
 

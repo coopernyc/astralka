@@ -1,6 +1,7 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpEvent, HttpHandler, HttpRequest, HttpResponse } from "@angular/common/http";
 import { Injectable, OnDestroy } from "@angular/core";
-import { Observable, ReplaySubject, Subject, catchError, map, of, switchMap } from "rxjs";
+import { Observable, ReplaySubject, Subject, catchError, map, of, switchMap, tap } from "rxjs";
+import { IPersonInfo } from "../common";
 
 @Injectable({
     providedIn: 'root'
@@ -45,6 +46,16 @@ export class RestService implements OnDestroy {
         ) : of(null);
     }
 
+    public chart_data(load: any): Observable<any> {
+        const obs = this.http.post(`${this.serverUrl}/chart-data`, load);
+        return obs ? obs.pipe(            
+            catchError(err => {
+                console.log(err);
+                return of(null);
+            })
+        ) : of(null);
+    }
+
     public do_explain(load: any): void {
         this.explain$.next({ result: '... processing ...' });
         const obs = this.http.post(`${this.serverUrl}/explain`, {prompt: load.prompt});
@@ -77,5 +88,10 @@ export class RestService implements OnDestroy {
                 return of(null);
             })
         ) : of(null);
+    }
+
+
+    public searchPerson(name: string, withRefresh: boolean): Observable<IPersonInfo[]> {
+        return this.http.post<IPersonInfo[]>(`${this.serverUrl}/people`, { name });        
     }
 }

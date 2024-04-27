@@ -6,7 +6,6 @@ export const SYMBOL_STROKE_COLOR = "#000";
 export const SYMBOL_STROKE_WIDTH = "1";
 export const CHART_MARGIN = 10;
 
-
 export function nl360(a: number): number {
     return (a + 360) % 360;
 }
@@ -246,4 +245,15 @@ export function claculate_arrow(L: number, W: number, p1: any, p2: any, options:
             options
         }
     ];    
+}
+
+export interface IPersonInfo {
+    name: string,
+    date: Date,
+    location: {
+        latitude: number,
+        longitude: number,
+        elevation: number,
+        name: string
+    }
 }

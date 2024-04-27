@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChartSymbol } from './chart-symbol';
 import _ from "lodash";
 import moment from "moment-timezone";
-import { COLLISION_RADIUS, SYMBOL_ASPECT, SYMBOL_CUSP, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, claculate_arrow, convert_DD_to_D, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, random_point_on_the_line, rotate_point_around_center, zodiac_sign } from './common';
+import { COLLISION_RADIUS, IPersonInfo, SYMBOL_ASPECT, SYMBOL_CUSP, SYMBOL_HOUSE, SYMBOL_PLANET, SYMBOL_SCALE, SYMBOL_ZODIAC, aspect_color, claculate_arrow, convert_DD_to_D, format_pos_in_zodiac, nl180, nl360, pos_in_zodiac, pos_in_zodiac_sign, random_point_on_the_line, rotate_point_around_center, zodiac_sign } from './common';
 import { CommonModule } from '@angular/common';
 import { ChartCircle } from './chart-circle';
 import { ChartLine } from './chart-line';
@@ -13,6 +13,7 @@ import { StatsLine } from './stats-line';
 import { StatsAspect } from './stats-aspect';
 import { RestService } from './services/rest.service';
 import { take } from 'rxjs';
+import { PeopleLookup } from './controls/lookup';
 
 @Component({
   selector: 'astralka-root',
@@ -26,31 +27,39 @@ import { take } from 'rxjs';
     StatsAspect,
     CommonModule, 
     FormsModule, 
-    LayoutModule
+    LayoutModule,
+    PeopleLookup
   ],
   template: `      
     
-    <div style="margin: 2px; position: fixed; height: 32px; z-index: 1; top: 0">      
-      <button (click)="draw('Sasha')">Sasha</button>
+    <div style="margin: 2px; height: 32px;">      
+      <!-- <button (click)="draw('Sasha')">Sasha</button>
       <button (click)="draw('Lana')">Lana</button>
       <button (click)="draw('Maria')">Maria</button>
       <button (click)="draw('Jenna')">Jenna</button>
-      <button (click)="draw('Samantha')">Sam</button>
-      <button (click)="show_entry_form = !show_entry_form">Form</button>
-      <div style="display: inline-block; margin-left: 8px;">        
+      <button (click)="draw('Samantha')">Sam</button> -->
+      <lookup style="margin-right: 2px;" (selected)="onPersonSelected($event)"></lookup>
+      <button (click)="show_entry_form = !show_entry_form">Add Person</button>
+      <button (click)="show_transit_form = !show_transit_form">Transit Form</button>
+      <div style="display: inline-block; margin-left: 2px;">        
         <select [ngModel]="hsy" (ngModelChange)="hsy_change($event)">
           <option *ngFor="let sh of house_systems" [selected]="sh.value === hsy" [value]="sh.value">{{sh.display}}</option>
         </select>
       </div>   
-      <button (click)="it_traits()" [disabled]="_.isEmpty(data)">IT traits</button>   
+      <!--<button (click)="it_traits()" [disabled]="_.isEmpty(data)">IT traits</button>-->
+      
     </div>    
     
     <ng-container *ngIf="show_entry_form">
-      <form name="entry" class="entry-form" (submit)="onSubmit($event)">
+      <form name="entry" class="entry-form" (submit)="onSubmitPerson()">
         <div class="entry-body">
           <div class="entry-group">
             <label>Name</label>
             <input class="double" type="text" [(ngModel)]="entry.name" name="name">
+          </div>
+          <div class="entry-group">
+            <label>Location name</label>
+            <input class="triple" type="text" [(ngModel)]="entry.locationName" name="locationName">
           </div>
           <div class="entry-group">
             <label>Lattitude</label>
@@ -77,12 +86,40 @@ import { take } from 'rxjs';
         <div class="entry-footer">
           <button type="submit" name="btn-submit">Draw Chart</button>  
           <button type="button" name="btn-submit">Clear</button>
-          <button type="button" name="btn-submit" (click)="onSave()">Save</button>
+          <button type="button" name="btn-submit" (click)="onSavePerson()">Save</button>
         </div> 
       </form>
     </ng-container>
 
-    <div id="container" style="position: relative; margin-top: 26px;">
+    <ng-container *ngIf="show_transit_form">
+      <form name="entry" class="entry-form" (submit)="onSubmitTransit()">
+        <div class="entry-body">
+          <div class="entry-group">
+                <label>Lattitude</label>
+                <input class="double" type="number" [(ngModel)]="transit.latitude" min="-90" max="90" name="latitude">
+          </div>
+          <div class="entry-group">
+            <label>Longitude</label>
+            <input class="double" type="number" [(ngModel)]="transit.longitude" min="-180" max="180" name="longitude">
+          </div>
+          <div class="entry-group">
+            <label>Elevation</label>
+            <input class="single" type="number" [(ngModel)]="transit.elevation" min="0" max="10000" name="elevation">
+          </div>
+          <div class="entry-group">
+            <label>Date Time</label>
+            <input type="datetime-local" [(ngModel)]="transit.date" name="date">
+          </div>          
+        </div>
+        <div class="entry-footer">
+            <button type="submit" name="btn-submit">Draw Chart</button>  
+            <!-- <button type="button" name="btn-submit">Clear</button>           -->
+            <button type="button" name="btn-NY" (click)="click_new_rochelle()">New Rochelle</button>
+          </div> 
+      </form>
+    </ng-container>
+
+    <div id="container" style="position: relative; margin-top: 26px; display: flex; flex-direction: column">
       <!-- <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
         <img src="assets/astralka-logo.svg">
       </div> -->
@@ -168,6 +205,7 @@ export class AppComponent implements OnInit {
   public height: number = 800;
   public margin: number = 100;
   public show_entry_form: boolean = false;
+  public show_transit_form: boolean = false;
   public cx: number = 0;
   public cy: number = 0;
   public outer_radius: number = 0;
@@ -178,12 +216,20 @@ export class AppComponent implements OnInit {
 
   public entry = {
     name: '',
+    locationName: '',
     latitude: 0,
     longitude: 0,
-    dob: null,
+    dob: Date(),
     timezone: 0,
     elevation: 0
-  }
+  };
+
+  public transit: any = {
+    latitude: 0,
+    longitude: 0,
+    date: Date(),    
+    elevation: 0
+  };
   
   title = 'astralka-web';
 
@@ -207,22 +253,22 @@ export class AppComponent implements OnInit {
     const responsive_matrix = [
       {
         breakpoint: '(min-width: 375px)',        
-        width: 370,
-        height: 370,
-        margin: 1
+        width: 600,
+        height: 600,
+        margin: 50
         
       },
       {
         breakpoint: '(min-width: 428px)',        
-        width: 410,
-        height: 410,
-        margin: 1        
+        width: 600,
+        height: 600,
+        margin: 50        
       },
       {
-        breakpoint: '(min-width: 600px)',        
+        breakpoint: '(min-width: 800px)',        
         width: 800,
         height: 800,
-        margin: 100       
+        margin: 50       
       }
     ];
     this.responsive.observe(responsive_matrix.map(x => x.breakpoint)).subscribe(result => {
@@ -254,10 +300,20 @@ export class AppComponent implements OnInit {
     });    
   }
 
-  public onSubmit(data: any) {
-    
+  public onSubmitPerson() {    
     console.log(this.entry);
     this.draw(this.entry)
+  }
+
+  public onSubmitTransit() {
+    this.draw2();
+  }
+
+  public click_new_rochelle() {
+    this.transit.latitude = 40.922794;
+    this.transit.longitude = -73.791809;
+    this.transit.elevation = 30;
+    this.transit.date = moment.utc().toISOString().replace('Z','');
   }
 
   public get house_systems(): any[] {
@@ -336,19 +392,8 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public draw(name: string | object) {
-    let params: string;
-    if (_.isString(name)) {
-      params = `name=${name}&hsys=${this.hsy}`;
-    } else {
-      const entry: any = name;
-      const dob = moment(entry.dob).subtract(entry.timezone, 'hours');
-      console.log(dob.format('MM/DD/YYYY hh:mm:ss'));
-      params = `name=${entry.name}&y=${dob.year()}&m=${dob.month() + 1}&d=${dob.date()}&h=${dob.hours()}&min=${dob.minutes()}&s=${dob.seconds()}&elv=${entry.elevation}&long=${entry.longitude}&lat=${entry.latitude}&hsys=${this.hsy}`
-    } 
-    this.rest.natal_data(params).subscribe((data: any) => {
-      
-      this.offset_angle = data.Houses[0].position;
+  private handleChartData(data: any) {
+    this.offset_angle = data.Houses[0].position;
 
       this.init();
 
@@ -479,7 +524,7 @@ export class AppComponent implements OnInit {
           const p = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15, so.angle - this.offset_angle);
           const p1 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius, x.position);
           const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius +5, x.position);
-          const p_label = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 32.5, so.angle - this.offset_angle);
+          const p_label = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 36, so.angle - this.offset_angle);
           this._lines.push({
             p1,
             p2
@@ -567,8 +612,60 @@ export class AppComponent implements OnInit {
         cnt++;
       });
       this._aspects = aspects;  
-    });
   }
+
+
+  public draw(name: string | object) {
+    let params: string;
+    if (_.isString(name)) {
+      params = `name=${name}&hsys=${this.hsy}`;
+    } else {
+      const entry: any = name;
+      const dob = moment(entry.dob).subtract(entry.timezone, 'hours');
+      console.log(dob.format('MM/DD/YYYY hh:mm:ss'));
+      params = `name=${entry.name}&y=${dob.year()}&m=${dob.month() + 1}&d=${dob.date()}&h=${dob.hours()}&min=${dob.minutes()}&s=${dob.seconds()}&elv=${entry.elevation}&long=${entry.longitude}&lat=${entry.latitude}&hsys=${this.hsy}`
+    } 
+    this.rest.natal_data(params).subscribe(this.handleChartData.bind(this));
+  }
+
+  public draw2() {
+    if (this.selectedPerson) {
+      const load: any = {
+        natal: _.assign({}, this.selectedPerson, {hsys: this.hsy})      
+      };
+      if (this.transit) {
+        load.transit = {
+          name: 'TRANSIT',
+          date: this.transit.date,
+          location: {
+            latitude: this.transit.latitude,
+            longitude: this.transit.longitude,
+            elevation: this.transit.elevation
+          },
+          hsys: this.hsy
+        };
+      }
+      this.rest.chart_data(load).subscribe(this.handleChartData.bind(this));
+    }
+  }
+
+  public selectedPerson!: IPersonInfo;
+
+  public onPersonSelected(person: IPersonInfo): void {
+    console.log(person);
+    this.selectedPerson = person; 
+    
+    this.entry.name = person.name;
+    this.entry.locationName = person.location.name;
+    this.entry.longitude = person.location.longitude;
+    this.entry.latitude = person.location.latitude;
+    this.entry.elevation = person.location.elevation;
+    this.entry.timezone = Math.ceil(person.location.longitude / 15);
+    this.entry.dob = moment(person.date).add(this.entry.timezone, 'hours').toISOString().replace('Z','');
+    this.show_entry_form = true;
+    this.show_transit_form = true;
+  }
+
 
   private format_dignities(so: any): string {
     const sign: string = zodiac_sign(so.position);
@@ -739,8 +836,18 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public async onSave(): Promise<void> {
-    const result = this.rest.save(this.entry).subscribe();
+  public async onSavePerson(): Promise<void> {
+    const save = {
+      name: this.entry.name,
+      date: moment.utc(this.entry.dob).add(-this.entry.timezone, 'hours').toDate(),
+      location: {
+        latitude: this.entry.latitude,
+        longitude: this.entry.longitude,
+        elevation: this.entry.elevation,
+        name: this.entry.locationName
+      }
+    }
+    this.rest.save(save).subscribe();
   }
 
   public _ = _;

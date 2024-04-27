@@ -71,7 +71,7 @@ export const HouseSystem = {
     Equal: { id: "E", name: "Equal (cusp 1 is asc)" },
     Alcabitius: { id: "B", name: "Alcabitius" },
     Campanus: { id: "C", name: "Campanus" },
-    Gauquelin36Sectors: { id: "G", name: "36 Gauquelin sectors" },
+    //Gauquelin36Sectors: { id: "G", name: "36 Gauquelin sectors" },
     Azimuthal: { id: "H", name: "Azimuthal" },
     Koch: { id: "K", name: "Koch" },
     Morinus: { id: "M", name: "Morinus" },

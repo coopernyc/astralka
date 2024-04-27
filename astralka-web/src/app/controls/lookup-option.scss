@@ -1,0 +1,42 @@
+:host {
+    display: block;
+    padding: 0 4px;
+    height: 26px;
+    line-height: 26px;
+    background: #fff;
+    white-space: nowrap;
+    overflow: clip;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    font-size: 12px;
+    user-select: none;
+
+    &.selected {
+        font-weight: bold;
+    }
+    &:hover {
+        outline: none;
+        background-color: lightgray;
+    }
+    &.active,
+    &:focus {
+        outline: none;
+        background-color: #336699;
+        color: #fff;
+    }
+
+    &.disabled {
+        color: gray;
+        cursor: auto;
+
+        &:hover,
+        &:focus {
+        background-color: white;
+        }
+    }
+
+    &.hidden {
+        display: none !important;
+        height: 0;
+    }
+}
