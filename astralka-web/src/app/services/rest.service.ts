@@ -36,15 +36,15 @@ export class RestService implements OnDestroy {
         ) : of(null);
     }
 
-    public natal_data(query: string): Observable<any> {
-        const obs = this.http.get(`${this.serverUrl}/natal?${query}`);
-        return obs ? obs.pipe(            
-            catchError(err => {
-                console.log(err);
-                return of(null);
-            })
-        ) : of(null);
-    }
+    // public natal_data(query: string): Observable<any> {
+    //     const obs = this.http.get(`${this.serverUrl}/natal?${query}`);
+    //     return obs ? obs.pipe(            
+    //         catchError(err => {
+    //             console.log(err);
+    //             return of(null);
+    //         })
+    //     ) : of(null);
+    // }
 
     public chart_data(load: any): Observable<any> {
         const obs = this.http.post(`${this.serverUrl}/chart-data`, load);

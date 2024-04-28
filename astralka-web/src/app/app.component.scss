@@ -1,3 +1,39 @@
+@mixin info-mxn {
+    position: absolute;
+    z-index: 2;
+    top: 6px;
+    section {
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        @media (width <= 430px) {
+            font-size: 6px;
+        }
+        @media (width > 430px) {
+            font-size: 10px;
+        }
+    }
+}
+#person-info {
+    @include info-mxn;
+    width: 250px;    
+    left: 6px;
+}
+#transit-info {
+    @include info-mxn;
+    width: 220px;
+}
+
+.test {
+    position: absolute; 
+    width: 250px; 
+    height: 150px; 
+    background-color: white; 
+    z-index: 9999; 
+    left: 50%; 
+    top: 50%; 
+    transform: translate(-50%,-50%);
+    border: 1px solid black;
+}
+
 pre {
     font-family: "Roboto";
     font-size: 12px;
@@ -41,9 +77,11 @@ form {
             flex-wrap: wrap;
             .entry-group {            
                 margin: 4px;
-                label {
-                    font-size: 10px;
+                label {                    
+                    color: #333;
+                    font-size: 11px;
                     display: block;
+                    padding-left: 2px;
                 }
                 input {
                     &.single {
@@ -64,7 +102,8 @@ form {
         }            
     }    
 }
-#container {
+#container {    
     display: flex;
-    flex-direction: rows;
+    flex-direction: column;
+    position: relative;
 }

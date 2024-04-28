@@ -33,6 +33,7 @@ export class Planet implements ISkyObject {
     public dignities: Dignities | undefined = undefined;
     public swisseph_id: number;
     public house: IHouse | undefined;
+    public oriental: boolean = false;
     constructor(name: string) {
         const conf: any = _.find(_.get(AstralkaConfig, "Planets", []), (x: any) => x.name === name);
         if (!conf) {

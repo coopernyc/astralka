@@ -53,46 +53,6 @@ app.post("/chart-data", async (req: Request, res: Response, next: NextFunction) 
     const data = chart_data(query);
     res.json(data);
 });
-app.get("/natal", async (req: Request, res: Response, next: NextFunction) => {
-    let year: number = _.toNumber(_.get(req.query, "y", 1970));
-    let month: number = _.toNumber(_.get(req.query, "m", 4));
-    let day: number = _.toNumber(_.get(req.query, "d", 1));
-    let hour: number = _.toNumber(_.get(req.query, "h", 7));
-    let minutes: number = _.toNumber(_.get(req.query, "min", 20));
-    let seconds: number = _.toNumber(_.get(req.query, "s", 0));
-    let longitude: number = _.toNumber(_.get(req.query, "long", 0));
-    let latitude : number = _.toNumber(_.get(req.query, "lat", 0));
-    let elevation: number = _.toNumber(_.get(req.query, "elv", 0));
-    let hsys: string = _.get(req.query, "hsys", "P") as string;
-
-    let name: string = _.get(req.query, "name", "") as string;    
-    let data: any = { Name: name};
-    let nc: any = {};
-
-    switch (name) {
-        case "Sasha": 
-            nc = natal_chart_data(1970, 4, 1, 7, 20, 0, 37.545556, 55.431111, 160, hsys, SEFLG_SWIEPH, true);
-            break;
-        case "Lana": 
-            nc = natal_chart_data(1973, 11, 21, 2, 0, 0, 40.500, 54.067, 156, hsys, SEFLG_SWIEPH, true);
-            break;
-        case "Jenna": 
-            nc = natal_chart_data(2004, 2, 15, 0, 33, 0, -73.949997, 40.650002, 10, hsys, SEFLG_SWIEPH, true);
-            break;
-        case "Maria": 
-            nc = natal_chart_data(2001, 11, 26, 10, 27, 0, -73.935242, 40.730610, 10, hsys, SEFLG_SWIEPH, true);
-            break;
-        case "Samantha": 
-            nc = natal_chart_data(2010, 4, 15, 0, 58, 0, -73.935242, 40.730610, 10, hsys, SEFLG_SWIEPH, true);
-            break;
-        default: 
-            nc = natal_chart_data(year, month, day, hour, minutes, seconds, longitude, latitude, elevation, hsys);
-    }
-  
-    res.json(_.merge(data, nc, {
-        query: req.query
-    }));
-});
 
 app.post("/explain", async (req: Request, res: Response, next: NextFunction ) => {
     const prompt = _.get(req.body, "prompt");   

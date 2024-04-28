@@ -160,7 +160,12 @@ export class PeopleLookup implements OnInit, AfterViewInit {
             debounceTime(300),
             distinctUntilChanged(),
             switchMap(name => this.restService.searchPerson(name, this.withRefresh)),
-            tap(console.log)
+            tap((list: any[]) => {
+                if (list && list.length > 0) {
+                    this.showDropdown();
+                }
+                console.log(list);
+            })
         );        
         this.people$.subscribe((list: IPersonInfo[]) => {
             if (list.length) {

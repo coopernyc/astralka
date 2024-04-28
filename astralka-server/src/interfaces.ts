@@ -21,6 +21,7 @@ export interface ISkyObject extends IChartObject {
     declination: number;
     dignities?: IDignities;    
     house?: IHouse;
+    oriental: boolean;
 }
 export interface IAspectDef {
     name: string;

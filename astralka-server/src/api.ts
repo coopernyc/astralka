@@ -228,7 +228,15 @@ export function chart_data(query: IQuery): any {
                 : swisseph.swe_degnorm(asc + moon - sun).x360;
             x.speed = 0;
         }
-        x.house = calculate_house(x.position, houses);        
+        x.house = calculate_house(x.position, houses);    
+        if (x.name === SkyObject.Sun) {
+            x.oriental = _.includes([4,5,6,10,11,12], x.house.index + 1);
+        } else {
+            const angle = swisseph.swe_degnorm(x.position - sky_objects.find(x => x.name === SkyObject.Sun)!.position).x360;
+            x.oriental = angle > 180;
+            //console.log(`${x.name} ${angle}`);
+        }
+        
     });
     const aspects: IAspect[] = [];
     const only_asc_and_mc: IHouse[] = houses.filter((x:IHouse) => [0, 9].indexOf(x.index) !== -1);

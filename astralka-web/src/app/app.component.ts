@@ -32,25 +32,19 @@ import { PeopleLookup } from './controls/lookup';
   ],
   template: `      
     
-    <div style="margin: 2px; height: 32px;">      
-      <!-- <button (click)="draw('Sasha')">Sasha</button>
-      <button (click)="draw('Lana')">Lana</button>
-      <button (click)="draw('Maria')">Maria</button>
-      <button (click)="draw('Jenna')">Jenna</button>
-      <button (click)="draw('Samantha')">Sam</button> -->
+    <div style="margin: 2px; height: 32px;">            
       <lookup style="margin-right: 2px;" (selected)="onPersonSelected($event)"></lookup>
-      <button (click)="show_entry_form = !show_entry_form">Add Person</button>
-      <button (click)="show_transit_form = !show_transit_form">Transit Form</button>
+      <button (click)="show_entry_form = !show_entry_form">Person</button>
+      <button (click)="show_transit_form = !show_transit_form">Transit</button>
       <div style="display: inline-block; margin-left: 2px;">        
         <select [ngModel]="hsy" (ngModelChange)="hsy_change($event)">
           <option *ngFor="let sh of house_systems" [selected]="sh.value === hsy" [value]="sh.value">{{sh.display}}</option>
         </select>
       </div>   
-      <!--<button (click)="it_traits()" [disabled]="_.isEmpty(data)">IT traits</button>-->
-      
+      <!--<button (click)="it_traits()" [disabled]="_.isEmpty(data)">IT traits</button>-->      
     </div>    
-    
-    <ng-container *ngIf="show_entry_form">
+      
+    @if (show_entry_form) {
       <form name="entry" class="entry-form" (submit)="onSubmitPerson()">
         <div class="entry-body">
           <div class="entry-group">
@@ -84,17 +78,17 @@ import { PeopleLookup } from './controls/lookup';
         </div>
         
         <div class="entry-footer">
-          <button type="submit" name="btn-submit">Draw Chart</button>  
-          <button type="button" name="btn-submit">Clear</button>
           <button type="button" name="btn-submit" (click)="onSavePerson()">Save</button>
+          <button type="button" name="btn-submit">Clear</button>          
         </div> 
       </form>
-    </ng-container>
+    }
+    
 
-    <ng-container *ngIf="show_transit_form">
+    @if (show_transit_form) {
       <form name="entry" class="entry-form" (submit)="onSubmitTransit()">
         <div class="entry-body">
-          <div class="entry-group">
+          <!-- <div class="entry-group">
                 <label>Lattitude</label>
                 <input class="double" type="number" [(ngModel)]="transit.latitude" min="-90" max="90" name="latitude">
           </div>
@@ -105,7 +99,7 @@ import { PeopleLookup } from './controls/lookup';
           <div class="entry-group">
             <label>Elevation</label>
             <input class="single" type="number" [(ngModel)]="transit.elevation" min="0" max="10000" name="elevation">
-          </div>
+          </div> -->
           <div class="entry-group">
             <label>Date Time</label>
             <input type="datetime-local" [(ngModel)]="transit.date" name="date">
@@ -113,13 +107,31 @@ import { PeopleLookup } from './controls/lookup';
         </div>
         <div class="entry-footer">
             <button type="submit" name="btn-submit">Draw Chart</button>  
-            <!-- <button type="button" name="btn-submit">Clear</button>           -->
-            <button type="button" name="btn-NY" (click)="click_new_rochelle()">New Rochelle</button>
-          </div> 
+        </div> 
       </form>
-    </ng-container>
+    }
 
-    <div id="container" style="position: relative; margin-top: 26px; display: flex; flex-direction: column">
+    <div id="container">
+      @if (data && selectedPerson) {
+        <article id="person-info">
+          <section><b>Natal Data</b></section>
+          <section>Name: {{selectedPerson.name}}</section>
+          <section>Location: {{selectedPerson.location.name}}</section>
+          <section>Lat/Long: {{selectedPerson.location.latitude}} : {{selectedPerson.location.longitude}}</section>
+          <section>DateTime (UT): {{moment(selectedPerson.date).format('DD MMM YYYY hh:mm:ss')}}</section>
+          <section>House System: {{houseSystemById}}</section>
+          <section>{{data.dayChart?"Day Chart":"Night Chart"}}</section>
+        </article>
+      }
+      @if (data && data.Transit) {
+        <article id="transit-info" [style.left.px]="width - 180">    
+          <section><b>Transit Data</b></section>      
+          <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
+          <section>DateTime (UT): {{moment(transit.date).format('DD MMM YYYY hh:mm:ss')}}</section>
+          <!-- <section>House System: {{houseSystemById}}</section> -->
+        </article>
+      }
+      
       <!-- <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
         <img src="assets/astralka-logo.svg">
       </div> -->
@@ -227,7 +239,7 @@ export class AppComponent implements OnInit {
   public transit: any = {
     latitude: 0,
     longitude: 0,
-    date: Date(),    
+    date: moment.utc().toISOString().replace('Z',''),    
     elevation: 0
   };
   
@@ -243,21 +255,12 @@ export class AppComponent implements OnInit {
   private _aspects: any[] = [];
   private _house_systems: any[] = [];
 
-  private serverUrl: string = "";
-
   public data: any = {};
   public hsy: string = "P";
 
   constructor(private responsive: BreakpointObserver, private rest: RestService ) {
 
-    const responsive_matrix = [
-      {
-        breakpoint: '(min-width: 375px)',        
-        width: 600,
-        height: 600,
-        margin: 50
-        
-      },
+    const responsive_matrix = [      
       {
         breakpoint: '(min-width: 428px)',        
         width: 600,
@@ -265,10 +268,10 @@ export class AppComponent implements OnInit {
         margin: 50        
       },
       {
-        breakpoint: '(min-width: 800px)',        
+        breakpoint: '(min-width: 805px)',        
         width: 800,
         height: 800,
-        margin: 50       
+        margin: 100       
       }
     ];
     this.responsive.observe(responsive_matrix.map(x => x.breakpoint)).subscribe(result => {
@@ -283,6 +286,10 @@ export class AppComponent implements OnInit {
       }
       this.init();
     });
+  }
+
+  public get houseSystemById(): string {
+    return this.house_systems.find(x => x.value === this.hsy)?.display ?? '';
   }
 
   ngOnInit(): void {
@@ -302,20 +309,13 @@ export class AppComponent implements OnInit {
 
   public onSubmitPerson() {    
     console.log(this.entry);
-    this.draw(this.entry)
+    this.draw2();
   }
 
   public onSubmitTransit() {
     this.draw2();
   }
-
-  public click_new_rochelle() {
-    this.transit.latitude = 40.922794;
-    this.transit.longitude = -73.791809;
-    this.transit.elevation = 30;
-    this.transit.date = moment.utc().toISOString().replace('Z','');
-  }
-
+  
   public get house_systems(): any[] {
     return this._house_systems;
   }
@@ -580,7 +580,9 @@ export class AppComponent implements OnInit {
 
       // stat lines
       let cnt = 1;
-      this._stat_lines = [];      
+      this._stat_lines = [];  
+      const sun_house = this.data.SkyObjects.find(so => so.name === SYMBOL_PLANET.Sun).house.index + 1;    
+      this.data.dayChart = _.includes([7,8,9,10,11,12], sun_house);
       this.data.SkyObjects.forEach((so: any) => {
         const STAT_MARGIN = 12;
         this._stat_lines.push({
@@ -601,7 +603,7 @@ export class AppComponent implements OnInit {
       this.data.Houses.forEach((so: any) => {
         const STAT_MARGIN = 12;
         this._stat_lines.push({
-          x: 280,
+          x: 300,
           y: STAT_MARGIN + cnt * 18,
           stats: {            
             name: 'Cusp' + so.symbol,
@@ -612,20 +614,6 @@ export class AppComponent implements OnInit {
         cnt++;
       });
       this._aspects = aspects;  
-  }
-
-
-  public draw(name: string | object) {
-    let params: string;
-    if (_.isString(name)) {
-      params = `name=${name}&hsys=${this.hsy}`;
-    } else {
-      const entry: any = name;
-      const dob = moment(entry.dob).subtract(entry.timezone, 'hours');
-      console.log(dob.format('MM/DD/YYYY hh:mm:ss'));
-      params = `name=${entry.name}&y=${dob.year()}&m=${dob.month() + 1}&d=${dob.date()}&h=${dob.hours()}&min=${dob.minutes()}&s=${dob.seconds()}&elv=${entry.elevation}&long=${entry.longitude}&lat=${entry.latitude}&hsys=${this.hsy}`
-    } 
-    this.rest.natal_data(params).subscribe(this.handleChartData.bind(this));
   }
 
   public draw2() {
@@ -653,8 +641,7 @@ export class AppComponent implements OnInit {
 
   public onPersonSelected(person: IPersonInfo): void {
     console.log(person);
-    this.selectedPerson = person; 
-    
+    this.selectedPerson = person;     
     this.entry.name = person.name;
     this.entry.locationName = person.location.name;
     this.entry.longitude = person.location.longitude;
@@ -662,27 +649,67 @@ export class AppComponent implements OnInit {
     this.entry.elevation = person.location.elevation;
     this.entry.timezone = Math.ceil(person.location.longitude / 15);
     this.entry.dob = moment(person.date).add(this.entry.timezone, 'hours').toISOString().replace('Z','');
-    this.show_entry_form = true;
-    this.show_transit_form = true;
+    this.draw2();       
   }
 
 
   private format_dignities(so: any): string {
     const sign: string = zodiac_sign(so.position);
     let result: string[] = [];
+    let score: number = 6;
     if (_.some(_.get(so, "dignities.domicile", []), x => x === sign)) {
       result.push("Dom");
+      score += 3;
     } else if (_.some(_.get(so, "dignities.exaltation", []), x => x === sign)) {
       result.push("Exl");
+      score += 2;
     } else if (_.some(_.get(so, "dignities.detriment", []), x => x === sign)) {
       result.push("Det");
+      score -= 3;
     } else if (_.some(_.get(so, "dignities.fall", []), x => x === sign)) {
       result.push("Fall");
+      score -= 2;
     } else if (_.some(_.get(so, "dignities.friend", []), x => x === sign)) {
       result.push("Fnd");
+      score += 1;
     } else if (_.some(_.get(so, "dignities.enemy", []), x => x === sign)) {
       result.push("Emy");
+      score -= 1;
     }
+    if (so.oriental) {
+      result.push("Ori");
+      score += 1;
+    } else {
+      result.push("Occ");
+      score -= 1;
+    }
+    if (so.speed >= 0) {
+      score += 1;
+    } else {
+      score -= 1;
+    }
+    if (_.includes([1, 4, 7, 10], so.house.index + 1)) {
+      score += 1;
+    } else if (_.includes([12, 9, 6, 3], so.house.index + 1)) {
+      score -= 1;
+    }
+    if (this.data.dayChart) {
+      if (_.includes([SYMBOL_PLANET.Sun, SYMBOL_PLANET.Mars, SYMBOL_PLANET.Jupiter, SYMBOL_PLANET.Uranus], so.name)) {
+        score += 1;
+      }
+      if (so.oriental && _.includes([SYMBOL_PLANET.Mercury, SYMBOL_PLANET.Neptune], so.name)) {
+        score += 1;
+      }
+    } else {
+      if (_.includes([SYMBOL_PLANET.Venus, SYMBOL_PLANET.Moon, SYMBOL_PLANET.Saturn, SYMBOL_PLANET.Pluto], so.name)) {
+        score += 1;
+      }
+      if (!so.oriental && _.includes([SYMBOL_PLANET.Mercury, SYMBOL_PLANET.Neptune], so.name)) {
+        score += 1;
+      }
+    }
+    //result.push(` (${score})`);
+
     return result.join('.');
   } 
 
@@ -806,11 +833,9 @@ export class AppComponent implements OnInit {
 
   public hsy_change(hsy: string) {    
     this.hsy = hsy;
-    const name = _.get(this, "data.query.name", null);
-    if (name) {
-      //const query_string = Object.entries(this.data.query).map(([key, val]) => `${key}=${val}`).join('&');
-      this.draw(name);
-    }
+    if (this.selectedPerson) {
+      this.draw2();
+    }    
   }
 
   public get has_name(): boolean {
@@ -851,6 +876,7 @@ export class AppComponent implements OnInit {
   }
 
   public _ = _;
+  public moment = moment;
 }
 
 
