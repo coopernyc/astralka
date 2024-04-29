@@ -49,7 +49,7 @@ import { PeopleLookup } from './controls/lookup';
         <div class="entry-body">
           <div class="entry-group">
             <label>Name</label>
-            <input class="double" type="text" [(ngModel)]="entry.name" name="name">
+            <input class="triple" type="text" [(ngModel)]="entry.name" name="name">
           </div>
           <div class="entry-group">
             <label>Location name</label>
@@ -64,11 +64,11 @@ import { PeopleLookup } from './controls/lookup';
             <input class="double" type="number" [(ngModel)]="entry.longitude" min="-180" max="180" name="longitude">
           </div>
           <div class="entry-group">
-            <label>Elevation</label>
+            <label>Elevation (m)</label>
             <input class="single" type="number" [(ngModel)]="entry.elevation" min="0" max="10000" name="elevation">
           </div>
           <div class="entry-group">
-            <label>Date Time</label>
+            <label>Date Time (Local)</label>
             <input type="datetime-local" [(ngModel)]="entry.dob" name="dob">
           </div>
           <div class="entry-group">
@@ -119,6 +119,7 @@ import { PeopleLookup } from './controls/lookup';
           <section>Location: {{selectedPerson.location.name}}</section>
           <section>Lat/Long: {{selectedPerson.location.latitude}} : {{selectedPerson.location.longitude}}</section>
           <section>DateTime (UT): {{moment(selectedPerson.date).format('DD MMM YYYY hh:mm:ss')}}</section>
+          <section>Age: {{age}}</section>
           <section>House System: {{houseSystemById}}</section>
           <section>{{data.dayChart?"Day Chart":"Night Chart"}}</section>
         </article>
@@ -151,19 +152,24 @@ import { PeopleLookup } from './controls/lookup';
             <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#336699" stroke-width="5" pathLength="360" stroke-dasharray="0 60 30 90 30 90 30 30" fill="none" />
             <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#ffd900" stroke-width="5" pathLength="360" stroke-dasharray="0 90 30 90 30 90 30" fill="none" />
           </g>
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>   
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
-
+          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>  
           <g [attr.transform-origin]="cx + ' ' + cy"  [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
-          <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-          <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
-          <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle" class="planets-angle"></g>
           <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
-          <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-          <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle" class="planets-angle"></g>
-          <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.8, stroke_color: '#333'}"></g>
-          <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name" [options]="p.options"></g>
-          
+          @if (this.data && this.selectedPerson) {  
+            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
+            
+            <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+            <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
+            <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle" class="planets-angle"></g>
+            
+            <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+            <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle" class="planets-angle"></g>
+            <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name" [options]="{scale: 0.8, stroke_color: '#333'}"></g>
+            <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name" [options]="p.options"></g>
+            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20" [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
+            <g svgg-symbol [x]="cx" [y]="cy" [name]="sign" [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
+          }
+
           <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
           <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
           <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
@@ -292,6 +298,14 @@ export class AppComponent implements OnInit {
     return this.house_systems.find(x => x.value === this.hsy)?.display ?? '';
   }
 
+  public get age(): string {
+    if (this.data && this.selectedPerson) {
+      const bd = moment.utc(this.selectedPerson.date);
+      return moment.utc().diff(bd, 'years')+ '';
+    }
+    return '';
+  }
+
   ngOnInit(): void {
     this.rest.ready$.pipe(take(1)).subscribe(() => {
       this.rest.house_systems().subscribe((data: any[]) => {
@@ -305,6 +319,13 @@ export class AppComponent implements OnInit {
         this.hsy = _.find(this.house_systems, x => x.value === "P")?.value;        
       });
     });    
+  }
+
+  public get sign(): string {
+    if (this.data && this.data.SkyObjects) {
+      return zodiac_sign(this.data.SkyObjects.find(x => x.name === SYMBOL_PLANET.Sun).position);
+    }
+    return '';
   }
 
   public onSubmitPerson() {    
