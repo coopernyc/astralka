@@ -1,0 +1,36 @@
+:host {
+  button {
+    font-size: 11px;
+  }
+}
+.settings-content {
+  width: 120px;
+  height: 460px;
+
+  &.transit {
+    height: 290px;
+  }
+
+  background-color: #fffc;
+  border: 1px solid #555;
+  border-radius: 5px;
+  display: block;
+  white-space: nowrap;
+  owerflow: clip;
+  font-size: 12px;
+  font-family: "Roboto", sans-serif;
+  user-select: none;
+  padding: 4px;
+  line-height: 18px;
+  box-shadow: 1px 1px 3px #3335;
+  .map-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .map-name {
+
+    }
+  }
+
+}
+

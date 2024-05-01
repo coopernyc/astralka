@@ -1,43 +1,53 @@
-import { CommonModule } from "@angular/common";
-import { CdkPortal, PortalModule } from "@angular/cdk/portal";
-import { Overlay, OverlayConfig, OverlayModule, OverlayRef } from "@angular/cdk/overlay";
-import { A11yModule, ActiveDescendantKeyManager } from "@angular/cdk/a11y";
-import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ContentChildren, ElementRef, EventEmitter, OnInit, Output, QueryList, ViewChild, ViewChildren } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { Observable, Subject, debounceTime, distinctUntilChanged, fromEvent, switchMap, tap } from "rxjs";
-import { RestService } from "../services/rest.service";
-import { IPersonInfo } from "../common";
-import { BrowserModule } from "@angular/platform-browser";
-import { LookupOption } from "./lookup-options";
+import {CommonModule} from "@angular/common";
+import {CdkPortal, PortalModule} from "@angular/cdk/portal";
+import {Overlay, OverlayConfig, OverlayModule, OverlayRef} from "@angular/cdk/overlay";
+import {ActiveDescendantKeyManager} from "@angular/cdk/a11y";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from "@angular/core";
+import {FormsModule} from "@angular/forms";
+import {debounceTime, distinctUntilChanged, Observable, Subject, switchMap, tap} from "rxjs";
+import {RestService} from "../../services/rest.service";
+import {IPersonInfo} from "../../common";
+import {LookupOption} from "./lookup-options";
 
 @Component({
     selector: 'lookup',
     standalone: true,
     imports: [CommonModule, FormsModule, OverlayModule, PortalModule, LookupOption],
     template: `
-        <input 
+        <input
             #input
             id="name"
-            type="text" 
+            type="text"
             autocomplete="off"
             spellcheck="off"
-            (keyup)="search(getValue($event))" 
+            (keyup)="search(getValue($event))"
             (keydown)="manage($event)"
         />
-        
-        <ng-template cdk-portal #overlayTemplate="cdkPortal" class="dropdown">
+
+        <ng-template cdkPortal #overlayTemplate="cdkPortal" class="dropdown">
             <div class="dd">
                 @for(person of list; track person.name) {
                     <!-- <div class="dd-item">{{person.name}}</div> -->
                     <lookup-option [value]="person" (selected)="selectOption($event)">{{person.name}}</lookup-option>
                 }
-            </div>    
+            </div>
         </ng-template>
     `
 })
-export class PeopleLookup implements OnInit, AfterViewInit {
+export class AstralkaLookupControlComponent implements OnInit, AfterViewInit {
 
-    public people$!: Observable<IPersonInfo[]>; 
+    public people$!: Observable<IPersonInfo[]>;
     private withRefresh = false;
     private query$: Subject<string> = new Subject<string>();
     private overlayRef!: OverlayRef;
@@ -46,19 +56,19 @@ export class PeopleLookup implements OnInit, AfterViewInit {
     public list!: IPersonInfo[];
 
     @ViewChild("input") public input!: ElementRef;
-    @ViewChild(CdkPortal) public contentTemplate!: CdkPortal;    
+    @ViewChild(CdkPortal) public contentTemplate!: CdkPortal;
     @ViewChildren(LookupOption) public options!: QueryList<LookupOption>;
     @Output() selected: EventEmitter<IPersonInfo> = new EventEmitter<IPersonInfo>();
 
-    constructor(private restService: RestService, 
+    constructor(private restService: RestService,
         private overlay: Overlay,
-        private cdr: ChangeDetectorRef) {        
+        private cdr: ChangeDetectorRef) {
     }
 
     public getValue(event: Event): string {
         return (event.target as HTMLInputElement).value;
     }
-    
+
     private setValue(value: string) {
         this.input.nativeElement.value = value;
     }
@@ -89,7 +99,7 @@ export class PeopleLookup implements OnInit, AfterViewInit {
                 if (this.keyManager.activeItem) {
                 this.selectOption(this.keyManager.activeItem);
                 }
-                break;            
+                break;
             case 'Escape':
                 this.hide();
                 break;
@@ -109,7 +119,7 @@ export class PeopleLookup implements OnInit, AfterViewInit {
             case 'PageDown':
                 event.preventDefault();
                 break;
-            default:                
+            default:
                 event.stopPropagation();
                 const firstFound = this.options.first;
                 if (firstFound) {
@@ -132,7 +142,7 @@ export class PeopleLookup implements OnInit, AfterViewInit {
                     this.selectedOption.scrollIntoView();
                 }
                 break;
-            default:                
+            default:
                 if (this.list && this.list.length) {
                     this.showDropdown();
                 }
@@ -146,12 +156,12 @@ export class PeopleLookup implements OnInit, AfterViewInit {
     }
 
     private selectedOption!: LookupOption;
-    public selectOption(option: LookupOption) {        
+    public selectOption(option: LookupOption) {
         if (this.selectedOption !== option) {
             this.selectedOption = option;
             this.setValue(option.value.name);
-            this.hide(); 
-            this.selected.next(this.selectedOption.value);           
+            this.hide();
+            this.selected.next(this.selectedOption.value);
         }
     }
 
@@ -166,7 +176,7 @@ export class PeopleLookup implements OnInit, AfterViewInit {
                 }
                 console.log(list);
             })
-        );        
+        );
         this.people$.subscribe((list: IPersonInfo[]) => {
             if (list.length) {
                 this.list = list;
@@ -177,7 +187,7 @@ export class PeopleLookup implements OnInit, AfterViewInit {
             try {
                 this.cdr.detectChanges();
             } catch (e) {}
-        });        
+        });
     }
 
     public showDropdown(): void {
@@ -196,7 +206,7 @@ export class PeopleLookup implements OnInit, AfterViewInit {
     private syncWidth(): void {
         if (!this.overlayRef) {
           return;
-        }    
+        }
         const refRectWidth =
         this.input.nativeElement.getBoundingClientRect().width;
         this.overlayRef.updateSize({ width: refRectWidth });
@@ -212,17 +222,17 @@ export class PeopleLookup implements OnInit, AfterViewInit {
               originY: 'bottom',
               overlayX: 'start',
               overlayY: 'top',
-              offsetY: 4,
+              offsetY: 2,
             },
             {
               originX: 'start',
               originY: 'top',
               overlayX: 'start',
               overlayY: 'bottom',
-              offsetY: -4,
+              offsetY: -2,
             },
           ]);
-    
+
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         return new OverlayConfig({
           positionStrategy: positionStrategy,
@@ -230,8 +240,5 @@ export class PeopleLookup implements OnInit, AfterViewInit {
           hasBackdrop: true,
           backdropClass: 'cdk-overlay-transparent-backdrop',
         });
-      }
-
-
-
+    }
 }

@@ -17,9 +17,9 @@ export const SkyObject = {
     Pluto: "Pluto",
     NorthNode: "NorthNode",
     SouthNode: "SouthNode",
-    ParsForuna: "ParsFortuna",
+    ParsFortuna: "ParsFortuna",
     Lilith: "Lilith",
-    TrueBalckMoon: "TrueBlackMoon",
+    TrueBlackMoon: "TrueBlackMoon",
     Chiron: "Chiron",
     Ceres: "Ceres",
     Pallas: "Pallas",
@@ -291,7 +291,7 @@ export const AstralkaConfig = {
             }
         },
         {
-            name: SkyObject.ParsForuna,
+            name: SkyObject.ParsFortuna,
             symbol: "⦻"
         },
         {
@@ -440,13 +440,7 @@ export const AstralkaConfig = {
             angle: 36,
             delta: 0.5,
             orbs: [1, 0.5, 0.5]
-        },    
-        {
-            name: AspectName.Decile,
-            angle: 36,
-            delta: 0.5,
-            orbs: [1, 0.5, 0.5]
-        },    
+        },
         {
             name: AspectName.Biseptile,
             angle: 102.8,

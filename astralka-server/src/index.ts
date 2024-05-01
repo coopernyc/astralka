@@ -1,15 +1,12 @@
-import express, { Express, NextFunction, Request, Response } from "express";
+import express, {Express, NextFunction, Request, Response} from "express";
 import winston from "winston";
-import { natal_chart_data, chart_data } from "./api";
+import {chart_data} from "./api";
 import _ from "lodash";
 import cors from "cors";
 import bodyParser from "body-parser";
-import multer from "multer";
-import { call_ai } from "./common";
-import { HouseSystem } from "./constants";
-import { MongoClient } from "mongodb";
-import { SEFLG_SWIEPH } from "swisseph";
-import moment from "moment";
+import {call_ai} from "./common";
+import {HouseSystem} from "./constants";
+import {MongoClient} from "mongodb";
 
 const logger = winston.createLogger({
     level: "info",
@@ -29,9 +26,9 @@ const port = process.env.PORT || 3010;
 
 app.use(cors());
 app.use(bodyParser.json()) // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
 
-app.use((req: Request, res: Response, next: NextFunction) => {    
+app.use((req: Request, res: Response, next: NextFunction) => {
     logger.info(`Received a ${req.method} request for ${req.url}`);
     next();
 });
@@ -54,49 +51,51 @@ app.post("/chart-data", async (req: Request, res: Response, next: NextFunction) 
     res.json(data);
 });
 
-app.post("/explain", async (req: Request, res: Response, next: NextFunction ) => {
-    const prompt = _.get(req.body, "prompt");   
-    console.log(prompt); 
+app.post("/explain", async (req: Request, res: Response, next: NextFunction) => {
+    const prompt = _.get(req.body, "prompt");
+    console.log(prompt);
     let result = "";
     try {
         result = await call_ai(prompt);
-    } catch(err: any) {
+    } catch (err: any) {
         console.log(err?.message);
     }
     console.log('result', result);
-    res.json({ result });
+    res.json({result});
 });
 
 app.post("/save", async (req: Request, res: Response, next: NextFunction) => {
-    const entry = req.body; 
+    const entry = req.body;
     console.log(entry);
 
     const uri: string = process.env.MONGO_URI!;
     const client = new MongoClient(uri);
+
     async function run() {
         try {
             const database = client.db("astralka");
             const people = database.collection("people");
             await people.updateOne({
-                name: entry.name
-            },
-            {
-                $set: {
-                    ...entry
-                }
-            },
-            {
-                upsert: true
-            });
+                    name: entry.name
+                },
+                {
+                    $set: {
+                        ...entry
+                    }
+                },
+                {
+                    upsert: true
+                });
         } finally {
             await client.close();
         }
     }
+
     run().catch(console.dir);
 });
 
 app.post("/people", async (req: Request, res: Response, next: NextFunction) => {
-    const name = req.body.name ?? ""; 
+    const name = req.body.name ?? "";
     console.log(name);
     if (_.isEmpty(name)) {
         res.json([]);
@@ -105,17 +104,19 @@ app.post("/people", async (req: Request, res: Response, next: NextFunction) => {
     const uri: string = process.env.MONGO_URI!;
     const client = new MongoClient(uri);
     let result: any[];
+
     async function run() {
         try {
             const database = client.db("astralka");
             const people = database.collection("people");
-            result = await people.find({ name: { $regex: name, $options: "i" } }).toArray();            
+            result = await people.find({name: {$regex: name, $options: "i"}}).toArray();
         } finally {
             await client.close();
             console.log('result', result);
             res.json(result);
         }
-    }    
+    }
+
     run().catch(console.dir);
 });
 
@@ -132,14 +133,15 @@ async function run() {
             const database = client.db("astralka");
             const people = database.collection("people");
             await people.createIndex({
-                "name": 1
-            },
-            {
-                unique: true
-            });            
+                    "name": 1
+                },
+                {
+                    unique: true
+                });
         } finally {
             await client.close();
         }
     }
 }
+
 run().catch(console.dir);

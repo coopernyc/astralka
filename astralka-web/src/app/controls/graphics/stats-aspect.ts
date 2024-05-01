@@ -2,9 +2,9 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, SimpleChanges } from "@angular/core";
 import { ChartSymbol } from "./chart-symbol";
 import { ChartText } from "./chart-text";
-import { SYMBOL_CUSP, SYMBOL_PLANET, aspect_color, convert_DD_to_D, convert_DD_to_DMS, zodiac_sign } from "./common";
+import { SYMBOL_CUSP, SYMBOL_PLANET, aspect_color, convert_DD_to_D, convert_DD_to_DMS, zodiac_sign } from "../../common";
 import _ from "lodash";
-import { RestService } from "./services/rest.service";
+import { RestService } from "../../services/rest.service";
 import { StatsLine } from "./stats-line";
 
 @Component({
@@ -13,68 +13,68 @@ import { StatsLine } from "./stats-line";
     imports: [CommonModule, ChartSymbol, ChartText, StatsLine],
     template: `
         <svg:g>
-            <g *ngIf="selected" transform="translate(10, 400)">                
+            <g *ngIf="selected" transform="translate(10, 400)">
                 <g svgg-symbol [x]="0" [y]="0" [name]="selected.aspect.parties[0].name" [options]="{scale: 0.7}"></g>
                 <g svgg-symbol [x]="13" [y]="0" [name]="selected.name" [options]="options_for_explain(selected)"></g>
                 <g svgg-symbol [x]="26" [y]="0" [name]="selected.aspect.parties[1].name" [options]="{scale: 0.7}"></g>
                 <g svgg-text [x]="39" [y]="0" [text]="formatted_selected"></g>
-                <g *ngFor="let line of formatted_response; let i = index;" svgg-text 
-                    [x]="-5.5" [y]="18 + i * (18)" 
+                <g *ngFor="let line of formatted_response; let i = index;" svgg-text
+                    [x]="-5.5" [y]="18 + i * (18)"
                     [text]="line"
                     [options]="{fill: '#336699'}"
                     ></g>
-                
+
             </g>
             <g *ngIf="has_response" transform="translate(10, 500)">
                 <g svgg-stat-line [x]="0" [y]="0" [stats]="stats"></g>
-                <g *ngFor="let line of formatted_response2; let i = index;" svgg-text 
-                    [x]="-5.5" [y]="18 + i * (18)" 
+                <g *ngFor="let line of formatted_response2; let i = index;" svgg-text
+                    [x]="-5.5" [y]="18 + i * (18)"
                     [text]="line"
                     [options]="{fill: '#33998d'}"
                     ></g>
-                
+
             </g>
             <!-- MATRIX -->
             <g *ngFor="let m of matrix" transform="translate(4, 4)">
-                <rect *ngIf="m.type == 1" [attr.x]="m.x - step/2" [attr.y]="m.y - step/2" [attr.width]="step" [attr.height]="step"                     
+                <rect *ngIf="m.type == 1" [attr.x]="m.x - step/2" [attr.y]="m.y - step/2" [attr.width]="step" [attr.height]="step"
                     (click)="show_aspect_details(m)"
-                    cursor="pointer"   
-                    class="rect"   
-                    [class.selected]="selected === m"              
+                    cursor="pointer"
+                    class="rect"
+                    [class.selected]="selected === m"
                 >
                 </rect>
-                <rect *ngIf="m.type == 1" [attr.y]="m.x - step/2" [attr.x]="m.y - step/2" [attr.width]="step" [attr.height]="step"                     
+                <rect *ngIf="m.type == 1" [attr.y]="m.x - step/2" [attr.x]="m.y - step/2" [attr.width]="step" [attr.height]="step"
                     (click)="show_aspect_details(m)"
-                    cursor="pointer"   
-                    class="rect"   
-                    [class.selected]="selected === m"              
+                    cursor="pointer"
+                    class="rect"
+                    [class.selected]="selected === m"
                 >
                 </rect>
                 <g pointer-events="none" svgg-symbol [x]="m.x" [y]="m.y" [name]="m.name" [options]="options(m)"></g>
                 <g pointer-events="none" class="angle" svgg-text [y]="m.x" [x]="m.y" [text]="m.aspect ? convert_DD_ro_D(m.aspect.angle) : ''" ></g>
-                <g *ngIf="m.type===0 && m.retrograde" svgg-text [x]="m.x + 6" [y]="m.y + 3" [text]="'r'" [options]="{stroke_color: '#000'}"></g>                
+                <g *ngIf="m.type===0 && m.retrograde" svgg-text [x]="m.x + 6" [y]="m.y + 3" [text]="'r'" [options]="{stroke_color: '#000'}"></g>
             </g>
-            
+
         </svg:g>
     `,
     styles: [
         `
             .rect {
-                stroke: #cccccc;                
+                stroke: #cccccc;
                 fill: #ffffff;
-                cursor: "pointer";                                
+                cursor: "pointer";
             }
             .rect.selected {
                 fill: #fcfbc7;
-                stroke: #999999;                
+                stroke: #999999;
             }
             .rect:hover {
-                fill: #e5e7e7;        
+                fill: #e5e7e7;
             }
             ::ng-deep .angle {
                 text {
-                    font-size: 7px !important;   
-                    text-anchor: middle;             
+                    font-size: 7px !important;
+                    text-anchor: middle;
                 }
             }
         `
@@ -82,7 +82,7 @@ import { StatsLine } from "./stats-line";
 })
 export class StatsAspect implements OnChanges {
     @Input() x: number = 0;
-    @Input() y: number = 0;    
+    @Input() y: number = 0;
     @Input() data: any = {};
 
     public readonly step: number = 22;
@@ -94,8 +94,8 @@ export class StatsAspect implements OnChanges {
     public convert_DD_ro_D = convert_DD_to_D;
 
     constructor(private rest: RestService) {
-        this.rest.explain$.subscribe((data: any) => {    
-            this._stats = data.params;        
+        this.rest.explain$.subscribe((data: any) => {
+            this._stats = data.params;
             this._response2 = data.result;
         });
     }
@@ -114,7 +114,7 @@ export class StatsAspect implements OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["data"]) {
             this.loaded = false;
-            
+
             if (!changes["data"].currentValue || _.isEmpty(changes["data"].currentValue) ) {
                 this.selected = null;
                 this._response = "";
@@ -125,7 +125,7 @@ export class StatsAspect implements OnChanges {
     }
 
     public get matrix(): any {
-        
+
         if (!this.aspects || this.aspects.length < 1) {
             return [];
         }
@@ -137,11 +137,11 @@ export class StatsAspect implements OnChanges {
             y: this.y,
             name: SYMBOL_PLANET.Sun,
             type: 0,
-            retrograde: false            
+            retrograde: false
         });
-        const planets: any[] = _.values(SYMBOL_PLANET);
+        const planets: any[] = _.values(SYMBOL_PLANET).filter(x => x !== SYMBOL_PLANET.ParsFortuna);
         //const len = planets.length;
-        planets.push(SYMBOL_CUSP.Cusp1, SYMBOL_CUSP.Cusp10);        
+        planets.push(SYMBOL_CUSP.Cusp1, SYMBOL_CUSP.Cusp10);
         for(let i = 1; i < planets.length; i++) {
             let j = 0;
             //for(j; j < Math.min(i, len); j++) {
@@ -150,15 +150,15 @@ export class StatsAspect implements OnChanges {
                     const parties = x.parties.map(z => z.name).sort();
                     const matches = [planets[i], planets[j]].sort();
                     return _.isEqual(parties, matches);
-                });                
+                });
                 this.pool.push({
                     x: this.x + j * this.step,
                     y: this.y + i * this.step,
                     name: found ? found.aspect.name : '',
-                    aspect_angle: found? found.aspect.angle : 0, 
+                    aspect_angle: found? found.aspect.angle : 0,
                     type: 1,
-                    aspect: found                    
-                });                
+                    aspect: found
+                });
             }
             const so = this.sky_objects.find(x => x.name === planets[i]);
             const retrograde = so && so.speed && so.speed < 0;
@@ -171,7 +171,7 @@ export class StatsAspect implements OnChanges {
             });
         }
         this.loaded = true;
-        return this.pool;       
+        return this.pool;
     }
     public options(m: any): any {
         let options = { scale: 1 };
@@ -180,7 +180,7 @@ export class StatsAspect implements OnChanges {
         }
         _.merge(options, aspect_color(m.aspect_angle));
         return options;
-        
+
     }
     public options_for_explain(m: any): any {
         let options = { scale: 0.7 };
@@ -202,10 +202,10 @@ export class StatsAspect implements OnChanges {
     }
     public show_aspect_details(m: any): void {
         this.pool = _.flatten(_.partition(this.pool, x => x !== m));
-        if (m && m.type === 1 && m.aspect) {  
+        if (m && m.type === 1 && m.aspect) {
             this.selected = m;
             const party0 = this.format_party(this.selected.aspect.parties[0]);
-            const party1 = this.format_party(this.selected.aspect.parties[1]);            
+            const party1 = this.format_party(this.selected.aspect.parties[1]);
 
             const prompt = { prompt: `Write in 30-40 words interpretation of ${party0} is in ${this.selected.aspect.aspect.name} with ${party1}.`};
             this._response = "... processing ...";
@@ -225,7 +225,7 @@ export class StatsAspect implements OnChanges {
         });
     }
 
-    public get formatted_response(): string[] {     
+    public get formatted_response(): string[] {
         if (this._response) {
             //const result = this._response.match(/.{1,60}/g) as string[];
             const chunks: string[] = this._response.split(/\s+/);
@@ -242,15 +242,15 @@ export class StatsAspect implements OnChanges {
                 return acc;
             }, []);
             return test;
-        }   
-        
+        }
+
         return [];
     }
     private _response2: string = "";
     public get has_response(): boolean {
         return this._response2 !== "";
     }
-    public get formatted_response2(): string[] {     
+    public get formatted_response2(): string[] {
         if (this._response2) {
             //const result = this._response.match(/.{1,60}/g) as string[];
             const chunks: string[] = this._response2.split(/\s+/);
@@ -267,8 +267,8 @@ export class StatsAspect implements OnChanges {
                 return acc;
             }, []);
             return test;
-        }   
-        
+        }
+
         return [];
     }
 }
