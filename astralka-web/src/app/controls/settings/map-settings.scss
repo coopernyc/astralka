@@ -1,36 +1,40 @@
+@use "../../../portal_base";
+
 :host {
   button {
-    font-size: 11px;
+    @include portal_base.btn;
   }
 }
 .settings-content {
   width: 120px;
-  height: 460px;
+  height: 470px;
 
   &.transit {
     height: 290px;
   }
+  &.hsys {
+    width: 140px;
+    height: 210px;
 
-  background-color: #fffc;
-  border: 1px solid #555;
-  border-radius: 5px;
-  display: block;
-  white-space: nowrap;
-  owerflow: clip;
-  font-size: 12px;
-  font-family: "Roboto", sans-serif;
-  user-select: none;
-  padding: 4px;
-  line-height: 18px;
-  box-shadow: 1px 1px 3px #3335;
-  .map-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    .map-name {
-
+    line-height: 13px;
+    font-size: 11px;
+    .map-item {
+      padding: 1px 0 0 4px;
+      &.selected {
+        background-color: #6699ff;
+        color: white;
+        &:hover {
+          background-color: #336699;
+          color: white;
+        }
+      }
+      &:hover {
+        background-color: #dddd;
+        cursor: pointer;
+      }
     }
   }
 
+  @include portal_base.box;
 }
 

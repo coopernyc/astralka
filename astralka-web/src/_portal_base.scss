@@ -1,0 +1,39 @@
+@mixin box {
+  background-color: #fffe;
+  border: 1px solid #555;
+  border-radius: 5px;
+  display: block;
+  white-space: nowrap;
+  overflow: clip;
+  font-size: 12px;
+  font-family: "Roboto", sans-serif;
+  user-select: none;
+  padding: 4px;
+  line-height: 18px;
+  box-shadow: 1px 1px 3px #3335;
+  .map-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+@mixin btn {
+  height: 16px;
+  padding: 1px 6px;
+  font-family: "Roboto", sans-serif;
+  font-size: 10px;
+  color: #333;
+  background-color: #eee;
+  border: 1px solid #777;
+  border-radius: 3px;
+  cursor: pointer;
+  &:hover {
+    color: #111;
+    background-color: white;
+  }
+  &:disabled {
+    color: #555;
+    background-color: #ccc;
+    border-color: #bbb;
+  }
+}

@@ -1,0 +1,42 @@
+@use "../../../portal_base";
+
+:host {
+  button {
+    @include portal_base.btn;
+  }
+}
+
+.portal-content {
+  width: 396px;
+  height: 396px;
+  @include portal_base.box;
+  line-height: 13px;
+  font-size: 11px;
+
+  .rect {
+    stroke: #cccccc;
+    fill: #ffffff;
+    cursor: pointer;
+  }
+  .rect.selected {
+    fill: #fcfbc7;
+    stroke: #999999;
+  }
+  .rect:hover {
+    fill: #e5e7e7;
+  }
+  .rect-type-0 {
+    fill: #f6f2ed;
+  }
+  .rect-empty {
+    stroke: #cccccc;
+    fill: #ffffff;
+  }
+  ::ng-deep .angle {
+    text {
+      font-size: 7px !important;
+      text-anchor: middle;
+    }
+  }
+
+}

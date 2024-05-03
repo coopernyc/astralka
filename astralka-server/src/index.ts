@@ -41,16 +41,11 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.send("Astralka Server");
     next();
 });
-app.get("/hsys", async (req: Request, res: Response, next: NextFunction) => {
-    res.json(_.map(HouseSystem, (v, k) => v));
-    next();
-});
 app.post("/chart-data", async (req: Request, res: Response, next: NextFunction) => {
     const query = req.body;
     const data = chart_data(query);
     res.json(data);
 });
-
 app.post("/explain", async (req: Request, res: Response, next: NextFunction) => {
     const prompt = _.get(req.body, "prompt");
     console.log(prompt);

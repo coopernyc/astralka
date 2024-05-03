@@ -1,0 +1,30 @@
+@use "../../../portal_base";
+
+:host {
+  button {
+    @include portal_base.btn;
+  }
+}
+
+.portal-content {
+  width: 460px;
+  height: 250px;
+
+  &.houses {
+    width: 150px;
+    height: 200px;
+  }
+
+  @include portal_base.box;
+  line-height: 13px;
+  font-size: 11px;
+  .map-item {
+    .map-name {
+    }
+    &:hover {
+      background-color: #dddd;
+      cursor: pointer;
+    }
+  }
+}
+

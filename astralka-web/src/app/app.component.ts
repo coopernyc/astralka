@@ -1,27 +1,28 @@
-import {Component, DestroyRef, inject, OnInit, ViewChild} from '@angular/core';
+import {Component, DestroyRef, inject, NgZone, OnInit, ViewChild} from '@angular/core';
 import {ChartSymbol} from './controls/graphics/chart-symbol';
 import _ from "lodash";
 import moment from "moment-timezone";
 import {
+  aspect_color,
+  calculate_arrow,
   COLLISION_RADIUS,
-  IPersonInfo,
+  convert_DD_to_D,
+  convert_lat_to_DMS,
+  convert_long_to_DMS,
+  Gender,
+  IPersonInfo, latinAboutSign,
+  nl180,
+  nl360,
+  one_third_point_on_the_line,
+  pos_in_zodiac,
+  pos_in_zodiac_sign,
+  rotate_point_around_center,
   SYMBOL_ASPECT,
-  SYMBOL_CUSP,
   SYMBOL_HOUSE,
   SYMBOL_PLANET,
   SYMBOL_SCALE,
   SYMBOL_ZODIAC,
-  aspect_color,
-  claculate_arrow,
-  convert_DD_to_D,
-  format_pos_in_zodiac,
-  nl180,
-  nl360,
-  pos_in_zodiac,
-  pos_in_zodiac_sign,
-  random_point_on_the_line,
-  rotate_point_around_center,
-  zodiac_sign, one_third_point_on_the_line
+  zodiac_sign
 } from './common';
 import {CommonModule} from '@angular/common';
 import {ChartCircle} from './controls/graphics/chart-circle';
@@ -32,13 +33,19 @@ import {ChartText} from './controls/graphics/chart-text';
 import {StatsLine} from './controls/graphics/stats-line';
 import {StatsAspect} from './controls/graphics/stats-aspect';
 import {RestService} from './services/rest.service';
-import {distinctUntilChanged, take} from 'rxjs';
+import {Observable, shareReplay} from 'rxjs';
 import {AstralkaLookupControlComponent} from './controls/lookup/lookup';
 import {AstralkaSliderControlComponent} from "./controls/slider/slider";
 import {AstralkaAspectSettingsComponent} from "./controls/settings/aspect.settings";
 import {SettingsService} from "./services/settings.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.settings";
+import {AstralkaPositionDataComponent} from "./controls/position.data/position.data";
+import {AstralkaAspectMatrixComponent} from "./controls/matrix/matrix";
+import {AstralkaLoaderDirective} from "./controls/loader.directive";
+import markdownit from "markdown-it";
+import {SafeHtmlPipe} from "./controls/safe.html.pipe";
+import {AstralkaHouseSystemSettingsComponent} from "./controls/settings/house.system.settings";
 
 @Component({
   selector: 'astralka-root',
@@ -56,21 +63,19 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
     AstralkaLookupControlComponent,
     AstralkaSliderControlComponent,
     AstralkaAspectSettingsComponent,
-    AstralkaTransitSettingsComponent
+    AstralkaTransitSettingsComponent,
+    AstralkaPositionDataComponent,
+    AstralkaAspectMatrixComponent,
+    AstralkaLoaderDirective,
+    SafeHtmlPipe,
+    AstralkaHouseSystemSettingsComponent
   ],
   template: `
 
-    <div style="margin: 2px; height: 32px;">
+    <div style="margin: 2px; height: 32px; white-space: nowrap">
       <lookup style="margin-right: 2px;" (selected)="onPersonSelected($event)"></lookup>
       <button (click)="show_entry_form = !show_entry_form">Person</button>
       <button (click)="show_transit_form = !show_transit_form">Transit/Progression</button>
-      <div style="display: inline-block; margin-left: 2px;">
-        <select [ngModel]="hsy" (ngModelChange)="hsy_change($event)">
-          <option *ngFor="let sh of house_systems" [selected]="sh.value === hsy" [value]="sh.value">{{ sh.display }}
-          </option>
-        </select>
-      </div>
-      <!--<button (click)="it_traits()" [disabled]="_.isEmpty(data)">IT traits</button>-->
     </div>
 
     @if (show_entry_form) {
@@ -79,6 +84,14 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
           <div class="entry-group">
             <label>Name</label>
             <input class="triple" type="text" [(ngModel)]="entry.name" name="name">
+          </div>
+          <div class="entry-group">
+            <label>Gender</label>
+            <select [(ngModel)]="entry.gender" name="gender">
+              @for (opt of [{value: 0, display: 'Female'}, {value: 1, display: 'Male'}]; track opt.value) {
+                <option [value]="opt.value" [selected]="opt.value === entry.gender">{{ opt.display }}</option>
+              }
+            </select>
           </div>
           <div class="entry-group">
             <label>Location name</label>
@@ -117,25 +130,14 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
     @if (show_transit_form) {
       <form name="entry" class="entry-form">
         <div class="entry-body">
-          <!-- <div class="entry-group">
-                <label>Lattitude</label>
-                <input class="double" type="number" [(ngModel)]="transit.latitude" min="-90" max="90" name="latitude">
-          </div>
-          <div class="entry-group">
-            <label>Longitude</label>
-            <input class="double" type="number" [(ngModel)]="transit.longitude" min="-180" max="180" name="longitude">
-          </div>
-          <div class="entry-group">
-            <label>Elevation</label>
-            <input class="single" type="number" [(ngModel)]="transit.elevation" min="0" max="10000" name="elevation">
-          </div> -->
           <div class="entry-group">
             <label>Transit/Progression Date Time</label>
             <input type="datetime-local" [ngModel]="transit.date" (ngModelChange)="onTransitDateChange($event)"
                    name="date">
           </div>
           <div class="entry-group">
-            <label style="text-align: center">Interactive <b>{{ transitIntervalValue }} days</b> from Transit/Progression Date Time</label>
+            <label style="text-align: center">Interactive <b>{{ transitIntervalValue }} days</b> from
+              Transit/Progression Date Time</label>
             <astralka-slider #ref [width]="300" [range]="[-100, 100]" [value]="_transitIntervalValue"
                              (valueChange)="updateTransitDate($event)"></astralka-slider>
           </div>
@@ -153,36 +155,122 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
         <article id="person-info">
           <section><b>Natal Data</b></section>
           <section>Name: {{ selectedPerson.name }}</section>
-          <section>Location: {{ selectedPerson.location.name }}</section>
-          <section>Lat/Long/Elevation: {{ selectedPerson.location.latitude }} : {{ selectedPerson.location.longitude }} : {{ selectedPerson.location.elevation }}</section>
-          <section>DateTime (UT): {{ moment(selectedPerson.date).format('DD MMM YYYY HH:mm:ss') }}</section>
-          <section>Age: {{ age }}</section>
-          <section>House System: {{ houseSystemById }}</section>
-          <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}</section>
-          <section>Energy Score: {{avg_score.toFixed(3)}}</section>
-          <section style="margin-top: 4px;"><aspect-settings>Aspects</aspect-settings></section>
+          <section>Loc: {{ selectedPerson.location.name }}</section>
+          <section>Lat: {{ convert_lat_to_DMS(selectedPerson.location.latitude) }}
+            , {{ selectedPerson.location.latitude }}°{{ selectedPerson.location.latitude >= 0 ? 'N' : 'S' }}
+          </section>
+          <section>Long: {{ convert_long_to_DMS(selectedPerson.location.longitude) }}
+            , {{ selectedPerson.location.longitude }}°{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
+          </section>
+          <section>TimeZone: {{ selectedPerson.timezone }}, Elevation: {{ selectedPerson.location.elevation }}m
+          </section>
+          <section>DOB: {{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
+          <section>Age: {{ age }}, Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
+          <section>House System: {{ selectedHouseSystemName }}</section>
+          <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}, Score: {{ avg_score.toFixed(3) }}</section>
+          <section>
+            <astralka-position-data [positions]="stat_lines">Planets</astralka-position-data>
+          </section>
+          <section>
+            <astralka-position-data [kind]="'houses'" [positions]="stat_lines">Houses</astralka-position-data>
+          </section>
+          <section>
+            <astralka-matrix [data]="data">Matrix</astralka-matrix>
+          </section>
         </article>
       }
       @if (data && data.Transit) {
-        <article id="transit-info" [style.left.px]="width - 230">
+        <article id="transit-info" [style.left.px]="width - 220">
           <section><b>Transit/Progression Data</b></section>
           <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
           <section>DateTime (UT): {{ moment($any(calculatedTransitDateStr)).format('DD MMM YYYY HH:mm:ss') }}</section>
           <!-- <section>House System: {{houseSystemById}}</section> -->
-          <section style="margin-top: 4px; text-align: right"><transit-settings>Transits</transit-settings></section>
+          <section style="margin-top: 4px; text-align: right">
+            <astralka-transit-settings>Set Transits</astralka-transit-settings>
+          </section>
+          <section>
+            <astralka-aspect-settings>Set Aspects</astralka-aspect-settings>
+          </section>
+          <section>
+            <astralka-house-system>Set House System</astralka-house-system>
+          </section>
+          <section>
+            <button (click)="show_explanation = !show_explanation"
+                    [innerHTML]="show_explanation?'Hide Explain':'Show Explain'"></button>
+          </section>
+          <section>
+            <button (click)="show_explanation=true;perspective('with health. List best ways to keep good health.')">
+              Health
+            </button>
+          </section>
+          <section>
+            <button
+              (click)="show_explanation=true;perspective('with money. List best potential sources of getting rich.')">
+              Money
+            </button>
+          </section>
+          <section>
+            <button
+              (click)="show_explanation=true;perspective('with intellect. List areas with the most intellectual interest.')">
+              Intellect
+            </button>
+          </section>
+          <section>
+            <button (click)="show_explanation=true;perspective('with emotions.')">Emotions</button>
+          </section>
+          <section>
+            <button (click)="show_explanation=true;perspective('with family.')">Family</button>
+          </section>
+          <section>
+            <button (click)="show_explanation=true;perspective('with friends.')">Friends</button>
+          </section>
+          <section>
+            <button
+              (click)="show_explanation=true;perspective('with cars. Provide a list of the best suited makers and models.')">
+              Cars
+            </button>
+          </section>
+          <section>
+            <button
+              (click)="show_explanation=true;perspective('with romance. Provide a list of best compatibility partners.')">
+              Romance
+            </button>
+          </section>
+          <section>
+            <button (click)="show_explanation=true;perspective('with jobs. Provide a list of best choice jobs.')">Job
+            </button>
+          </section>
+          <section>
+            <button (click)="show_explanation=true;perspective('with kids. Guess on a potential number of kids.')">
+              Kids
+            </button>
+          </section>
+          <section>
+            <button
+              (click)="show_explanation=true;perspective('with travels. List best choice destinations for travel.')">
+              Travel
+            </button>
+          </section>
         </article>
       }
 
       <!-- <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
         <img src="assets/astralka-logo.svg">
       </div> -->
-      <svg xmlns="http://www.w3.org/2000/svg"
+
+
+      <svg style="position: absolute; left: 0"
+           [style.flex]="'flex: 0 ' + width + 'px'" xmlns="http://www.w3.org/2000/svg"
            [attr.width]="width"
            [attr.height]="height"
            [attr.viewBox]="'0 0 ' + width + ' ' + height"
+           #chart
       >
         <g>
           <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="#0004"></rect>
+
+
+
           <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius" [options]="{stroke_width: 2}"></g>
           <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'">
             <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#009900" stroke-width="5"
@@ -200,6 +288,20 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
              *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
           <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
           @if (this.data && this.selectedPerson) {
+
+            <g>
+              <path
+                id="sector_path_0"
+                [attr.d]="'M '+ cx +' ' + cy + 'm 0 ' + house_radius/2 + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0,-' + house_radius + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0 ' + house_radius + ' z'"
+                fill="none"
+              ></path>
+              <text class="segment-label" x="0" y="0" dy="-2">
+                <textPath xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sector_path_0" startOffset="50%" text-anchor="middle">
+                  {{latin_phrase?.phrase}}
+                </textPath>
+              </text>
+            </g>
+
             <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
 
             <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
@@ -218,8 +320,8 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
                [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
             <g svgg-symbol [x]="cx" [y]="cy" [name]="sign"
                [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
-          }
 
+          }
           <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
           <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
           <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
@@ -235,34 +337,28 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
           <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
           <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
         </g>
+
       </svg>
-      <svg xmlns="http://www.w3.org/2000/svg"
-           xmlns:xlink="http://www.w3.org/1999/xlink"
-           version="1.1"
-           [attr.width]="width"
-           [attr.height]="height"
-           [attr.viewBox]="'0 0 ' + width + ' ' + height"
-      >
-        <g>
-          <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="none" stroke="#0004"></rect>
-          <g svgg-stat-aspect [x]="10" [y]="10" [data]="data"></g>
-        </g>
-      </svg>
-    </div>
-    <div id="stats">
-      <svg xmlns="http://www.w3.org/2000/svg"
-           xmlns:xlink="http://www.w3.org/1999/xlink"
-           version="1.1"
-           [attr.width]="width"
-           [attr.height]="320"
-           [attr.viewBox]="'0 0 ' + width + ' 320'"
-      >
-        <g>
-          <rect x="0" y="0" [attr.width]="width" [attr.height]="320" fill="none" stroke="#0004"></rect>
-          <g svgg-text *ngIf="has_name" [x]="12" [y]="12" [text]="formatted_header"></g>
-          <g svgg-stat-line *ngFor="let s of stat_lines" [x]="s.x" [y]="s.y" [stats]="s.stats"></g>
-        </g>
-      </svg>
+      @if (show_explanation) {
+        <div
+          [overlayLoader]="sharedExplain$"
+          class="bot-panel"
+          [style.top.px]="height - 400 - 2" [style.width.px]="width - 4"
+        >
+          <div class="bot-panel-handler">
+            {{latin_phrase?.eng}}
+          </div>
+          <div class="bot-panel-content" id="explanation">
+            @for (e of explanation; track e; let idx = $index) {
+              @if (idx !== 0) {
+                <hr class="una"/>
+              }
+              <p [innerHTML]="e.text | safeHtml"></p>
+              <!-- + <span style='padding-right: 4px; color: #777; font-size: 10px;'>{{e.timestamp}}</span> -->
+            }
+          </div>
+        </div>
+      }
     </div>
   `,
   styleUrls: ['./app.component.scss'],
@@ -272,7 +368,7 @@ export class AppComponent implements OnInit {
   @ViewChild('ref') transitSlider!: AstralkaSliderControlComponent;
 
   public width: number = 800;
-  public height: number = 800;
+  public height: number = 1200;
   public margin: number = 100;
   public show_entry_form: boolean = false;
   public show_transit_form: boolean = false;
@@ -283,6 +379,7 @@ export class AppComponent implements OnInit {
   public house_radius: number = 0;
 
   public offset_angle: number = 90;
+  public show_explanation: boolean = true;
 
   public entry = {
     name: '',
@@ -291,7 +388,8 @@ export class AppComponent implements OnInit {
     longitude: 0,
     dob: Date(),
     timezone: 0,
-    elevation: 0
+    elevation: 0,
+    gender: Gender.Male
   };
 
   public transit: any = {
@@ -300,31 +398,35 @@ export class AppComponent implements OnInit {
     date: moment.utc().toISOString().replace('Z', ''),
     elevation: 0
   };
-  title = 'astralka-web';
+
+
   public data: any = {};
-  public hsy: string = "P";
+
+  //public hsys: string = "P";
+
   public selectedPerson!: IPersonInfo;
   public _ = _;
   public moment = moment;
-  private _explanation: string = "";
+  private _explanation: any[] = [];
 
   constructor(
     private responsive: BreakpointObserver,
     private rest: RestService,
-    private settings: SettingsService
+    private settings: SettingsService,
+    private zone: NgZone
   ) {
 
     const responsive_matrix = [
       {
         breakpoint: '(min-width: 428px)',
         width: 600,
-        height: 600,
+        height: 900,
         margin: 50
       },
       {
         breakpoint: '(min-width: 805px)',
         width: 800,
-        height: 800,
+        height: 1100,
         margin: 100
       }
     ];
@@ -339,6 +441,9 @@ export class AppComponent implements OnInit {
         });
       }
       this.init();
+      if (this.selectedPerson) {
+        this.draw();
+      }
     });
   }
 
@@ -396,14 +501,8 @@ export class AppComponent implements OnInit {
     return this._aspects;
   }
 
-  private _house_systems: any[] = [];
-
-  public get house_systems(): any[] {
-    return this._house_systems;
-  }
-
-  public get houseSystemById(): string {
-    return this.house_systems.find(x => x.value === this.hsy)?.display ?? '';
+  public get selectedHouseSystemName(): string {
+    return this.settings.house_system_selected.name;
   }
 
   public get age(): number {
@@ -416,13 +515,16 @@ export class AppComponent implements OnInit {
 
   public get sign(): string {
     if (this.data && this.data.SkyObjects) {
-      return zodiac_sign(this.data.SkyObjects.find(x => x.name === SYMBOL_PLANET.Sun).position);
+      return zodiac_sign(this.data.SkyObjects.find((x: any) => x.name === SYMBOL_PLANET.Sun).position);
     }
     return '';
   }
 
-  public get formatted_header(): string {
-    return `Details for ${this.data.query.name} ${this.data.query.lat}`;
+  public get latin_phrase(): any {
+    if (this.sign) {
+      return latinAboutSign.find((x: any) => x.sign === this.sign);
+    }
+    return null;
   }
 
   public get sky_objects(): any[] {
@@ -430,16 +532,12 @@ export class AppComponent implements OnInit {
       return [];
     }
     return this._planets.map(p => {
-      return this.data.SkyObjects.find(x => x.name === p.name);
+      return this.data.SkyObjects.find((x: any) => x.name === p.name);
     }) || [];
   }
 
-  public get explain(): string {
+  public get explanation(): any[] {
     return this._explanation;
-  }
-
-  public get has_name(): boolean {
-    return !!_.get(this, "data.query.name", null);
   }
 
   public setTransit(type: 'now' | 'natal'): void {
@@ -450,58 +548,63 @@ export class AppComponent implements OnInit {
         break;
       case 'natal':
         if (this.selectedPerson) {
-          this.transit.date = moment(this.selectedPerson.date).toISOString().replace('Z', '');
+          this.transit.date = moment(this.selectedPerson.dateUT).toISOString().replace('Z', '');
           this._transitIntervalValue = this.age;
         }
         break;
     }
-    this.draw2();
+    this.draw();
   }
 
   public onTransitDateChange(date: any): void {
     this.transit.date = date;
-    this.draw2();
+    this.draw();
   }
 
   public updateTransitDate(amount: number): void {
     this._transitIntervalValue = amount;
-    this.draw2();
+    this.draw();
   }
 
   private _destroyRef = inject(DestroyRef);
 
-  ngOnInit(): void {
-    this.rest.ready$.pipe(take(1)).subscribe(() => {
-      this.rest.house_systems().subscribe((data: any[]) => {
-        console.log(data);
-        this._house_systems = data.map(x => {
-          return {
-            display: x.name,
-            value: x.id
-          };
-        });
-        this.hsy = _.find(this.house_systems, x => x.value === "P")?.value;
-      });
-    });
+  public sharedExplain$!: Observable<any>;
 
+  ngOnInit(): void {
     this.settings.settings_change$.pipe(
       takeUntilDestroyed(this._destroyRef)
     ).subscribe(_ => {
-      this.draw2();
+      this.draw();
+    });
+
+
+    this.sharedExplain$ = this.rest.explain$.pipe(
+      takeUntilDestroyed(this._destroyRef),
+      shareReplay(2)
+    );
+
+    this.sharedExplain$.subscribe((data: any) => {
+      this.show_explanation = true;
+      if (data.result === 'LOADING!') {
+        return;
+      }
+      const md = markdownit('commonmark');
+      const result = md.render(data.result);
+      this._explanation.push({text: result, info: data.params, timestamp: moment().format("HH:mm:ss")});
+      _.delay(() => {
+        this.zone.run(() => {
+          const div = document.getElementById("explanation") as HTMLDivElement;
+          if (div) {
+            this.scrollToBottom(div);
+          }
+        });
+      }, 300);
     });
   }
 
   public onSubmitPerson() {
     //console.log(this.entry);
-    this.draw2();
-  }
-
-  public onSubmitTransit() {
-    this.draw2();
-  }
-
-  public format_position(p: number): string {
-    return format_pos_in_zodiac(p);
+    this.draw();
   }
 
   public zodiac_options(p: any): any {
@@ -538,10 +641,10 @@ export class AppComponent implements OnInit {
     return '';
   }
 
-  public draw2() {
+  public draw() {
     if (this.selectedPerson) {
       const load: any = {
-        natal: _.assign({}, this.selectedPerson, {hsys: this.hsy})
+        natal: _.assign({}, this.selectedPerson, {hsys: this.settings.house_system_selected.id})
       };
       if (this.transit) {
         load.transit = {
@@ -552,7 +655,7 @@ export class AppComponent implements OnInit {
             longitude: this.transit.longitude,
             elevation: this.transit.elevation
           },
-          hsys: this.hsy
+          hsys: this.settings.house_system_selected.id
         };
       }
       this.rest.chart_data(load).subscribe(this.handleChartData.bind(this));
@@ -567,9 +670,10 @@ export class AppComponent implements OnInit {
     this.entry.longitude = person.location.longitude;
     this.entry.latitude = person.location.latitude;
     this.entry.elevation = person.location.elevation;
-    this.entry.timezone = Math.ceil(person.location.longitude / 15);
-    this.entry.dob = moment(person.date).add(this.entry.timezone, 'hours').toISOString().replace('Z', '');
-    this.draw2();
+    this.entry.timezone = person.timezone; //  Math.ceil(person.location.longitude / 15);
+    this.entry.dob = moment.utc(person.date).toISOString().replace('Z', ''); //.add(this.entry.timezone, 'hours').toISOString().replace('Z', '');
+    this.entry.gender = person.gender ?? Gender.Male;
+    this.draw();
   }
 
   public get_point_on_circle(cx: number, cy: number, radius: number, angle: number): { x: number, y: number } {
@@ -577,14 +681,15 @@ export class AppComponent implements OnInit {
     return {x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a)};
   }
 
-  public hsy_change(hsy: string) {
-    this.hsy = hsy;
-    if (this.selectedPerson) {
-      this.draw2();
-    }
-  }
+  //
+  // public hsy_change(hsy: string) {
+  //   this.hsys = hsy;
+  //   if (this.selectedPerson) {
+  //     this.draw();
+  //   }
+  // }
 
-  public it_traits(): void {
+  private get natal_description_for_ai(): string {
     const planets: string[] = _.reduce(this.stat_lines, (acc: string[], line: any) => {
       if (_.startsWith(line.stats.name, 'Cusp')) {
         return acc;
@@ -593,14 +698,16 @@ export class AppComponent implements OnInit {
       acc.push(`${stats.label} in ${stats.position.sign}/${stats.house}`);
       return acc;
     }, []);
-    console.log(planets.join(', '));
+    _.reduce(this.aspects, (acc: string[], asp: any) => {
+      acc.push(`${asp.parties[0].name} in ${asp.aspect.name} with ${asp.parties[1].name}`);
+      return acc;
+    }, planets);
+    return planets.join(", ");
+  }
 
-    //const prompt = `Write summary about what are programmer's traits, prefered programming language and favorable IT sphere based on the following information:  ${planets.join(', ')}.`;
-    const prompt = `Write summary about what is the preferred careers and list specific professions based on the following information:  ${planets.join(', ')}.`;
-
-    this.rest.explain({prompt}).subscribe((data: any) => {
-      console.log(data);
-    });
+  public perspective(kind: string): void {
+    const prompt = `Given the following information as an outline natal data for a ${this.selectedPerson.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
+    this.rest.do_explain({prompt});
   }
 
   public resetEntry(): void {
@@ -611,22 +718,27 @@ export class AppComponent implements OnInit {
       longitude: 0,
       dob: Date(),
       timezone: 0,
-      elevation: 0
+      elevation: 0,
+      gender: Gender.Male
     };
   }
 
   public async onSavePerson(): Promise<void> {
-    const save = {
+    const save: IPersonInfo = {
       name: this.entry.name,
-      date: moment.utc(this.entry.dob).add(-this.entry.timezone, 'hours').toDate(),
+      date: moment(this.entry.dob).format("YYYY-MM-DD HH:mm:ss"),
+      timezone: this.entry.timezone,
+      dateUT: moment.utc(this.entry.dob).add(-this.entry.timezone, 'hours').format("YYYY-MM-DD HH:mm:ss"),
       location: {
         latitude: this.entry.latitude,
         longitude: this.entry.longitude,
         elevation: this.entry.elevation,
         name: this.entry.locationName
-      }
+      },
+      gender: _.toNumber(this.entry.gender)
     }
     this.rest.save(save).subscribe();
+    this.onPersonSelected(save);
   }
 
   private init(): void {
@@ -639,11 +751,11 @@ export class AppComponent implements OnInit {
     this._aspects = [];
     this.data = {};
 
-    this._explanation = "";
+    this._explanation = [];
 
     this.cx = Math.trunc(this.width / 2);
-    this.cy = Math.trunc(this.height / 2);
-    this.outer_radius = Math.min(this.width / 2, this.height / 2) - this.margin;
+    this.cy = Math.trunc(this.width / 2) - this.margin / 2;
+    this.outer_radius = Math.min(this.width / 2, this.width / 2) - this.margin;
     this.inner_radius = this.outer_radius - this.outer_radius / 6;
     this.house_radius = this.inner_radius * 5 / 7;
 
@@ -688,11 +800,9 @@ export class AppComponent implements OnInit {
         p1,
         p2,
         options: _.includes([0, 3, 6, 9], house.index)
-          ? house.index == 0
-            ? {stroke_color: "#090", stroke_width: 1.5}
-            : house.index == 9
-              ? {stroke_color: "#900", stroke_width: 1.5}
-              : {stroke_color: "#000", stroke_width: 1}
+          ? house.index == 0 || house.index == 6
+            ? {stroke_color: "#090", stroke_width: 4}
+            : {stroke_color: "#900", stroke_width: 4}
           : {stroke_color: "#000", stroke_width: 1}
       });
 
@@ -700,11 +810,9 @@ export class AppComponent implements OnInit {
         const p1 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius, a);
         const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 25, a);
         const options = _.includes([0, 3, 6, 9], house.index)
-          ? house.index == 0
-            ? {stroke_color: "#090", stroke_width: 1.5}
-            : house.index == 9
-              ? {stroke_color: "#900", stroke_width: 1.5}
-              : {stroke_color: "#000", stroke_width: 1}
+          ? house.index == 0 || house.index == 6
+            ? {stroke_color: "#090", stroke_width: 2}
+            : {stroke_color: "#900", stroke_width: 2}
           : {stroke_color: "#000", stroke_width: 1};
         this._lines.push({
           p1,
@@ -713,7 +821,7 @@ export class AppComponent implements OnInit {
         });
         if (i == 0 || i == 9) {
           this._lines.push(
-            ...claculate_arrow(9, 4, p1, p2, options)
+            ...calculate_arrow(9, 4, p1, p2, options)
           );
         }
       }
@@ -784,7 +892,7 @@ export class AppComponent implements OnInit {
         .from(this.settings.transit_settings_iter)
         .filter(x => x.enabled)
         .map(x => x.name);
-      const skyObjectsTransitAdjusted = this.adjust(data.Transit.SkyObjects.filter(x => {
+      const skyObjectsTransitAdjusted = this.adjust(data.Transit.SkyObjects.filter((x: any) => {
         return _.includes(enabled_transit_names, x.name)
       }));
       skyObjectsTransitAdjusted.forEach((so: any) => {
@@ -856,7 +964,7 @@ export class AppComponent implements OnInit {
     // stat lines
     let cnt = 1;
     this._stat_lines = [];
-    const sun_house = this.data.SkyObjects.find(so => so.name === SYMBOL_PLANET.Sun).house.index + 1;
+    const sun_house = this.data.SkyObjects.find((so: any) => so.name === SYMBOL_PLANET.Sun).house.index + 1;
     this.data.dayChart = _.includes([7, 8, 9, 10, 11, 12], sun_house);
     this.data.SkyObjects.forEach((so: any) => {
       const STAT_MARGIN = 12;
@@ -892,6 +1000,7 @@ export class AppComponent implements OnInit {
   }
 
   public avg_score: number = -1;
+
   private format_dignities(so: any): string {
 
     if (_.includes([SYMBOL_PLANET.ParsFortuna], so.name)) {
@@ -902,29 +1011,29 @@ export class AppComponent implements OnInit {
     let result: string[] = [];
     let score: number = 6;
     if (_.some(_.get(so, "dignities.domicile", []), x => x === sign)) {
-      result.push("Dom");
+      result.push("Domicile");
       score += 3;
     } else if (_.some(_.get(so, "dignities.exaltation", []), x => x === sign)) {
-      result.push("Exl");
+      result.push("Exaltation");
       score += 2;
     } else if (_.some(_.get(so, "dignities.detriment", []), x => x === sign)) {
-      result.push("Det");
+      result.push("Detriment");
       score -= 3;
     } else if (_.some(_.get(so, "dignities.fall", []), x => x === sign)) {
       result.push("Fall");
       score -= 2;
     } else if (_.some(_.get(so, "dignities.friend", []), x => x === sign)) {
-      result.push("Fnd");
+      result.push("Friend");
       score += 1;
     } else if (_.some(_.get(so, "dignities.enemy", []), x => x === sign)) {
-      result.push("Emy");
+      result.push("Enemy");
       score -= 1;
     }
     if (so.oriental) {
-      result.push("Ori");
+      result.push("Oriental");
       score += 1;
     } else {
-      result.push("Occ");
+      result.push("Occidental");
       score -= 1;
     }
     if (so.speed >= 0) {
@@ -953,10 +1062,26 @@ export class AppComponent implements OnInit {
       }
     }
 
+    // house sign
+    const house_sign = pos_in_zodiac(so.house.position).sign;
+    // check if so also a ruler or detriment
+    const dom = _.some(this.sky_objects.filter(x => x.dignities && _.includes(x.dignities.domicile, house_sign)), z => z.name === so.name);
+    if (dom) {
+      score += 2;
+      result.push("HDom");
+      //console.log(`${so.name} ${house_sign} ${so.dignities.domicile.join('|')}`);
+    }
+    const det = _.some(this.sky_objects.filter(x => x.dignities && _.includes(x.dignities.detriment, house_sign)), z => z.name === so.name);
+    if (det) {
+      score -= 2;
+      result.push("HDet");
+      //console.log(`${so.name} ${house_sign} ${so.dignities.detriment.join('|')} ${found.name}`);
+    }
+
     let aspect_score = 0;
-    this.data.Aspects.forEach(a => {
+    this.data.Aspects.forEach((a: any) => {
       if (so.name === a.parties[0].name || so.name === a.parties[1].name) {
-        switch(a.aspect.angle) {
+        switch (a.aspect.angle) {
           case 180:
             aspect_score -= 3;
             break;
@@ -985,7 +1110,7 @@ export class AppComponent implements OnInit {
     this.avg_score = (this.avg_score > -1 ? (this.avg_score + score) / 2 : score) + aspect_score;
 
 
-    return result.join('.');
+    return result.join(', ');
   }
 
   private adjust(sos: any[], transit: boolean = false): any[] {
@@ -1060,6 +1185,15 @@ export class AppComponent implements OnInit {
     }
     return points;
   }
+
+  private scrollToBottom(element: HTMLDivElement) {
+    element.scroll({top: element.scrollHeight, behavior: 'smooth'});
+  }
+
+  protected readonly Gender = Gender;
+  protected readonly convert_lat_to_DMS = convert_lat_to_DMS;
+  protected readonly convert_long_to_DMS = convert_long_to_DMS;
+  protected readonly latinAboutSign = latinAboutSign;
 }
 
 

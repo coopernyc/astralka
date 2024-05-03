@@ -12,7 +12,10 @@ export function nl360(a: number): number {
 export function nl180(a: number): number {
     return nl360(a) % 180;
 }
-
+export enum Gender {
+  Female,
+  Male
+}
 export const SYMBOL_PLANET = {
     Sun: "Sun",
     Moon: "Moon",
@@ -115,6 +118,18 @@ export function convert_DD_to_DMS(degrees: number, sign = "°"): string {
     var sec = Math.round(frac * 3600 - min * 60);
     return pad2(deg) + sign + pad2(min) + "'" + pad2(sec) + "\"";
 }
+
+export function convert_lat_to_DMS(lat: number): string {
+  const suffix = lat >= 0 ? 'N' : 'S';
+  const l = Math.abs(lat);
+  return `${convert_DD_to_DMS(l)}${suffix}`;
+}
+export function convert_long_to_DMS(long: number): string {
+  const suffix = long >= 0 ? 'E' : 'W';
+  const l = Math.abs(long);
+  return `${convert_DD_to_DMS(l)}${suffix}`;
+}
+
 export function convert_DD_to_D(degrees: number, sign = "°"): string {
     var deg = degrees | 0;
     var frac = Math.abs(degrees - deg);
@@ -237,7 +252,7 @@ export function aspect_color(angle: number): any {
 
 //stroke_dasharray: "5,3"
 
-export function claculate_arrow(L: number, W: number, p1: any, p2: any, options: any): any[]  {
+export function calculate_arrow(L: number, W: number, p1: any, p2: any, options: any): any[]  {
     const [dx, dy] = [p2.x - p1.x, p2.y - p1.y];
     const Norm = Math.sqrt(dx*dx + dy*dy);
     const [udx, udy] = [dx/Norm, dy/Norm];
@@ -258,11 +273,77 @@ export function claculate_arrow(L: number, W: number, p1: any, p2: any, options:
 
 export interface IPersonInfo {
     name: string,
-    date: Date,
+    date: string,
+    timezone: number,
+    dateUT: string,
     location: {
         latitude: number,
         longitude: number,
         elevation: number,
         name: string
-    }
+    },
+    gender: number
 }
+
+export const latinAboutSign = [
+  {
+    sign: SYMBOL_ZODIAC.Aries,
+    phrase: "Dulce bellum inexpertis",
+    eng: "War is sweet to those who have never fought"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Taurus,
+    phrase: "Abusus non tollit usum",
+    eng: "Misuse does not remove use"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Gemini,
+    phrase: "Credo ut intelligam",
+    eng: "I believe so that I may understand"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Cancer,
+    phrase: "Ave atque vale",
+    eng: "Hail and farewell"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Leo,
+    phrase: "Pulvis et umbra sumu",
+    eng: "We are dust and shadow"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Virgo,
+    phrase: "Minima maxima sunt",
+    eng: "The smallest things are most important"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Libra,
+    phrase: "Amor et melle et felle est fecundissimus",
+    eng: "Love is rich with both honey and venom"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Scorpio,
+    phrase: "Veni, vidi, vici",
+    eng: "I came, I saw, I conquered"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Sagittarius,
+    phrase: "Carpe diem",
+    eng: "Seize the day"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Capricorn,
+    phrase: "Beatus homo qui invenit sapientiam",
+    eng: "Blessed is the man who finds wisdom"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Aquarius,
+    phrase: "Aut viam inveniam aut faciam",
+    eng: "I will either find a way, or make one"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Pisces,
+    phrase: "Crede quod habes, et habes",
+    eng: "Believe that you have it, and you do"
+  }
+];

@@ -42,8 +42,12 @@ export function find_aspect(a: IChartObject, b: IChartObject, angle: number, def
             return Math.abs(swisseph.swe_difdeg2n(x.angle, angle).degreeDistance180) <= delta;
         });                
     } else {
-        const o_index = Math.max(orb_index(a.name), orb_index(b.name));
-        def = _.find(defs, (x: IAspectDef) => Math.abs(swisseph.swe_difdeg2n(x.angle, angle).degreeDistance180) <= x.orbs[o_index]);
+
+        def = _.find(defs, (x: IAspectDef) => {
+            const delta = Math.max(x.orbs[orb_index(a.name)], x.orbs[orb_index(b.name)]);
+            const result = Math.abs(swisseph.swe_difdeg2n(x.angle, angle).degreeDistance180) <= delta;
+            return result;
+        });
     }
     return def ? new Aspect([a, b], angle, def) : undefined;
 }

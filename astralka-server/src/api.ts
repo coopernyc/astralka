@@ -15,6 +15,7 @@ export interface ILocation {
 export interface IChartInput {
     name: string;
     date: string;
+    dateUT: string;
     location: ILocation,    
     hsys: string
 }
@@ -35,7 +36,9 @@ export function chart_data(query: IQuery): any {
 
     // NATAL
     const natal = query.natal;
-    const date = moment.utc(natal.date);
+    const date = moment.utc(natal.dateUT);
+
+    console.log(date.year() + '-' + (date.month() + 1) + 'm' + date.date() + 'd ' + date.hours() + 'h' + date.minutes() + 'm' + date.seconds());
 
     let julian: any = swisseph.swe_utc_to_jd(
         date.year(), date.month() + 1, date.date(), 
@@ -43,8 +46,7 @@ export function chart_data(query: IQuery): any {
         swisseph.SE_GREG_CAL);
     let julian_ut: number = julian.julianDayUT;
     let loc = natal.location;
-    swisseph.swe_set_topo(loc.latitude, loc.longitude, loc.elevation ?? 0);
-    const fl: number = swisseph.SEFLG_SPEED | swisseph.SEFLG_TOPOCTR;
+
     const hse: any = swisseph.swe_houses_ex(julian_ut, 0, loc.latitude, loc.longitude, natal.hsys);
     const houses: IHouse[] = [];
     hse.house.forEach((x: number, index: number) => {
@@ -56,6 +58,9 @@ export function chart_data(query: IQuery): any {
         });
         houses.push(h);
     });
+    //swisseph.swe_set_topo(loc.latitude, loc.longitude, loc.elevation ?? 0);
+
+    const fl: number = swisseph.SEFLG_SPEED; // | swisseph.SEFLG_TOPOCTR;
     sky_objects.forEach((x: ISkyObject) => {
         let calc: any;
         if (x.name !== SkyObject.ParsFortuna) {
@@ -95,9 +100,9 @@ export function chart_data(query: IQuery): any {
             const b = sky_objects[j];
             if (
                 (a.name === SkyObject.SouthNode && b.name === SkyObject.NorthNode) ||
-                (b.name === SkyObject.SouthNode && a.name === SkyObject.NorthNode) ||
-                b.name === SkyObject.ParsFortuna ||
-                a.name === SkyObject.ParsFortuna
+                (b.name === SkyObject.SouthNode && a.name === SkyObject.NorthNode) //||
+                // b.name === SkyObject.ParsFortuna ||
+                // a.name === SkyObject.ParsFortuna
             ) {
                 continue;
             }
@@ -109,9 +114,9 @@ export function chart_data(query: IQuery): any {
         }        
         for(let j = 0; j < only_asc_and_mc.length; j++) {
             const a = sky_objects[i];
-            if (a.name === SkyObject.ParsFortuna) {
-                continue;
-            }
+            // if (a.name === SkyObject.ParsFortuna) {
+            //     continue;
+            // }
             const b = only_asc_and_mc[j]; 
             const angle = swisseph.swe_difdegn(a.position, b.position).degreeDiff;
             const found = find_aspect(a, b, angle, aspect_defs);

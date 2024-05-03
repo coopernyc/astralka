@@ -13,32 +13,21 @@ export class SettingsService {
 
   private readonly _aspect_settings: Map<string, any> = new Map();
   private readonly _transit_settings: Map<string, any> = new Map();
+  private readonly _house_system_settings: Map<string, any> = new Map();
 
   constructor(
     private storage: LocalStorageService
   ) {
-    // const aset: any[] = this.storage.restore("aspect-settings") as any[];
-    // if (aset) {
-    //   _.reduce(aset, (acc, v) => {
-    //     acc.set(v.name, v);
-    //     return acc;
-    //   }, this._aspect_settings);
-    // } else {
-    //   _.reduce(SYMBOL_ASPECT, (acc, v) => {
-    //     acc.set(v, {name: v, enabled: true});
-    //     return acc;
-    //   }, this._aspect_settings);
-    //   this.storage.store("aspect-settings", Array.from(this._aspect_settings.values()));
-    // }
     this.init_map_settings("aspect-settings", this._aspect_settings);
     this.init_map_settings("transit-settings", this._transit_settings);
+    this.init_map_settings("house-system-settings", this._house_system_settings);
   }
 
   private init_map_settings(name: string, map: Map<string, any>) {
     const s: any[] = this.storage.restore(name) as any[];
     if (s && s.length) {
       _.reduce(s, (acc, v) => {
-        acc.set(v.name, v);
+        acc.set(name === 'house-system-settings'? v.id : v.name, v);
         return acc;
       }, map);
     } else {
@@ -46,17 +35,89 @@ export class SettingsService {
       switch (name) {
         case 'aspect-settings':
           o = _.values(SYMBOL_ASPECT);
+          _.reduce(o, (acc, v) => {
+            acc.set(v, {name: v, enabled: true});
+            return acc;
+          }, map);
           break;
         case 'transit-settings':
           o = _.reject(_.values(SYMBOL_PLANET), x => _.includes([
             SYMBOL_PLANET.ParsFortuna, SYMBOL_PLANET.NorthNode, SYMBOL_PLANET.SouthNode
           ], x));
+          _.reduce(o, (acc, v) => {
+            acc.set(v, {name: v, enabled: true});
+            return acc;
+          }, map);
+          break;
+        case 'house-system-settings':
+          o = _.reduce([
+            {
+              "id": "E",
+              "name": "Equal (cusp 1 is asc)"
+            },
+            {
+              "id": "B",
+              "name": "Alcabitius"
+            },
+            {
+              "id": "C",
+              "name": "Campanus"
+            },
+            {
+              "id": "H",
+              "name": "Azimuthal"
+            },
+            {
+              "id": "K",
+              "name": "Koch"
+            },
+            {
+              "id": "M",
+              "name": "Morinus"
+            },
+            {
+              "id": "O",
+              "name": "Parphyrius"
+            },
+            {
+              "id": "P",
+              "name": "Placidus"
+            },
+            {
+              "id": "R",
+              "name": "Regiomontanus"
+            },
+            {
+              "id": "T",
+              "name": "Polich/Page"
+            },
+            {
+              "id": "U",
+              "name": "Krusinski/Pisa/Goelzer"
+            },
+            {
+              "id": "V",
+              "name": "Vehlow Equal"
+            },
+            {
+              "id": "X",
+              "name": "Meridian"
+            },
+            {
+              "id": "W",
+              "name": "Equal, whole sign"
+            }
+          ], (acc, v) => {
+            const m = {
+              id: v.id,
+              name: v.name,
+              selected: v.id === 'P'
+            };
+            acc.set(m.id, m);
+            return acc;
+          }, map);
           break;
       }
-      _.reduce(o, (acc, v) => {
-        acc.set(v, {name: v, enabled: true});
-        return acc;
-      }, map);
       this.storage.store(name, Array.from(map.values()));
     }
   }
@@ -64,15 +125,17 @@ export class SettingsService {
   public get aspect_settings_iter(): IterableIterator<any> {
     return this._aspect_settings.values();
   }
-  public get aspect_settings(): Map<string, any> {
-    return this._aspect_settings;
-  }
 
   public get transit_settings_iter(): IterableIterator<any> {
     return this._transit_settings.values();
   }
-  public get transit_settings(): Map<string, any> {
-    return this._transit_settings;
+
+  public get house_system_settings_iter(): IterableIterator<any> {
+    return this._house_system_settings.values();
+  }
+
+  public get house_system_selected(): any {
+    return _.find(Array.from(this.house_system_settings_iter), v => v.selected);
   }
 
   public update_map_settings(name: string, value: any) {
@@ -80,12 +143,20 @@ export class SettingsService {
     switch (name) {
       case "aspect-settings":
         map = this._aspect_settings;
+        map.set(value.name, value);
         break;
       case "transit-settings":
         map = this._transit_settings;
+        map.set(value.name, value);
+        break;
+      case "house-system-settings":
+        map = this._house_system_settings;
+        map.forEach((v, k) => {
+          v.selected = k === value.id;
+        });
         break;
     }
-    map.set(value.name, value);
+
     this.storage.store(name, Array.from(map.values()));
     this.settings_change$.next();
   }
