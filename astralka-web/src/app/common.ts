@@ -12,7 +12,10 @@ export function nl360(a: number): number {
 export function nl180(a: number): number {
     return nl360(a) % 180;
 }
-
+export enum Gender {
+  Female,
+  Male
+}
 export const SYMBOL_PLANET = {
     Sun: "Sun",
     Moon: "Moon",
@@ -237,7 +240,7 @@ export function aspect_color(angle: number): any {
 
 //stroke_dasharray: "5,3"
 
-export function claculate_arrow(L: number, W: number, p1: any, p2: any, options: any): any[]  {
+export function calculate_arrow(L: number, W: number, p1: any, p2: any, options: any): any[]  {
     const [dx, dy] = [p2.x - p1.x, p2.y - p1.y];
     const Norm = Math.sqrt(dx*dx + dy*dy);
     const [udx, udy] = [dx/Norm, dy/Norm];
@@ -264,5 +267,6 @@ export interface IPersonInfo {
         longitude: number,
         elevation: number,
         name: string
-    }
+    },
+    gender: number
 }

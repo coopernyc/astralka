@@ -1,0 +1,12 @@
+:host {
+  background-color: white;
+  padding: 1em;
+  border: 1px solid #777;
+  border-radius: 5px;
+  box-shadow: 1px 1px 1px #3335;
+  font-family: "Roboto", sans-serif;
+  font-size: 11px;
+  * > div {
+    text-align: center;
+  }
+}

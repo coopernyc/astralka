@@ -1,4 +1,4 @@
-import {Component, DestroyRef, inject, OnInit, ViewChild} from '@angular/core';
+import {afterNextRender, afterRender, Component, DestroyRef, inject, NgZone, OnInit, ViewChild} from '@angular/core';
 import {ChartSymbol} from './controls/graphics/chart-symbol';
 import _ from "lodash";
 import moment from "moment-timezone";
@@ -12,7 +12,7 @@ import {
   SYMBOL_SCALE,
   SYMBOL_ZODIAC,
   aspect_color,
-  claculate_arrow,
+  calculate_arrow,
   convert_DD_to_D,
   format_pos_in_zodiac,
   nl180,
@@ -21,7 +21,7 @@ import {
   pos_in_zodiac_sign,
   random_point_on_the_line,
   rotate_point_around_center,
-  zodiac_sign, one_third_point_on_the_line
+  zodiac_sign, one_third_point_on_the_line, Gender
 } from './common';
 import {CommonModule} from '@angular/common';
 import {ChartCircle} from './controls/graphics/chart-circle';
@@ -32,13 +32,18 @@ import {ChartText} from './controls/graphics/chart-text';
 import {StatsLine} from './controls/graphics/stats-line';
 import {StatsAspect} from './controls/graphics/stats-aspect';
 import {RestService} from './services/rest.service';
-import {distinctUntilChanged, take} from 'rxjs';
+import {distinctUntilChanged, map, Observable, shareReplay, take} from 'rxjs';
 import {AstralkaLookupControlComponent} from './controls/lookup/lookup';
 import {AstralkaSliderControlComponent} from "./controls/slider/slider";
 import {AstralkaAspectSettingsComponent} from "./controls/settings/aspect.settings";
 import {SettingsService} from "./services/settings.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.settings";
+import {AstralkaPositionDataComponent} from "./controls/position.data/position.data";
+import {AstralkaAspectMatrixComponent} from "./controls/matrix/matrix";
+import {AstralkaLoaderDirective} from "./controls/loader.directive";
+import markdownit from "markdown-it";
+import {SafeHtmlPipe} from "./controls/safe.html.pipe";
 
 @Component({
   selector: 'astralka-root',
@@ -56,11 +61,15 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
     AstralkaLookupControlComponent,
     AstralkaSliderControlComponent,
     AstralkaAspectSettingsComponent,
-    AstralkaTransitSettingsComponent
+    AstralkaTransitSettingsComponent,
+    AstralkaPositionDataComponent,
+    AstralkaAspectMatrixComponent,
+    AstralkaLoaderDirective,
+    SafeHtmlPipe
   ],
   template: `
 
-    <div style="margin: 2px; height: 32px;">
+    <div style="margin: 2px; height: 32px; white-space: nowrap">
       <lookup style="margin-right: 2px;" (selected)="onPersonSelected($event)"></lookup>
       <button (click)="show_entry_form = !show_entry_form">Person</button>
       <button (click)="show_transit_form = !show_transit_form">Transit/Progression</button>
@@ -79,6 +88,14 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
           <div class="entry-group">
             <label>Name</label>
             <input class="triple" type="text" [(ngModel)]="entry.name" name="name">
+          </div>
+          <div class="entry-group">
+            <label>Gender</label>
+            <select [(ngModel)]="entry.gender" name="gender">
+              @for (opt of [{value: 0, display: 'Female'}, {value: 1, display: 'Male'}]; track opt.value) {
+                <option [value]="opt.value" [selected]="opt.value === entry.gender">{{ opt.display }}</option>
+              }
+            </select>
           </div>
           <div class="entry-group">
             <label>Location name</label>
@@ -154,115 +171,121 @@ import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.sett
           <section><b>Natal Data</b></section>
           <section>Name: {{ selectedPerson.name }}</section>
           <section>Location: {{ selectedPerson.location.name }}</section>
-          <section>Lat/Long/Elevation: {{ selectedPerson.location.latitude }} : {{ selectedPerson.location.longitude }} : {{ selectedPerson.location.elevation }}</section>
-          <section>DateTime (UT): {{ moment(selectedPerson.date).format('DD MMM YYYY HH:mm:ss') }}</section>
-          <section>Age: {{ age }}</section>
+          <section>Latitude: {{ selectedPerson.location.latitude }}</section>
+          <section>Longitude: {{ selectedPerson.location.longitude }}</section>
+          <section>Elevation: {{ selectedPerson.location.elevation }}m</section>
+          <section>DT(UT): {{ moment(selectedPerson.date).format('DDMMMYYYY HH:mm') }}</section>
+          <section>Age: {{ age }}, Gender: {{selectedPerson.gender === Gender.Male?'Male':'Female'}}</section>
           <section>House System: {{ houseSystemById }}</section>
-          <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}</section>
+          <section>This is a {{ data.dayChart ? "Day Chart" : "Night Chart" }}</section>
           <section>Energy Score: {{avg_score.toFixed(3)}}</section>
-          <section style="margin-top: 4px;"><aspect-settings>Aspects</aspect-settings></section>
+          <section style="margin-top: 4px"><astralka-position-data [positions]="stat_lines">Planets</astralka-position-data></section>
+          <section style="margin-top: 4px"><astralka-position-data [kind]="'houses'" [positions]="stat_lines">Houses</astralka-position-data></section>
+          <section style="margin-top: 4px"><astralka-matrix [data]="data">Matrix</astralka-matrix></section>
         </article>
       }
       @if (data && data.Transit) {
-        <article id="transit-info" [style.left.px]="width - 230">
+        <article id="transit-info" [style.left.px]="width - 220">
           <section><b>Transit/Progression Data</b></section>
           <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
           <section>DateTime (UT): {{ moment($any(calculatedTransitDateStr)).format('DD MMM YYYY HH:mm:ss') }}</section>
           <!-- <section>House System: {{houseSystemById}}</section> -->
-          <section style="margin-top: 4px; text-align: right"><transit-settings>Transits</transit-settings></section>
+          <section style="margin-top: 4px; text-align: right"><transit-settings>Set Transits</transit-settings></section>
+          <section style="margin-top: 4px; text-align: right"><aspect-settings>Set Aspects</aspect-settings></section>
+          <section style="margin-top: 4px; text-align: right"><button (click)="show_explanation = !show_explanation" [innerHTML]="show_explanation?'Hide Explain':'Show Explain'"></button></section>
+          <section style="margin-top: 4px; text-align: right"><button (click)="show_explanation=true;perspective('health')">Health</button></section>
+          <section style="margin-top: 4px; text-align: right"><button (click)="show_explanation=true;perspective('money')">Money</button></section>
+          <section style="margin-top: 4px; text-align: right"><button (click)="show_explanation=true;perspective('intellect')">Intellect</button></section>
+          <section style="margin-top: 4px; text-align: right"><button (click)="show_explanation=true;perspective('emotions')">Emotions</button></section>
+          <section style="margin-top: 4px; text-align: right"><button (click)="show_explanation=true;perspective('family')">Family</button></section>
+          <section style="margin-top: 4px; text-align: right"><button (click)="show_explanation=true;perspective('romance')">Romance</button></section>
+          <section style="margin-top: 4px; text-align: right"><button (click)="show_explanation=true;perspective('job')">Job</button></section>
         </article>
       }
 
       <!-- <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
         <img src="assets/astralka-logo.svg">
       </div> -->
-      <svg xmlns="http://www.w3.org/2000/svg"
-           [attr.width]="width"
-           [attr.height]="height"
-           [attr.viewBox]="'0 0 ' + width + ' ' + height"
-      >
-        <g>
-          <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="#0004"></rect>
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius" [options]="{stroke_width: 2}"></g>
-          <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'">
-            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#009900" stroke-width="5"
-                        pathLength="360" stroke-dasharray="30 90 30 90 30 90" fill="none"/>
-            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#cc0000" stroke-width="5"
-                        pathLength="360" stroke-dasharray="0 30 30 90 30 90 30 60" fill="none"/>
-            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#336699" stroke-width="5"
-                        pathLength="360" stroke-dasharray="0 60 30 90 30 90 30 30" fill="none"/>
-            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#ffd900" stroke-width="5"
-                        pathLength="360" stroke-dasharray="0 90 30 90 30 90 30" fill="none"/>
+
+
+
+        <svg style="position: absolute; left: 0"
+             [style.flex]="'flex: 0 ' + width + 'px'" xmlns="http://www.w3.org/2000/svg"
+             [attr.width]="width"
+             [attr.height]="height"
+             [attr.viewBox]="'0 0 ' + width + ' ' + height"
+             #chart
+        >
+          <g>
+            <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="#0004"></rect>
+            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius" [options]="{stroke_width: 2}"></g>
+            <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'">
+              <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#009900" stroke-width="5"
+                          pathLength="360" stroke-dasharray="30 90 30 90 30 90" fill="none"/>
+              <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#cc0000" stroke-width="5"
+                          pathLength="360" stroke-dasharray="0 30 30 90 30 90 30 60" fill="none"/>
+              <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#336699" stroke-width="5"
+                          pathLength="360" stroke-dasharray="0 60 30 90 30 90 30 30" fill="none"/>
+              <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#ffd900" stroke-width="5"
+                          pathLength="360" stroke-dasharray="0 90 30 90 30 90 30" fill="none"/>
+            </g>
+            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
+            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius + 5" [options]="{stroke_color: '#777'}"></g>
+            <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line
+               *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
+            <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
+            @if (this.data && this.selectedPerson) {
+              <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
+
+              <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+              <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
+              <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
+                 class="planets-angle"></g>
+
+              <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+              <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
+                 class="planets-angle"></g>
+              <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name"
+                 [options]="{scale: 0.8, stroke_color: '#333'}"></g>
+              <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name"
+                 [options]="p.options"></g>
+              <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20"
+                 [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
+              <g svgg-symbol [x]="cx" [y]="cy" [name]="sign"
+                 [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
+            }
+            <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
+            <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
+            <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
+
+            <g svgg-symbol [x]="60" [y]="30" [options]="{ scale: 2 }"></g>
+            <g svgg-line [x1]="50" [y1]="30" [x2]="70" [y2]="30"></g>
+            <g svgg-line [x1]="60" [y1]="20" [x2]="60" [y2]="40"></g>
+
+            <g svgg-symbol [x]="90" [y]="30" [options]="{ scale: 0.5 }"></g>
+            <g svgg-line [x1]="80" [y1]="30" [x2]="100" [y2]="30"></g>
+            <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
+
+            <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
+            <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
           </g>
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius + 5" [options]="{stroke_color: '#777'}"></g>
-          <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line
-             *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
-          <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
-          @if (this.data && this.selectedPerson) {
-            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
-
-            <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-            <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
-            <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
-               class="planets-angle"></g>
-
-            <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-            <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
-               class="planets-angle"></g>
-            <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name"
-               [options]="{scale: 0.8, stroke_color: '#333'}"></g>
-            <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name"
-               [options]="p.options"></g>
-            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20"
-               [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
-            <g svgg-symbol [x]="cx" [y]="cy" [name]="sign"
-               [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
+        </svg>
+      @if (show_explanation) {
+        <div
+          [overlayLoader]="sharedExplain$"
+          class="bot-panel"
+          [style.top.px]="height - 300 - 2" [style.width.px]="width - 4"
+          id="explanation"
+        >
+          @for (e of explanation; track e; let idx = $index) {
+            @if (idx !== 0) {
+              <hr class="una" />
+            }
+            <p [innerHTML]="e.text | safeHtml"></p>
+            <!-- + <span style='padding-right: 4px; color: #777; font-size: 10px;'>{{e.timestamp}}</span> -->
           }
-
-          <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
-          <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
-          <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
-
-          <g svgg-symbol [x]="60" [y]="30" [options]="{ scale: 2 }"></g>
-          <g svgg-line [x1]="50" [y1]="30" [x2]="70" [y2]="30"></g>
-          <g svgg-line [x1]="60" [y1]="20" [x2]="60" [y2]="40"></g>
-
-          <g svgg-symbol [x]="90" [y]="30" [options]="{ scale: 0.5 }"></g>
-          <g svgg-line [x1]="80" [y1]="30" [x2]="100" [y2]="30"></g>
-          <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
-
-          <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
-          <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
-        </g>
-      </svg>
-      <svg xmlns="http://www.w3.org/2000/svg"
-           xmlns:xlink="http://www.w3.org/1999/xlink"
-           version="1.1"
-           [attr.width]="width"
-           [attr.height]="height"
-           [attr.viewBox]="'0 0 ' + width + ' ' + height"
-      >
-        <g>
-          <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="none" stroke="#0004"></rect>
-          <g svgg-stat-aspect [x]="10" [y]="10" [data]="data"></g>
-        </g>
-      </svg>
-    </div>
-    <div id="stats">
-      <svg xmlns="http://www.w3.org/2000/svg"
-           xmlns:xlink="http://www.w3.org/1999/xlink"
-           version="1.1"
-           [attr.width]="width"
-           [attr.height]="320"
-           [attr.viewBox]="'0 0 ' + width + ' 320'"
-      >
-        <g>
-          <rect x="0" y="0" [attr.width]="width" [attr.height]="320" fill="none" stroke="#0004"></rect>
-          <g svgg-text *ngIf="has_name" [x]="12" [y]="12" [text]="formatted_header"></g>
-          <g svgg-stat-line *ngFor="let s of stat_lines" [x]="s.x" [y]="s.y" [stats]="s.stats"></g>
-        </g>
-      </svg>
+        </div>
+      }
     </div>
   `,
   styleUrls: ['./app.component.scss'],
@@ -283,6 +306,7 @@ export class AppComponent implements OnInit {
   public house_radius: number = 0;
 
   public offset_angle: number = 90;
+  public show_explanation: boolean = false;
 
   public entry = {
     name: '',
@@ -291,7 +315,8 @@ export class AppComponent implements OnInit {
     longitude: 0,
     dob: Date(),
     timezone: 0,
-    elevation: 0
+    elevation: 0,
+    gender: Gender.Male
   };
 
   public transit: any = {
@@ -306,12 +331,13 @@ export class AppComponent implements OnInit {
   public selectedPerson!: IPersonInfo;
   public _ = _;
   public moment = moment;
-  private _explanation: string = "";
+  private _explanation: any[] = [];
 
   constructor(
     private responsive: BreakpointObserver,
     private rest: RestService,
-    private settings: SettingsService
+    private settings: SettingsService,
+    private zone: NgZone
   ) {
 
     const responsive_matrix = [
@@ -339,6 +365,9 @@ export class AppComponent implements OnInit {
         });
       }
       this.init();
+      if (this.selectedPerson) {
+        this.draw();
+      }
     });
   }
 
@@ -434,7 +463,7 @@ export class AppComponent implements OnInit {
     }) || [];
   }
 
-  public get explain(): string {
+  public get explanation(): any[] {
     return this._explanation;
   }
 
@@ -455,20 +484,22 @@ export class AppComponent implements OnInit {
         }
         break;
     }
-    this.draw2();
+    this.draw();
   }
 
   public onTransitDateChange(date: any): void {
     this.transit.date = date;
-    this.draw2();
+    this.draw();
   }
 
   public updateTransitDate(amount: number): void {
     this._transitIntervalValue = amount;
-    this.draw2();
+    this.draw();
   }
 
   private _destroyRef = inject(DestroyRef);
+
+  public sharedExplain$!: Observable<any>;
 
   ngOnInit(): void {
     this.rest.ready$.pipe(take(1)).subscribe(() => {
@@ -487,17 +518,42 @@ export class AppComponent implements OnInit {
     this.settings.settings_change$.pipe(
       takeUntilDestroyed(this._destroyRef)
     ).subscribe(_ => {
-      this.draw2();
+      this.draw();
+    });
+
+
+
+    this.sharedExplain$ = this.rest.explain$.pipe(
+      takeUntilDestroyed(this._destroyRef),
+      shareReplay(2)
+    );
+
+    this.sharedExplain$.subscribe( (data: any) => {
+      this.show_explanation = true;
+      if (data.result === 'LOADING!') {
+        return;
+      }
+      const md = markdownit('commonmark');
+      const result = md.render(data.result);
+      this._explanation.push({ text: result, info: data.params, timestamp: moment().format("HH:mm:ss") });
+      _.delay(() => {
+        this.zone.run(() => {
+          const div = document.getElementById("explanation") as HTMLDivElement;
+          if (div) {
+            this.scrollToBottom(div);
+          }
+        });
+      }, 300);
     });
   }
 
   public onSubmitPerson() {
     //console.log(this.entry);
-    this.draw2();
+    this.draw();
   }
 
   public onSubmitTransit() {
-    this.draw2();
+    this.draw();
   }
 
   public format_position(p: number): string {
@@ -538,7 +594,7 @@ export class AppComponent implements OnInit {
     return '';
   }
 
-  public draw2() {
+  public draw() {
     if (this.selectedPerson) {
       const load: any = {
         natal: _.assign({}, this.selectedPerson, {hsys: this.hsy})
@@ -569,7 +625,8 @@ export class AppComponent implements OnInit {
     this.entry.elevation = person.location.elevation;
     this.entry.timezone = Math.ceil(person.location.longitude / 15);
     this.entry.dob = moment(person.date).add(this.entry.timezone, 'hours').toISOString().replace('Z', '');
-    this.draw2();
+    this.entry.gender = person.gender ?? Gender.Male;
+    this.draw();
   }
 
   public get_point_on_circle(cx: number, cy: number, radius: number, angle: number): { x: number, y: number } {
@@ -580,11 +637,11 @@ export class AppComponent implements OnInit {
   public hsy_change(hsy: string) {
     this.hsy = hsy;
     if (this.selectedPerson) {
-      this.draw2();
+      this.draw();
     }
   }
 
-  public it_traits(): void {
+  private get natal_description_for_ai(): string {
     const planets: string[] = _.reduce(this.stat_lines, (acc: string[], line: any) => {
       if (_.startsWith(line.stats.name, 'Cusp')) {
         return acc;
@@ -593,14 +650,12 @@ export class AppComponent implements OnInit {
       acc.push(`${stats.label} in ${stats.position.sign}/${stats.house}`);
       return acc;
     }, []);
-    console.log(planets.join(', '));
+    return planets.join(", ");
+  }
 
-    //const prompt = `Write summary about what are programmer's traits, prefered programming language and favorable IT sphere based on the following information:  ${planets.join(', ')}.`;
-    const prompt = `Write summary about what is the preferred careers and list specific professions based on the following information:  ${planets.join(', ')}.`;
-
-    this.rest.explain({prompt}).subscribe((data: any) => {
-      console.log(data);
-    });
+  public perspective(kind: string): void {
+    const prompt = `Given the following information as an outline natal data for a ${this.selectedPerson.gender ? 'male':'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs in the ${kind} area.`;
+    this.rest.do_explain({prompt});
   }
 
   public resetEntry(): void {
@@ -611,7 +666,8 @@ export class AppComponent implements OnInit {
       longitude: 0,
       dob: Date(),
       timezone: 0,
-      elevation: 0
+      elevation: 0,
+      gender: Gender.Male
     };
   }
 
@@ -624,7 +680,8 @@ export class AppComponent implements OnInit {
         longitude: this.entry.longitude,
         elevation: this.entry.elevation,
         name: this.entry.locationName
-      }
+      },
+      gender: _.toNumber(this.entry.gender)
     }
     this.rest.save(save).subscribe();
   }
@@ -639,7 +696,7 @@ export class AppComponent implements OnInit {
     this._aspects = [];
     this.data = {};
 
-    this._explanation = "";
+    this._explanation = [];
 
     this.cx = Math.trunc(this.width / 2);
     this.cy = Math.trunc(this.height / 2);
@@ -713,7 +770,7 @@ export class AppComponent implements OnInit {
         });
         if (i == 0 || i == 9) {
           this._lines.push(
-            ...claculate_arrow(9, 4, p1, p2, options)
+            ...calculate_arrow(9, 4, p1, p2, options)
           );
         }
       }
@@ -902,29 +959,29 @@ export class AppComponent implements OnInit {
     let result: string[] = [];
     let score: number = 6;
     if (_.some(_.get(so, "dignities.domicile", []), x => x === sign)) {
-      result.push("Dom");
+      result.push("Domicile");
       score += 3;
     } else if (_.some(_.get(so, "dignities.exaltation", []), x => x === sign)) {
-      result.push("Exl");
+      result.push("Exaltation");
       score += 2;
     } else if (_.some(_.get(so, "dignities.detriment", []), x => x === sign)) {
-      result.push("Det");
+      result.push("Detriment");
       score -= 3;
     } else if (_.some(_.get(so, "dignities.fall", []), x => x === sign)) {
       result.push("Fall");
       score -= 2;
     } else if (_.some(_.get(so, "dignities.friend", []), x => x === sign)) {
-      result.push("Fnd");
+      result.push("Friend");
       score += 1;
     } else if (_.some(_.get(so, "dignities.enemy", []), x => x === sign)) {
-      result.push("Emy");
+      result.push("Enemy");
       score -= 1;
     }
     if (so.oriental) {
-      result.push("Ori");
+      result.push("Oriental");
       score += 1;
     } else {
-      result.push("Occ");
+      result.push("Occidental");
       score -= 1;
     }
     if (so.speed >= 0) {
@@ -985,7 +1042,7 @@ export class AppComponent implements OnInit {
     this.avg_score = (this.avg_score > -1 ? (this.avg_score + score) / 2 : score) + aspect_score;
 
 
-    return result.join('.');
+    return result.join(', ');
   }
 
   private adjust(sos: any[], transit: boolean = false): any[] {
@@ -1060,6 +1117,12 @@ export class AppComponent implements OnInit {
     }
     return points;
   }
+
+  private scrollToBottom(element: HTMLDivElement) {
+    element.scroll({ top: element.scrollHeight, behavior: 'smooth' });
+  }
+
+  protected readonly Gender = Gender;
 }
 
 

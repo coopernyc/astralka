@@ -93,7 +93,7 @@ const safetySettings = [
     },
     {
     category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+    threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
     },
     {
     category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,

@@ -174,7 +174,6 @@ export class AstralkaLookupControlComponent implements OnInit, AfterViewInit {
                 if (list && list.length > 0) {
                     this.showDropdown();
                 }
-                console.log(list);
             })
         );
         this.people$.subscribe((list: IPersonInfo[]) => {

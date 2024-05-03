@@ -1,12 +1,11 @@
-import {ChangeDetectorRef, Component, ElementRef, ViewChild} from "@angular/core";
-import {CdkPortal, PortalModule} from "@angular/cdk/portal";
-import {Overlay, OverlayConfig, OverlayModule, OverlayRef} from "@angular/cdk/overlay";
+import {Component} from "@angular/core";
+import {PortalModule} from "@angular/cdk/portal";
+import {Overlay, OverlayConfig, OverlayModule} from "@angular/cdk/overlay";
 import {CommonModule} from "@angular/common";
 import {SettingsService} from "../../services/settings.service";
-import _ from "lodash";
 import {FormsModule} from "@angular/forms";
 import {ChartSymbol} from "../graphics/chart-symbol";
-import {LocalStorageService} from "../../services/local.storage.service";
+import {AstralkaBasePortalComponent} from "../base.portal";
 
 @Component({
   selector: 'transit-settings',
@@ -22,8 +21,8 @@ import {LocalStorageService} from "../../services/local.storage.service";
     <button
       #button
       type="button"
-      id="settings-btn"
       name="settings-btn"
+      class="btn"
       (click)="toggle()"
     >
       <ng-content></ng-content>
@@ -49,40 +48,17 @@ import {LocalStorageService} from "../../services/local.storage.service";
   `,
   styleUrl: "./map-settings.scss"
 })
-export class AstralkaTransitSettingsComponent {
+export class AstralkaTransitSettingsComponent extends AstralkaBasePortalComponent {
 
-  private overlayRef!: OverlayRef;
-  private showing: boolean = false;
-
-
-  @ViewChild(CdkPortal) public contentTemplate!: CdkPortal;
-  @ViewChild("button") public btn!: ElementRef;
-
-  constructor(private overlay: Overlay,
-              private settings: SettingsService,
-              private cdr: ChangeDetectorRef) {
-
+  constructor(overlay: Overlay, private settings: SettingsService) {
+    super(overlay);
   }
 
   public get transits(): IterableIterator<any> {
     return this.settings.transit_settings_iter;
   }
 
-  public show(): void {
-    if (!this.showing) {
-      this.overlayRef = this.overlay.create(this.getOverlayConfig());
-      this.overlayRef.attach(this.contentTemplate);
-      this.overlayRef.backdropClick().subscribe(() => this.hide());
-      this.showing = true;
-    }
-  }
-
-  public hide(): void {
-    this.overlayRef.detach();
-    this.showing = false;
-  }
-
-  private getOverlayConfig(): OverlayConfig {
+  protected override getOverlayConfig(): OverlayConfig {
     const positionStrategy = this.overlay
       .position()
       .flexibleConnectedTo(this.btn.nativeElement)
@@ -111,14 +87,6 @@ export class AstralkaTransitSettingsComponent {
       hasBackdrop: true,
       backdropClass: 'cdk-overlay-transparent-backdrop',
     });
-  }
-
-  public toggle() {
-    if (!this.showing) {
-      this.show();
-    } else {
-      this.hide();
-    }
   }
 
   public update(item: any, value: boolean): void {
