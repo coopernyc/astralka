@@ -1,0 +1,29 @@
+:host {
+  flex: 1;
+  display: flex;
+
+  .login-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    //background: #fdedc8 url(/assets/noise.png);
+    background: black;
+
+    .login-wrapper {
+      border-radius: 25px;
+      display: flex;
+      flex-direction: column;
+      width: 800px;
+      height: 450px;
+      background: url(/assets/login-bg.png) no-repeat top left #000;
+      background-size: 800px;
+
+      .login-footer {
+        flex: 0 32;
+        text-align: center;
+        padding: 4px;
+      }
+    }
+  }
+}

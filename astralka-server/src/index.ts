@@ -5,7 +5,6 @@ import _ from "lodash";
 import cors from "cors";
 import bodyParser from "body-parser";
 import {call_ai} from "./common";
-import {HouseSystem} from "./constants";
 import {MongoClient} from "mongodb";
 
 const logger = winston.createLogger({
@@ -23,8 +22,12 @@ const logger = winston.createLogger({
 
 const app: Express = express();
 const port = process.env.PORT || 3010;
-
-app.use(cors());
+console.log(process.env.CORS_ORIGINS!.split(", "));
+const corsOptions = {
+    origin: process.env.CORS_ORIGINS!.split(", "), // ['http://192.168.1.68:4200', 'http://localhost:4200'],
+    credentials: true
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
 
@@ -41,12 +44,12 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.send("Astralka Server");
     next();
 });
-app.post("/chart-data", async (req: Request, res: Response, next: NextFunction) => {
+app.post("/chart-data", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     const query = req.body;
     const data = chart_data(query);
     res.json(data);
 });
-app.post("/explain", async (req: Request, res: Response, next: NextFunction) => {
+app.post("/explain", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     const prompt = _.get(req.body, "prompt");
     console.log(prompt);
     let result = "";
@@ -59,7 +62,7 @@ app.post("/explain", async (req: Request, res: Response, next: NextFunction) => 
     res.json({result});
 });
 
-app.post("/save", async (req: Request, res: Response, next: NextFunction) => {
+app.post("/save", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     const entry = req.body;
     console.log(entry);
 
@@ -89,7 +92,7 @@ app.post("/save", async (req: Request, res: Response, next: NextFunction) => {
     run().catch(console.dir);
 });
 
-app.post("/people", async (req: Request, res: Response, next: NextFunction) => {
+app.post("/people", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     const name = req.body.name ?? "";
     console.log(name);
     if (_.isEmpty(name)) {
