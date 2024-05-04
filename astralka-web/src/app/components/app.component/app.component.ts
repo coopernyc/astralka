@@ -1,6 +1,6 @@
 import { RouterModule } from '@angular/router';
 import { Component } from "@angular/core";
-import {AstralkaComponent} from "./astralka.component";
+import {AstralkaComponent} from "../astralka.main.component/astralka.component";
 
 @Component({
   selector: 'app-root',

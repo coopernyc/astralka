@@ -1,5 +1,5 @@
 import {Component, DestroyRef, inject, NgZone, OnInit, ViewChild} from '@angular/core';
-import {ChartSymbol} from './controls/graphics/chart-symbol';
+import {ChartSymbol} from '../../controls/graphics/chart-symbol';
 import _ from "lodash";
 import moment from "moment-timezone";
 import {
@@ -23,29 +23,29 @@ import {
   SYMBOL_SCALE,
   SYMBOL_ZODIAC,
   zodiac_sign
-} from './common';
+} from '../../common';
 import {CommonModule} from '@angular/common';
-import {ChartCircle} from './controls/graphics/chart-circle';
-import {ChartLine} from './controls/graphics/chart-line';
+import {ChartCircle} from '../../controls/graphics/chart-circle';
+import {ChartLine} from '../../controls/graphics/chart-line';
 import {FormsModule} from '@angular/forms';
 import {BreakpointObserver, LayoutModule} from '@angular/cdk/layout';
-import {ChartText} from './controls/graphics/chart-text';
-import {StatsLine} from './controls/graphics/stats-line';
-import {StatsAspect} from './controls/graphics/stats-aspect';
-import {RestService} from './services/rest.service';
+import {ChartText} from '../../controls/graphics/chart-text';
+import {StatsLine} from '../../controls/graphics/stats-line';
+import {StatsAspect} from '../../controls/graphics/stats-aspect';
+import {RestService} from '../../services/rest.service';
 import {Observable, shareReplay} from 'rxjs';
-import {AstralkaLookupControlComponent} from './controls/lookup/lookup';
-import {AstralkaSliderControlComponent} from "./controls/slider/slider";
-import {AstralkaAspectSettingsComponent} from "./controls/settings/aspect.settings";
-import {SettingsService} from "./services/settings.service";
+import {AstralkaLookupControlComponent} from '../../controls/lookup/lookup';
+import {AstralkaSliderControlComponent} from "../../controls/slider/slider";
+import {AstralkaAspectSettingsComponent} from "../../controls/settings/aspect.settings";
+import {SettingsService} from "../../services/settings.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {AstralkaTransitSettingsComponent} from "./controls/settings/transit.settings";
-import {AstralkaPositionDataComponent} from "./controls/position.data/position.data";
-import {AstralkaAspectMatrixComponent} from "./controls/matrix/matrix";
-import {AstralkaLoaderDirective} from "./controls/loader.directive";
+import {AstralkaTransitSettingsComponent} from "../../controls/settings/transit.settings";
+import {AstralkaPositionDataComponent} from "../../controls/position.data/position.data";
+import {AstralkaAspectMatrixComponent} from "../../controls/matrix/matrix";
+import {AstralkaLoaderDirective} from "../../controls/loader.directive";
 import markdownit from "markdown-it";
-import {SafeHtmlPipe} from "./controls/safe.html.pipe";
-import {AstralkaHouseSystemSettingsComponent} from "./controls/settings/house.system.settings";
+import {SafeHtmlPipe} from "../../controls/safe.html.pipe";
+import {AstralkaHouseSystemSettingsComponent} from "../../controls/settings/house.system.settings";
 
 @Component({
   selector: 'astralka-root',
