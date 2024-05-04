@@ -10,3 +10,5 @@ Add your GEMINI API Key and path to your mongoDb.
 # Running the server
 Run `npm run once` to start server. 
 Run `npm start` to start dev server with live reload.
+
+More information will be added soon.
