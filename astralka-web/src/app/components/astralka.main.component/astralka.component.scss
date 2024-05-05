@@ -21,6 +21,25 @@
   }
 }
 
+:host {
+
+  flex: 1;
+  display: flex;
+
+  .astralka-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: black;
+
+    form {
+      background-color: white;
+    }
+  }
+
+}
+
 #person-info {
   @include info-mxn;
   width: 250px;
@@ -154,7 +173,6 @@ form {
 
 #container {
   position: relative;
-
   .bot-panel {
     z-index: 2;
     position: absolute;

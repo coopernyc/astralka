@@ -39,6 +39,7 @@ export class AstralkaLoaderDirective {
   @Input()
   set overlayLoader(obs: Observable<any>) {
     this.subscription?.unsubscribe();
+    if (!obs) return;
     this.subscription = obs.pipe(
       takeUntilDestroyed(this._destroyRef)
     ).subscribe((data: any) => {

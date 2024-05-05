@@ -7,7 +7,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    //background: #fdedc8 url(/assets/noise.png);
     background: black;
 
     .login-wrapper {
@@ -18,6 +17,80 @@
       height: 450px;
       background: url(/assets/login-bg.png) no-repeat top left #000;
       background-size: 800px;
+      .error-panel {
+        position: absolute;
+        top: 45px;
+        right: 70px;
+        width: 300px;
+        height: 64px;
+        background-color: #DC143Ccc;
+        color: gold;
+        border-radius: 5px;
+        box-shadow: 2px 2px 2px #3333;
+        padding: 8px;
+        font-size: 13px;
+      }
+      .login-panel {
+        position: absolute;
+        top: 120px;
+        right: 70px;
+        width: 300px;
+        height: 153px;
+        //background: #fffd;
+        background: #f3ecc7cc url(/assets/noise.png);
+        border: 1px solid #3335;
+        border-radius: 15px;
+        box-shadow: 3px 3px 5px #3333;
+        form {
+          display: flex;
+          flex-direction: column;
+          .form-group {
+            margin-top: 8px;
+            &:last-child {
+              margin-top: 2px;
+            }
+            margin-left: 32px;
+            label {
+              display: block;
+              font-family: "Roboto", sans-serif;
+              color: #555;
+              font-size: 11px;
+              margin: 4px 8px 0 4px;
+              span {
+                color: crimson;
+              }
+            }
+            input {
+              width: 220px;
+              height: 26px;
+              padding: 0 4px;
+
+              &.invalid {
+                border: 1px solid crimson;
+              }
+
+            }
+            input[type="password"] {
+              font-size: 16px;
+            }
+            flex: 1;
+            &.footer {
+              margin-top: 12px;
+              //text-align: center;
+              button {
+                padding: 3px 12px;
+                &:not(:last-child) {
+                  margin-right: 8px;
+                }
+              }
+              span {
+                color: crimson;
+                padding-left: 12px;
+              }
+            }
+          }
+        }
+      }
 
       .login-footer {
         flex: 0 32;

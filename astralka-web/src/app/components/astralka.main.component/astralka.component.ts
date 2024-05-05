@@ -46,6 +46,9 @@ import {AstralkaLoaderDirective} from "../../controls/loader.directive";
 import markdownit from "markdown-it";
 import {SafeHtmlPipe} from "../../controls/safe.html.pipe";
 import {AstralkaHouseSystemSettingsComponent} from "../../controls/settings/house.system.settings";
+import {AstralkaAuthService} from "../../services/auth.service";
+import {SessionStorageService} from "../../services/session.storage.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'astralka-root',
@@ -71,295 +74,299 @@ import {AstralkaHouseSystemSettingsComponent} from "../../controls/settings/hous
     AstralkaHouseSystemSettingsComponent
   ],
   template: `
+    <div class="astralka-container">
 
-    <div style="margin: 2px; height: 32px; white-space: nowrap">
-      <lookup style="margin-right: 2px;" (selected)="onPersonSelected($event)"></lookup>
-      <button (click)="show_entry_form = !show_entry_form">Person</button>
-      <button (click)="show_transit_form = !show_transit_form">Transit/Progression</button>
-    </div>
+      <div style="display: flex; flex-direction: column;" [style.width.px]="width">
+        <div style="margin: 2px; height: 32px; white-space: nowrap">
+        <lookup style="margin-right: 2px;" (selected)="onPersonSelected($event)"></lookup>
+        <button (click)="show_entry_form = !show_entry_form">Person</button>
+        <button (click)="show_transit_form = !show_transit_form">Transit/Progression</button>
+        <button (click)="logout()">Sign Out</button>
+      </div>
 
-    @if (show_entry_form) {
-      <form name="entry" class="entry-form" (submit)="onSubmitPerson()">
-        <div class="entry-body">
-          <div class="entry-group">
-            <label>Name</label>
-            <input class="triple" type="text" [(ngModel)]="entry.name" name="name">
-          </div>
-          <div class="entry-group">
-            <label>Gender</label>
-            <select [(ngModel)]="entry.gender" name="gender">
-              @for (opt of [{value: 0, display: 'Female'}, {value: 1, display: 'Male'}]; track opt.value) {
-                <option [value]="opt.value" [selected]="opt.value === entry.gender">{{ opt.display }}</option>
-              }
-            </select>
-          </div>
-          <div class="entry-group">
-            <label>Location name</label>
-            <input class="triple" type="text" [(ngModel)]="entry.locationName" name="locationName">
-          </div>
-          <div class="entry-group">
-            <label>Latitude</label>
-            <input class="double" type="number" [(ngModel)]="entry.latitude" min="-90" max="90" name="latitude">
-          </div>
-          <div class="entry-group">
-            <label>Longitude</label>
-            <input class="double" type="number" [(ngModel)]="entry.longitude" min="-180" max="180" name="longitude">
-          </div>
-          <div class="entry-group">
-            <label>Elevation (m)</label>
-            <input class="single" type="number" [(ngModel)]="entry.elevation" min="0" max="10000" name="elevation">
-          </div>
-          <div class="entry-group">
-            <label>Date Time (Local)</label>
-            <input type="datetime-local" [(ngModel)]="entry.dob" name="dob">
-          </div>
-          <div class="entry-group">
-            <label>Time Zone</label>
-            <input class="single" type="number" [(ngModel)]="entry.timezone" min="-12" max="12" name="timezone">
-          </div>
-        </div>
+        @if (show_entry_form) {
+          <form name="entry" class="entry-form" (submit)="onSubmitPerson()">
+            <div class="entry-body">
+              <div class="entry-group">
+                <label>Name</label>
+                <input class="triple" type="text" [(ngModel)]="entry.name" name="name">
+              </div>
+              <div class="entry-group">
+                <label>Gender</label>
+                <select [(ngModel)]="entry.gender" name="gender">
+                  @for (opt of [{value: 0, display: 'Female'}, {value: 1, display: 'Male'}]; track opt.value) {
+                    <option [value]="opt.value" [selected]="opt.value === entry.gender">{{ opt.display }}</option>
+                  }
+                </select>
+              </div>
+              <div class="entry-group">
+                <label>Location name</label>
+                <input class="triple" type="text" [(ngModel)]="entry.locationName" name="locationName">
+              </div>
+              <div class="entry-group">
+                <label>Latitude</label>
+                <input class="double" type="number" [(ngModel)]="entry.latitude" min="-90" max="90" name="latitude">
+              </div>
+              <div class="entry-group">
+                <label>Longitude</label>
+                <input class="double" type="number" [(ngModel)]="entry.longitude" min="-180" max="180" name="longitude">
+              </div>
+              <div class="entry-group">
+                <label>Elevation (m)</label>
+                <input class="single" type="number" [(ngModel)]="entry.elevation" min="0" max="10000" name="elevation">
+              </div>
+              <div class="entry-group">
+                <label>Date Time (Local)</label>
+                <input type="datetime-local" [(ngModel)]="entry.dob" name="dob">
+              </div>
+              <div class="entry-group">
+                <label>Time Zone</label>
+                <input class="single" type="number" [(ngModel)]="entry.timezone" min="-12" max="12" name="timezone">
+              </div>
+            </div>
 
-        <div class="entry-footer">
-          <button type="button" name="btn-submit" (click)="onSavePerson()">Save</button>
-          <button type="button" name="btn-submit" (click)="resetEntry()">Clear</button>
-        </div>
-      </form>
-    }
+            <div class="entry-footer">
+              <button type="button" name="btn-submit" (click)="onSavePerson()">Save</button>
+              <button type="button" name="btn-submit" (click)="resetEntry()">Clear</button>
+            </div>
+          </form>
+        }
+        @if (show_transit_form) {
+          <form name="entry" class="entry-form">
+            <div class="entry-body">
+              <div class="entry-group">
+                <label>Transit/Progression Date Time</label>
+                <input type="datetime-local" [ngModel]="transit.date" (ngModelChange)="onTransitDateChange($event)"
+                       name="date">
+              </div>
+              <div class="entry-group">
+                <label style="text-align: center">Interactive <b>{{ transitIntervalValue }} days</b> from
+                  Transit/Progression Date Time</label>
+                <astralka-slider #ref [width]="300" [range]="[-100, 100]" [value]="_transitIntervalValue"
+                                 (valueChange)="updateTransitDate($event)"></astralka-slider>
+              </div>
+            </div>
+            <div class="entry-footer">
+              <button type="button" name="btn-submit" (click)="setTransit('now')">Set to Now (Transit)</button>
+              <button type="button" name="btn-submit" (click)="setTransit('natal')">Set to Age-Day (Progression)
+              </button>
+            </div>
+          </form>
+        }
+        <div id="container">
+        @if (data && selectedPerson) {
+          <article id="person-info">
+            <section><b>Natal Data</b></section>
+            <section>Name: {{ selectedPerson.name }}</section>
+            <section>Loc: {{ selectedPerson.location.name }}</section>
+            <section>Lat: {{ convert_lat_to_DMS(selectedPerson.location.latitude) }}
+              , {{ selectedPerson.location.latitude }}°{{ selectedPerson.location.latitude >= 0 ? 'N' : 'S' }}
+            </section>
+            <section>Long: {{ convert_long_to_DMS(selectedPerson.location.longitude) }}
+              , {{ selectedPerson.location.longitude }}°{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
+            </section>
+            <section>TimeZone: {{ selectedPerson.timezone }}, Elevation: {{ selectedPerson.location.elevation }}m
+            </section>
+            <section>DOB: {{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
+            <section>Age: {{ age }}, Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
+            <section>House System: {{ selectedHouseSystemName }}</section>
+            <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}, Score: {{ avg_score.toFixed(3) }}</section>
+            <section>
+              <astralka-position-data [positions]="stat_lines">Planets</astralka-position-data>
+            </section>
+            <section>
+              <astralka-position-data [kind]="'houses'" [positions]="stat_lines">Houses</astralka-position-data>
+            </section>
+            <section>
+              <astralka-matrix [data]="data">Matrix</astralka-matrix>
+            </section>
+          </article>
+        }
+        @if (data && data.Transit) {
+          <article id="transit-info" [style.left.px]="width - 220">
+            <section><b>Transit/Progression Data</b></section>
+            <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
+            <section>DateTime (UT): {{ moment($any(calculatedTransitDateStr)).format('DD MMM YYYY HH:mm:ss') }}</section>
+            <!-- <section>House System: {{houseSystemById}}</section> -->
+            <section style="margin-top: 4px; text-align: right">
+              <astralka-transit-settings>Set Transits</astralka-transit-settings>
+            </section>
+            <section>
+              <astralka-aspect-settings>Set Aspects</astralka-aspect-settings>
+            </section>
+            <section>
+              <astralka-house-system>Set House System</astralka-house-system>
+            </section>
+            <section>
+              <button (click)="show_explanation = !show_explanation"
+                      [innerHTML]="show_explanation?'Hide Explain':'Show Explain'"></button>
+            </section>
+            <section>
+              <button (click)="show_explanation=true;perspective('with health. List best ways to keep good health.')">
+                Health
+              </button>
+            </section>
+            <section>
+              <button
+                (click)="show_explanation=true;perspective('with money. List best potential sources of getting rich.')">
+                Money
+              </button>
+            </section>
+            <section>
+              <button
+                (click)="show_explanation=true;perspective('with intellect. List areas with the most intellectual interest.')">
+                Intellect
+              </button>
+            </section>
+            <section>
+              <button (click)="show_explanation=true;perspective('with emotions.')">Emotions</button>
+            </section>
+            <section>
+              <button (click)="show_explanation=true;perspective('with family.')">Family</button>
+            </section>
+            <section>
+              <button (click)="show_explanation=true;perspective('with friends.')">Friends</button>
+            </section>
+            <section>
+              <button
+                (click)="show_explanation=true;perspective('with cars. Provide a list of the best suited makers and models.')">
+                Cars
+              </button>
+            </section>
+            <section>
+              <button
+                (click)="show_explanation=true;perspective('with romance. Provide a list of best compatibility partners.')">
+                Romance
+              </button>
+            </section>
+            <section>
+              <button (click)="show_explanation=true;perspective('with jobs. Provide a list of best choice jobs.')">Job
+              </button>
+            </section>
+            <section>
+              <button (click)="show_explanation=true;perspective('with kids. Guess on a potential number of kids.')">
+                Kids
+              </button>
+            </section>
+            <section>
+              <button
+                (click)="show_explanation=true;perspective('with travels. List best choice destinations for travel.')">
+                Travel
+              </button>
+            </section>
+          </article>
+        }
 
-
-    @if (show_transit_form) {
-      <form name="entry" class="entry-form">
-        <div class="entry-body">
-          <div class="entry-group">
-            <label>Transit/Progression Date Time</label>
-            <input type="datetime-local" [ngModel]="transit.date" (ngModelChange)="onTransitDateChange($event)"
-                   name="date">
-          </div>
-          <div class="entry-group">
-            <label style="text-align: center">Interactive <b>{{ transitIntervalValue }} days</b> from
-              Transit/Progression Date Time</label>
-            <astralka-slider #ref [width]="300" [range]="[-100, 100]" [value]="_transitIntervalValue"
-                             (valueChange)="updateTransitDate($event)"></astralka-slider>
-          </div>
-        </div>
-        <div class="entry-footer">
-          <button type="button" name="btn-submit" (click)="setTransit('now')">Set to Now (Transit)</button>
-          <button type="button" name="btn-submit" (click)="setTransit('natal')">Set to Age-Day (Progression)
-          </button>
-        </div>
-      </form>
-    }
-
-    <div id="container">
-      @if (data && selectedPerson) {
-        <article id="person-info">
-          <section><b>Natal Data</b></section>
-          <section>Name: {{ selectedPerson.name }}</section>
-          <section>Loc: {{ selectedPerson.location.name }}</section>
-          <section>Lat: {{ convert_lat_to_DMS(selectedPerson.location.latitude) }}
-            , {{ selectedPerson.location.latitude }}°{{ selectedPerson.location.latitude >= 0 ? 'N' : 'S' }}
-          </section>
-          <section>Long: {{ convert_long_to_DMS(selectedPerson.location.longitude) }}
-            , {{ selectedPerson.location.longitude }}°{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
-          </section>
-          <section>TimeZone: {{ selectedPerson.timezone }}, Elevation: {{ selectedPerson.location.elevation }}m
-          </section>
-          <section>DOB: {{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
-          <section>Age: {{ age }}, Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
-          <section>House System: {{ selectedHouseSystemName }}</section>
-          <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}, Score: {{ avg_score.toFixed(3) }}</section>
-          <section>
-            <astralka-position-data [positions]="stat_lines">Planets</astralka-position-data>
-          </section>
-          <section>
-            <astralka-position-data [kind]="'houses'" [positions]="stat_lines">Houses</astralka-position-data>
-          </section>
-          <section>
-            <astralka-matrix [data]="data">Matrix</astralka-matrix>
-          </section>
-        </article>
-      }
-      @if (data && data.Transit) {
-        <article id="transit-info" [style.left.px]="width - 220">
-          <section><b>Transit/Progression Data</b></section>
-          <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
-          <section>DateTime (UT): {{ moment($any(calculatedTransitDateStr)).format('DD MMM YYYY HH:mm:ss') }}</section>
-          <!-- <section>House System: {{houseSystemById}}</section> -->
-          <section style="margin-top: 4px; text-align: right">
-            <astralka-transit-settings>Set Transits</astralka-transit-settings>
-          </section>
-          <section>
-            <astralka-aspect-settings>Set Aspects</astralka-aspect-settings>
-          </section>
-          <section>
-            <astralka-house-system>Set House System</astralka-house-system>
-          </section>
-          <section>
-            <button (click)="show_explanation = !show_explanation"
-                    [innerHTML]="show_explanation?'Hide Explain':'Show Explain'"></button>
-          </section>
-          <section>
-            <button (click)="show_explanation=true;perspective('with health. List best ways to keep good health.')">
-              Health
-            </button>
-          </section>
-          <section>
-            <button
-              (click)="show_explanation=true;perspective('with money. List best potential sources of getting rich.')">
-              Money
-            </button>
-          </section>
-          <section>
-            <button
-              (click)="show_explanation=true;perspective('with intellect. List areas with the most intellectual interest.')">
-              Intellect
-            </button>
-          </section>
-          <section>
-            <button (click)="show_explanation=true;perspective('with emotions.')">Emotions</button>
-          </section>
-          <section>
-            <button (click)="show_explanation=true;perspective('with family.')">Family</button>
-          </section>
-          <section>
-            <button (click)="show_explanation=true;perspective('with friends.')">Friends</button>
-          </section>
-          <section>
-            <button
-              (click)="show_explanation=true;perspective('with cars. Provide a list of the best suited makers and models.')">
-              Cars
-            </button>
-          </section>
-          <section>
-            <button
-              (click)="show_explanation=true;perspective('with romance. Provide a list of best compatibility partners.')">
-              Romance
-            </button>
-          </section>
-          <section>
-            <button (click)="show_explanation=true;perspective('with jobs. Provide a list of best choice jobs.')">Job
-            </button>
-          </section>
-          <section>
-            <button (click)="show_explanation=true;perspective('with kids. Guess on a potential number of kids.')">
-              Kids
-            </button>
-          </section>
-          <section>
-            <button
-              (click)="show_explanation=true;perspective('with travels. List best choice destinations for travel.')">
-              Travel
-            </button>
-          </section>
-        </article>
-      }
-
-      <!-- <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
-        <img src="assets/astralka-logo.svg">
-      </div> -->
-
-
-      <svg style="position: absolute; left: 0"
-           [style.flex]="'flex: 0 ' + width + 'px'" xmlns="http://www.w3.org/2000/svg"
-           [attr.width]="width"
-           [attr.height]="height"
-           [attr.viewBox]="'0 0 ' + width + ' ' + height"
-           #chart
-      >
-        <g>
-          <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="#0004"></rect>
+        <!-- <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
+          <img src="assets/astralka-logo.svg">
+        </div> -->
 
 
-
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius" [options]="{stroke_width: 2}"></g>
-          <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'">
-            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#009900" stroke-width="5"
-                        pathLength="360" stroke-dasharray="30 90 30 90 30 90" fill="none"/>
-            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#cc0000" stroke-width="5"
-                        pathLength="360" stroke-dasharray="0 30 30 90 30 90 30 60" fill="none"/>
-            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#336699" stroke-width="5"
-                        pathLength="360" stroke-dasharray="0 60 30 90 30 90 30 30" fill="none"/>
-            <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#ffd900" stroke-width="5"
-                        pathLength="360" stroke-dasharray="0 90 30 90 30 90 30" fill="none"/>
-          </g>
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
-          <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius + 5" [options]="{stroke_color: '#777'}"></g>
-          <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line
-             *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
-          <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
-          @if (this.data && this.selectedPerson) {
-
-            <g>
-              <path
-                id="sector_path_0"
-                [attr.d]="'M '+ cx +' ' + cy + 'm 0 ' + house_radius/2 + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0,-' + house_radius + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0 ' + house_radius + ' z'"
-                fill="none"
-              ></path>
-              <text class="segment-label" x="0" y="0" dy="-2">
-                <textPath xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sector_path_0" startOffset="50%" text-anchor="middle">
-                  {{latin_phrase?.phrase}}
-                </textPath>
-              </text>
-            </g>
-
-            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
-
-            <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-            <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
-            <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
-               class="planets-angle"></g>
-
-            <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-            <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
-               class="planets-angle"></g>
-            <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name"
-               [options]="{scale: 0.8, stroke_color: '#333'}"></g>
-            <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name"
-               [options]="p.options"></g>
-            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20"
-               [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
-            <g svgg-symbol [x]="cx" [y]="cy" [name]="sign"
-               [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
-
-          }
-          <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
-          <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
-          <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
-
-          <g svgg-symbol [x]="60" [y]="30" [options]="{ scale: 2 }"></g>
-          <g svgg-line [x1]="50" [y1]="30" [x2]="70" [y2]="30"></g>
-          <g svgg-line [x1]="60" [y1]="20" [x2]="60" [y2]="40"></g>
-
-          <g svgg-symbol [x]="90" [y]="30" [options]="{ scale: 0.5 }"></g>
-          <g svgg-line [x1]="80" [y1]="30" [x2]="100" [y2]="30"></g>
-          <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
-
-          <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
-          <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
-        </g>
-
-      </svg>
-      @if (show_explanation) {
-        <div
-          [overlayLoader]="sharedExplain$"
-          class="bot-panel"
-          [style.top.px]="height - 400 - 2" [style.width.px]="width - 4"
+        <svg style="position: absolute; left: 0"
+             [style.flex]="'flex: 0 ' + width + 'px'" xmlns="http://www.w3.org/2000/svg"
+             [attr.width]="width"
+             [attr.height]="height"
+             [attr.viewBox]="'0 0 ' + width + ' ' + height"
+             #chart
         >
-          <div class="bot-panel-handler">
-            {{latin_phrase?.eng}}
-          </div>
-          <div class="bot-panel-content" id="explanation">
-            @for (e of explanation; track e; let idx = $index) {
-              @if (idx !== 0) {
-                <hr class="una"/>
-              }
-              <p [innerHTML]="e.text | safeHtml"></p>
-              <!-- + <span style='padding-right: 4px; color: #777; font-size: 10px;'>{{e.timestamp}}</span> -->
+          <g>
+            <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="#0004"></rect>
+
+
+            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius" [options]="{stroke_width: 2}"></g>
+            <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'">
+              <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#009900" stroke-width="5"
+                          pathLength="360" stroke-dasharray="30 90 30 90 30 90" fill="none"/>
+              <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#cc0000" stroke-width="5"
+                          pathLength="360" stroke-dasharray="0 30 30 90 30 90 30 60" fill="none"/>
+              <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#336699" stroke-width="5"
+                          pathLength="360" stroke-dasharray="0 60 30 90 30 90 30 30" fill="none"/>
+              <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#ffd900" stroke-width="5"
+                          pathLength="360" stroke-dasharray="0 90 30 90 30 90 30" fill="none"/>
+            </g>
+            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
+            <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius + 5" [options]="{stroke_color: '#777'}"></g>
+            <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line
+               *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y" [options]="l.options"></g>
+            <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name" [options]="zodiac_options(p)"></g>
+            @if (this.data && this.selectedPerson) {
+
+              <g>
+                <path
+                  id="sector_path_0"
+                  [attr.d]="'M '+ cx +' ' + cy + 'm 0 ' + house_radius/2 + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0,-' + house_radius + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0 ' + house_radius + ' z'"
+                  fill="none"
+                ></path>
+                <text class="segment-label" x="0" y="0" dy="-2">
+                  <textPath xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sector_path_0" startOffset="50%"
+                            text-anchor="middle">
+                    {{ latin_phrase?.phrase }}
+                  </textPath>
+                </text>
+              </g>
+
+              <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
+
+              <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+              <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
+              <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
+                 class="planets-angle"></g>
+
+              <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+              <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
+                 class="planets-angle"></g>
+              <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name"
+                 [options]="{scale: 0.8, stroke_color: '#333'}"></g>
+              <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name"
+                 [options]="p.options"></g>
+              <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20"
+                 [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
+              <g svgg-symbol [x]="cx" [y]="cy" [name]="sign"
+                 [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
+
             }
+            <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
+            <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
+            <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
+
+            <g svgg-symbol [x]="60" [y]="30" [options]="{ scale: 2 }"></g>
+            <g svgg-line [x1]="50" [y1]="30" [x2]="70" [y2]="30"></g>
+            <g svgg-line [x1]="60" [y1]="20" [x2]="60" [y2]="40"></g>
+
+            <g svgg-symbol [x]="90" [y]="30" [options]="{ scale: 0.5 }"></g>
+            <g svgg-line [x1]="80" [y1]="30" [x2]="100" [y2]="30"></g>
+            <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
+
+            <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
+            <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
+          </g>
+
+        </svg>
+        @if (show_explanation) {
+          <div
+            [overlayLoader]="sharedExplain$"
+            class="bot-panel"
+            [style.top.px]="height - 400 - 2" [style.width.px]="width - 4"
+          >
+            <div class="bot-panel-handler">
+              {{ latin_phrase?.eng }}
+            </div>
+            <div class="bot-panel-content" id="explanation">
+              @for (e of explanation; track e; let idx = $index) {
+                @if (idx !== 0) {
+                  <hr class="una"/>
+                }
+                <p [innerHTML]="e.text | safeHtml"></p>
+                <!-- + <span style='padding-right: 4px; color: #777; font-size: 10px;'>{{e.timestamp}}</span> -->
+              }
+            </div>
           </div>
-        </div>
-      }
+        }
+      </div>
+
+      </div>
     </div>
+
   `,
   styleUrls: ['./astralka.component.scss'],
 })
@@ -379,7 +386,7 @@ export class AstralkaComponent implements OnInit {
   public house_radius: number = 0;
 
   public offset_angle: number = 90;
-  public show_explanation: boolean = true;
+  public show_explanation: boolean = false;
 
   public entry = {
     name: '',
@@ -399,22 +406,37 @@ export class AstralkaComponent implements OnInit {
     elevation: 0
   };
 
-
+  public _transitIntervalValue: number = 0;
+  private _planets: any[] = [];
+  private _zodiac: any[] = [];
+  private _houses: any[] = [];
+  private _cusps: any[] = [];
+  private _lines: any[] = [];
+  private _aspect_labels: any[] = [];
+  private _stat_lines: any[] = [];
+  private _aspects: any[] = [];
   public data: any = {};
-
-  //public hsys: string = "P";
-
   public selectedPerson!: IPersonInfo;
-  public _ = _;
+
   public moment = moment;
   private _explanation: any[] = [];
+  private _destroyRef = inject(DestroyRef);
+
+  public sharedExplain$!: Observable<any>;
 
   constructor(
     private responsive: BreakpointObserver,
     private rest: RestService,
     private settings: SettingsService,
+    private auth: AstralkaAuthService,
+    private session: SessionStorageService,
+    private router: Router,
     private zone: NgZone
   ) {
+
+  }
+
+  ngOnInit(): void {
 
     const responsive_matrix = [
       {
@@ -430,6 +452,7 @@ export class AstralkaComponent implements OnInit {
         margin: 100
       }
     ];
+
     this.responsive.observe(responsive_matrix.map(x => x.breakpoint)).subscribe(result => {
       if (result.matches) {
         responsive_matrix.forEach((r: any) => {
@@ -445,57 +468,82 @@ export class AstralkaComponent implements OnInit {
         this.draw();
       }
     });
-  }
 
-  public _transitIntervalValue: number = 0;
+    const loggedIn = this.session.isLoggedIn();
+    if (!loggedIn) {
+      this.router.navigate(['']).then();
+      return;
+    }
+
+    this.settings.settings_change$.pipe(
+      takeUntilDestroyed(this._destroyRef)
+    ).subscribe(_ => {
+      this.draw();
+    });
+
+    this.sharedExplain$ = this.rest.explain$.pipe(
+      takeUntilDestroyed(this._destroyRef),
+      shareReplay(2)
+    );
+
+    this.sharedExplain$.subscribe((data: any) => {
+      this.show_explanation = true;
+      if (data.result === 'LOADING!') {
+        return;
+      }
+      const md = markdownit('commonmark');
+      const result = md.render(data.result);
+      this._explanation.push({text: result, info: data.params, timestamp: moment().format("HH:mm:ss")});
+      _.delay(() => {
+        this.zone.run(() => {
+          const div = document.getElementById("explanation") as HTMLDivElement;
+          if (div) {
+            this.scrollToBottom(div);
+          }
+        });
+      }, 300);
+    });
+  }
 
   public get transitIntervalValue(): number {
     return !_.isNaN(this._transitIntervalValue) ? this._transitIntervalValue : 0;
   }
 
-  private _planets: any[] = [];
 
   public get planets() {
     return this._planets;
   }
 
-  private _zodiac: any[] = [];
 
   public get zodiac() {
     return this._zodiac;
   }
 
-  private _houses: any[] = [];
 
   public get houses() {
     return this._houses;
   }
 
-  private _cusps: any[] = [];
 
   public get cusps() {
     return this._cusps;
   }
 
-  private _lines: any[] = [];
 
   public get lines(): any[] {
     return this._lines;
   }
 
-  private _aspect_labels: any[] = [];
 
   public get aspect_labels(): any[] {
     return this._aspect_labels;
   }
 
-  private _stat_lines: any[] = [];
 
   public get stat_lines(): any[] {
     return this._stat_lines;
   }
 
-  private _aspects: any[] = [];
 
   public get aspects(): any[] {
     return this._aspects;
@@ -566,41 +614,9 @@ export class AstralkaComponent implements OnInit {
     this.draw();
   }
 
-  private _destroyRef = inject(DestroyRef);
-
-  public sharedExplain$!: Observable<any>;
-
-  ngOnInit(): void {
-    this.settings.settings_change$.pipe(
-      takeUntilDestroyed(this._destroyRef)
-    ).subscribe(_ => {
-      this.draw();
-    });
 
 
-    this.sharedExplain$ = this.rest.explain$.pipe(
-      takeUntilDestroyed(this._destroyRef),
-      shareReplay(2)
-    );
 
-    this.sharedExplain$.subscribe((data: any) => {
-      this.show_explanation = true;
-      if (data.result === 'LOADING!') {
-        return;
-      }
-      const md = markdownit('commonmark');
-      const result = md.render(data.result);
-      this._explanation.push({text: result, info: data.params, timestamp: moment().format("HH:mm:ss")});
-      _.delay(() => {
-        this.zone.run(() => {
-          const div = document.getElementById("explanation") as HTMLDivElement;
-          if (div) {
-            this.scrollToBottom(div);
-          }
-        });
-      }, 300);
-    });
-  }
 
   public onSubmitPerson() {
     //console.log(this.entry);
@@ -1190,10 +1206,24 @@ export class AstralkaComponent implements OnInit {
     element.scroll({top: element.scrollHeight, behavior: 'smooth'});
   }
 
+  public logout(): void {
+    const username = this.session.restoreUser();
+    this.auth.logout(username).subscribe({
+      next: res => {
+        //console.log(res);
+        this.session.clean();
+        window.location.reload();
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
+  }
+
   protected readonly Gender = Gender;
   protected readonly convert_lat_to_DMS = convert_lat_to_DMS;
   protected readonly convert_long_to_DMS = convert_long_to_DMS;
-  protected readonly latinAboutSign = latinAboutSign;
+  public _ = _;
 }
 
 

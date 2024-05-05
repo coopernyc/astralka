@@ -6,6 +6,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import {call_ai} from "./common";
 import {MongoClient} from "mongodb";
+import {loginRoute} from "./login.route";
 
 const logger = winston.createLogger({
     level: "info",
@@ -44,6 +45,43 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.send("Astralka Server");
     next();
 });
+
+app.post('/signin', cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await loginRoute(req, res);
+    } catch (err) {
+        res.status(500).end();
+    }
+});
+
+app.post('/signout', cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
+    const uri: string = process.env.MONGO_URI!;
+    const client = new MongoClient(uri);
+    async function run() {
+        try {
+            const database = client.db("astralka");
+            const users = database.collection("users");
+            await users.updateOne({
+                    username: req.body.username
+                },
+                {
+                    $set: {
+                        isLoggedIn: false,
+                        lastUpdateDate: new Date()
+                    }
+                },
+                {
+                    upsert: true
+                });
+            res.json({ success: true });
+        } finally {
+            await client.close();
+        }
+    }
+
+    run().catch(console.dir);
+});
+
 app.post("/chart-data", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     const query = req.body;
     const data = chart_data(query);
@@ -84,6 +122,7 @@ app.post("/save", cors(corsOptions), async (req: Request, res: Response, next: N
                 {
                     upsert: true
                 });
+            res.json({ success: true });
         } finally {
             await client.close();
         }

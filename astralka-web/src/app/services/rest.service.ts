@@ -8,7 +8,7 @@ import {IPersonInfo} from "../common";
 })
 export class RestService implements OnDestroy {
 
-  private serverUrl: string = "";
+  public serverUrl: string = "";
 
   public explain$: Subject<any> = new Subject<any>();
   public ready$: ReplaySubject<void> = new ReplaySubject<void>(1);
