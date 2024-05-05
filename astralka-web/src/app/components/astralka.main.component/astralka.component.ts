@@ -1207,8 +1207,8 @@ export class AstralkaComponent implements OnInit {
   }
 
   public logout(): void {
-    const username = this.session.restoreUser();
-    this.auth.logout(username).subscribe({
+    const user: any = this.session.restoreUser();
+    this.auth.logout(user.username).subscribe({
       next: res => {
         //console.log(res);
         this.session.clean();
