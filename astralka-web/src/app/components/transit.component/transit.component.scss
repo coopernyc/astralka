@@ -1,7 +1,7 @@
 @use './../../../styles/_form' as form;
 
 :host {
-  .person-container {
+  .transit-container {
     @include form.chart-page-form;
   }
 }

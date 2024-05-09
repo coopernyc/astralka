@@ -1,4 +1,6 @@
 import _, { random } from "lodash";
+import moment from "moment";
+import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 
 export const SYMBOL_SCALE = 1;
 export const COLLISION_RADIUS = 7.5;
@@ -181,6 +183,11 @@ export function rotate_point_around_center(c: {x: number, y: number}, p: {x: num
     }
 }
 
+export function age(date: any): number {
+  const bd = moment.utc(date);
+  return moment.utc().diff(bd, 'years');
+}
+
 export function pos_in_zodiac(position: number) : any {
     const z_pos = pos_in_zodiac_sign(position);
     var deg = z_pos | 0;
@@ -275,6 +282,38 @@ export function calculate_arrow(L: number, W: number, p1: any, p2: any, options:
         }
     ];
 }
+
+export enum ToolbarCmdMask {
+  None,
+  NavBar,
+  Context,
+  All
+};
+
+export enum ToolbarAlign {
+  Left,
+  Right
+}
+export interface IToolbarCmdBase {
+  mask: ToolbarCmdMask,
+  hidden?: boolean,
+  align?: ToolbarAlign|number
+}
+
+export interface IToolbarSeparator extends IToolbarCmdBase {
+  type: 'separator'
+}
+export interface IToolbarNavCmd extends IToolbarCmdBase {
+  type: 'item',
+  label: IconDefinition|string,
+  action: () => void,
+  disabled: () => boolean,
+  iconResolver?: () => { icon: IconDefinition|string, cssClass: string },
+  tooltip?: string,
+  options?: any
+}
+
+export type IToolbarCmd = IToolbarNavCmd | IToolbarSeparator;
 
 export interface IPersonInfo {
     name: string,

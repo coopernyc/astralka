@@ -1,4 +1,4 @@
-import {Component, DestroyRef, inject, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Component, DestroyRef, inject, NgZone, OnInit} from '@angular/core';
 import {ChartSymbol} from '../../controls/graphics/chart-symbol';
 import _ from "lodash";
 import moment from "moment-timezone";
@@ -9,11 +9,15 @@ import {
   convert_DD_to_D,
   convert_lat_to_DMS,
   convert_long_to_DMS,
-  Gender, IPersonEntry,
-  IPersonInfo, latinAboutSign,
+  Gender,
+  IPersonEntry,
+  IPersonInfo,
+  IToolbarCmd,
+  latinAboutSign,
   nl180,
   nl360,
-  one_third_point_on_the_line, PersonScope,
+  one_third_point_on_the_line,
+  PersonScope,
   pos_in_zodiac,
   pos_in_zodiac_sign,
   rotate_point_around_center,
@@ -21,7 +25,9 @@ import {
   SYMBOL_HOUSE,
   SYMBOL_PLANET,
   SYMBOL_SCALE,
-  SYMBOL_ZODIAC, UserRole,
+  SYMBOL_ZODIAC,
+  ToolbarAlign,
+  ToolbarCmdMask,
   zodiac_sign
 } from '../../common';
 import {CommonModule} from '@angular/common';
@@ -50,6 +56,9 @@ import {AstralkaAuthService} from "../../services/auth.service";
 import {SessionStorageService} from "../../services/session.storage.service";
 import {Router} from "@angular/router";
 import {AstralkaPersonComponent} from "../person.component/person.component";
+import {AstralkaTransitComponent} from "../transit.component/transit.component";
+import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
+import {faBus, faGlobe, faSignOut, faUser} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'astralka-chart',
@@ -73,19 +82,22 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
     AstralkaLoaderDirective,
     SafeHtmlPipe,
     AstralkaHouseSystemSettingsComponent,
-    AstralkaPersonComponent
+    AstralkaPersonComponent,
+    AstralkaTransitComponent,
+    AstralkaToolbarComponent
   ],
   template: `
     <div class="astralka-container">
 
       <div style="display: flex; flex-direction: column;" [style.width.px]="width">
-        <div style="margin: 2px; height: 32px; white-space: nowrap">
-          <lookup style="margin-right: 2px;" [query]="selectedPerson? selectedPerson.name : ''" (selected)="onPersonSelected($event)"></lookup>
-          <button (click)="show_entry_form = !show_entry_form">Person</button>
-          <button (click)="show_transit_form = !show_transit_form">Transit/Progression</button>
-          <button (click)="logout()">Sign Out</button>
-        </div>
-
+        <astralka-toolbar [commands]="commands">
+          Type Person's name
+          <lookup
+            style="margin-right: 2px;"
+            [query]="selectedPerson? selectedPerson.name : ''"
+            (selected)="onPersonSelected($event)">
+          </lookup>
+        </astralka-toolbar>
         @if (show_entry_form) {
           <astralka-person
             [entry]="entry"
@@ -94,29 +106,14 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
             (deleted)="onPersonRemoved()"
           ></astralka-person>
         }
-
         @if (show_transit_form) {
-          <form name="entry" class="entry-form">
-            <div class="entry-body">
-              <div class="entry-group">
-                <label>Transit/Progression Date Time</label>
-                <input type="datetime-local" [ngModel]="transit.date" (ngModelChange)="onTransitDateChange($event)"
-                       name="date">
-              </div>
-              <div class="entry-group">
-                <label style="text-align: center">Interactive <b>{{ transitIntervalValue }} days</b> from
-                  Transit/Progression Date Time</label>
-                <astralka-slider #ref [width]="300" [range]="[-100, 100]" [value]="_transitIntervalValue"
-                                 (valueChange)="updateTransitDate($event)"></astralka-slider>
-              </div>
-            </div>
-            <div class="entry-footer">
-              <button type="button" name="btn-submit" (click)="setTransit('now')">Set to Now (Transit)</button>
-              <button type="button" name="btn-submit" (click)="setTransit('natal')">Set to Age-Day (Progression)
-              </button>
-            </div>
-          </form>
+          <astralka-transit
+            [transit]="transit"
+            [person]="selectedPerson"
+            (changed)="draw()"
+          ></astralka-transit>
         }
+
         <div id="container">
           @if (data && selectedPerson) {
             <article id="person-info">
@@ -129,7 +126,8 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
               <section>Long: {{ convert_long_to_DMS(selectedPerson.location.longitude) }}
                 , {{ selectedPerson.location.longitude }}°{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
               </section>
-              <section>TimeZone: {{ selectedPerson.timezone }}, Elevation: {{ selectedPerson.location.elevation }}m
+              <section>Offset from UTC: {{ selectedPerson.timezone }}hours,
+                Elevation: {{ selectedPerson.location.elevation }}m
               </section>
               <section>DOB: {{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
               <section>Age: {{ age }}, Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
@@ -154,13 +152,13 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
               </section>
               <!-- <section>House System: {{houseSystemById}}</section> -->
               <section style="margin-top: 4px; text-align: right">
-                <astralka-transit-settings>Set Transits</astralka-transit-settings>
+                <astralka-transit-settings>Show Transits</astralka-transit-settings>
               </section>
               <section>
-                <astralka-aspect-settings>Set Aspects</astralka-aspect-settings>
+                <astralka-aspect-settings>Show Aspects</astralka-aspect-settings>
               </section>
               <section>
-                <astralka-house-system>Set House System</astralka-house-system>
+                <astralka-house-system>Setup House System</astralka-house-system>
               </section>
               <section>
                 <button (click)="show_explanation = !show_explanation"
@@ -339,9 +337,6 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
   styleUrls: ['./chart.component.scss'],
 })
 export class AstralkaChartComponent implements OnInit {
-
-  @ViewChild('ref') transitSlider!: AstralkaSliderControlComponent;
-
   public width: number = 800;
   public height: number = 1200;
   public margin: number = 100;
@@ -372,10 +367,11 @@ export class AstralkaChartComponent implements OnInit {
     latitude: 0,
     longitude: 0,
     date: moment.utc().toISOString().replace('Z', ''),
-    elevation: 0
+    elevation: 0,
+    offset: 0
   };
 
-  public _transitIntervalValue: number = 0;
+  //public _transitIntervalValue: number = 0;
   private _planets: any[] = [];
   private _zodiac: any[] = [];
   private _houses: any[] = [];
@@ -393,6 +389,8 @@ export class AstralkaChartComponent implements OnInit {
 
   public sharedExplain$!: Observable<any>;
 
+  public commands: IToolbarCmd[] = [];
+
   constructor(
     private responsive: BreakpointObserver,
     private rest: RestService,
@@ -402,10 +400,59 @@ export class AstralkaChartComponent implements OnInit {
     private router: Router,
     private zone: NgZone
   ) {
-
   }
 
   ngOnInit(): void {
+
+    this.commands = [
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        label: faUser,
+        disabled: () => false,
+        tooltip: 'Person Natal Data Entry',
+        action: () => {
+          this.show_entry_form = !this.show_entry_form;
+        }
+      },
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        label: faBus,
+        disabled: () => false,
+        tooltip: 'Transits or Progression Date',
+        action: () => {
+          this.show_transit_form = !this.show_transit_form;
+        }
+      },
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Right,
+        label: this.username,
+        disabled: () => false,
+        tooltip: 'Profile',
+        action: () => {
+        }
+      },
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Right,
+        label: faSignOut,
+        disabled: () => false,
+        tooltip: 'Sign Out',
+        action: () => {
+          this.logout();
+        }
+      }
+    ];
 
     const responsive_matrix = [
       {
@@ -474,9 +521,9 @@ export class AstralkaChartComponent implements OnInit {
     });
   }
 
-  public get transitIntervalValue(): number {
-    return !_.isNaN(this._transitIntervalValue) ? this._transitIntervalValue : 0;
-  }
+  // public get transitIntervalValue(): number {
+  //   return !_.isNaN(this._transitIntervalValue) ? this._transitIntervalValue : 0;
+  // }
 
 
   public get planets() {
@@ -557,37 +604,6 @@ export class AstralkaChartComponent implements OnInit {
     return this._explanation;
   }
 
-  public setTransit(type: 'now' | 'natal'): void {
-    switch (type) {
-      case 'now':
-        this.transit.date = moment.utc().toISOString().replace('Z', '');
-        this._transitIntervalValue = 0;
-        break;
-      case 'natal':
-        if (this.selectedPerson) {
-          this.transit.date = moment(this.selectedPerson.dateUT).toISOString().replace('Z', '');
-          this._transitIntervalValue = this.age;
-        }
-        break;
-    }
-    this.draw();
-  }
-
-  public onTransitDateChange(date: any): void {
-    this.transit.date = date;
-    this.draw();
-  }
-
-  public updateTransitDate(amount: number): void {
-    this._transitIntervalValue = amount;
-    this.draw();
-  }
-
-  public onSubmitPerson() {
-    //console.log(this.entry);
-    this.draw();
-  }
-
   public zodiac_options(p: any): any {
     let color = "#ffdd00";
     switch (p.name) {
@@ -617,7 +633,7 @@ export class AstralkaChartComponent implements OnInit {
 
   public get calculatedTransitDateStr(): string {
     if (this.transit) {
-      return moment(this.transit.date).utc().add(this._transitIntervalValue, 'days').toISOString().replace('Z', '')
+      return moment(this.transit.date).utc().add(this.transit.offset, 'days').toISOString().replace('Z', '')
     }
     return '';
   }
@@ -713,6 +729,7 @@ export class AstralkaChartComponent implements OnInit {
   public onPersonSaved(person: IPersonInfo): void {
     this.onPersonSelected(person);
   }
+
   public onPersonRemoved(): void {
     this.show_entry_form = false;
     this.resetEntry();
@@ -737,7 +754,7 @@ export class AstralkaChartComponent implements OnInit {
     this.inner_radius = this.outer_radius - this.outer_radius / 6;
     this.house_radius = this.inner_radius * 5 / 7;
 
-    //  assemble ruller lines
+    //  assemble ruler lines
     for (let i = 0; i < 360; i++) {
       const n = i % 30 === 0 ? this.outer_radius - this.inner_radius : i % 10 === 0 ? 10 : 5;
       const p1 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius + n, i);
@@ -766,6 +783,7 @@ export class AstralkaChartComponent implements OnInit {
     this.init();
 
     this.data = _.clone(data);
+    //debug
     console.log(data);
 
     for (let i = 0; i < 12; i++) {
@@ -1133,7 +1151,7 @@ export class AstralkaChartComponent implements OnInit {
       return points;
     }
     if ((2 * Math.PI * radius) - (2 * COLLISION_RADIUS * SYMBOL_SCALE * (points.length + 1)) <= 0) {
-      throw new Error("Cannot resolve collistion");
+      throw new Error("Cannot resolve collision");
     }
     let is_collision = false;
     points = _.sortBy(points, 'angle');
@@ -1171,32 +1189,40 @@ export class AstralkaChartComponent implements OnInit {
   public logout(): void {
     const user: any = this.session.restoreUser();
     this.auth.logout(user.username).subscribe({
-      next: res => {
+      next: () => {
         //console.log(res);
         this.session.clean();
         window.location.reload();
       },
-      error: err => {
+      error: (err: any) => {
         console.log(err);
       }
     });
   }
 
-  public hasUserRole(role: string): boolean {
-    const user = this.session.restoreUser();
-    return user && _.includes(user.roles, role);
-  }
+  //debug
+  // public hasUserRole(role: string): boolean {
+  //   const user = this.session.restoreUser();
+  //   return user && _.includes(user.roles, role);
+  // }
   public get username(): string {
     const user = this.session.restoreUser();
-    return user.username;
+    return user ? user.username : '';
+  }
+  public get userFirstLastName(): string {
+    const user = this.session.restoreUser();
+    if (user) {
+      return (user.firstname ?? '') + ' ' + (user.lastname ?? '');
+    }
+    return 'Unknown User';
   }
 
   protected readonly Gender = Gender;
   protected readonly convert_lat_to_DMS = convert_lat_to_DMS;
   protected readonly convert_long_to_DMS = convert_long_to_DMS;
   public _ = _;
-  protected readonly UserRole = UserRole;
-  protected readonly PersonScope = PersonScope;
+  //protected readonly UserRole = UserRole;
+  //protected readonly PersonScope = PersonScope;
 }
 
 

@@ -1,0 +1,30 @@
+@use '../../../styles/fonts' as font;
+:host {
+  .toolbar-container {
+    width: 100%;
+    height: 28px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2px 2px 3px 2px;
+    //background: #369 url(/assets/noise.png);
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAoCAQAAAClM0ndAAAAhklEQVR4AdXO0QrCMBBE0bttkk38/w8WRERpdyjzVOc+HxhIHqJGMQcFFkpYRQotLLSw0IJ5aBdovruMYDA/kT8plF9ZKLFQcgF18hDj1SbQOMlCA4kao0iiXmah7qBWPdxpohsgVZyj7e5I9KcID+EhiDI5gxBYKLBQYKHAQoGFAoEks/YEGHYKB7hFxf0AAAAASUVORK5CYII=') repeat-x scroll left top #336699;
+    color: #f1e9ce;
+    font-size: 14px;
+    .toolbar-left {
+      flex: 1;
+    }
+    .toolbar-center {
+      flex-wrap: nowrap;
+      overflow: hidden;
+      flex: 2;
+      justify-content: center;
+      text-align: center;
+      @include font.gafata-regular;
+    }
+    .toolbar-right {
+      flex: 1;
+      justify-content: flex-end;
+    }
+  }
+}

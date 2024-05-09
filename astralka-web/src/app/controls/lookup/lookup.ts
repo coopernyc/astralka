@@ -59,6 +59,7 @@ import {ScrollingModule} from "@angular/cdk/scrolling";
 <!--            </div>-->
         </ng-template>
     `,
+  styleUrl: 'lookup.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AstralkaLookupControlComponent implements OnInit, AfterViewInit, OnChanges {
