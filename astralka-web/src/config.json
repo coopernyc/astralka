@@ -1,3 +1,3 @@
 {
-    "server": "http://192.168.1.68:3010"
+    "server": "http://localhost:3010"
 }

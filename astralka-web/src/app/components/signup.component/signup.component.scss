@@ -1,0 +1,53 @@
+:host {
+  flex: 1;
+  display: flex;
+
+  .signup-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+
+    .signup-wrapper {
+      border-radius: 25px;
+      display: flex;
+      width: 800px;
+      height: 450px;
+      background: #fdedc8 url(/assets/noise.png);
+      overflow: hidden;
+      //background-size: 640px;
+      .wrapper-content {
+        flex: 1;
+        background: url(/assets/sagittarius_right_side.png) no-repeat top right #0000;
+        background-size: 360px;
+        .content-header {
+          color: #376a57;
+          font-family: "Gafata", sans-serif;
+          font-weight: 400;
+          font-style: normal;
+          margin-left: 32px;
+          p {
+            color: #9a9740;
+          }
+        }
+        .failed {
+          height: 32px;
+          padding: 8px 0 6px 32px;
+          font-size: 12px;
+          color: crimson;
+          width: 400px;
+          overflow: hidden;
+        }
+        .foot-note {
+          font-size: 11px;
+          margin-top: 8px;
+          color: #376a57;
+          a {
+            color: #376a57;
+          }
+        }
+      }
+    }
+  }
+}

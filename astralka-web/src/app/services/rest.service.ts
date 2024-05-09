@@ -2,6 +2,7 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable, OnDestroy} from "@angular/core";
 import {catchError, map, Observable, of, ReplaySubject, Subject, switchMap} from "rxjs";
 import {IPersonInfo} from "../common";
+import _ from "lodash";
 
 @Injectable({
   providedIn: 'root'
@@ -68,8 +69,9 @@ export class RestService implements OnDestroy {
     ) : of(null);
   }
 
-  public save(entry: any): Observable<any> {
-    const obs = this.http.post(`${this.serverUrl}/save`, entry);
+  public save(entry: any, username: string): Observable<any> {
+    const load = _.assign({}, entry, {username});
+    const obs = this.http.post(`${this.serverUrl}/save`, load);
     return obs ? obs.pipe(
       map((x: any) => x.result),
       catchError(err => {
@@ -79,8 +81,20 @@ export class RestService implements OnDestroy {
     ) : of(null);
   }
 
+  public remove(entry: any, username: string): Observable<any> {
+    const load = _.assign({}, entry, {username});
+    const obs = this.http.post(`${this.serverUrl}/remove`, load);
+    return obs ? obs.pipe(
+      map((x: any) => x.result),
+      catchError(err => {
+        console.log(err);
+        return of(null);
+      })
+    ) : of(null);
+  }
 
-  public searchPerson(name: string, withRefresh: boolean): Observable<IPersonInfo[]> {
-    return this.http.post<IPersonInfo[]>(`${this.serverUrl}/people`, {name});
+  public searchPerson(name: string, username: string, withRefresh: boolean): Observable<IPersonInfo[]> {
+    const load = _.assign({}, {name}, {username});
+    return this.http.post<IPersonInfo[]>(`${this.serverUrl}/people`, load);
   }
 }

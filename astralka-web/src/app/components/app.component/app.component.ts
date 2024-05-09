@@ -1,14 +1,16 @@
 import { RouterModule } from '@angular/router';
 import { Component } from "@angular/core";
-import {AstralkaComponent} from "../astralka.main.component/astralka.component";
+import {AstralkaChartComponent} from "../chart.component/chart.component";
 import {AstralkaLoginComponent} from "../login.component/login.component";
+import {AstralkaSignUpComponent} from "../signup.component/signup.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    AstralkaComponent,
+    AstralkaChartComponent,
     AstralkaLoginComponent,
+    AstralkaSignUpComponent,
     RouterModule
   ],
   template: `

@@ -1,0 +1,108 @@
+:host {
+
+  .person-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    form {
+      border: 1px solid #777;
+      padding: 1em;
+      background: #fdedc8 url(/assets/noise.png);
+
+      &.entry-form {
+        display: flex;
+        flex-direction: column;
+
+        .entry-body {
+          flex: 1;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+
+          .entry-group {
+            margin: 4px;
+
+            label {
+              color: #333;
+              font-family: "Roboto", sans-serif;
+              font-size: 10px;
+              display: block;
+              padding-left: 2px;
+              span {
+                color: crimson;
+              }
+            }
+            select {
+              font-size: 11px;
+              height: 22px;
+              border-radius: 3px;
+              border: 1px solid #333;
+              option {
+                font-size: 11px;
+              }
+            }
+            input {
+              height: 22px;
+              border-radius: 3px;
+              padding: 0 4px;
+              border: 1px solid #333;
+              font-size: 11px;
+              box-shadow: 1px 1px 1px #3333;
+              &.single {
+                width: 80px;
+              }
+
+              &.double {
+                width: 120px;
+              }
+
+              &.triple {
+                width: 200px;
+              }
+
+              &.invalid {
+                border: 1px solid crimson;
+              }
+            }
+          }
+        }
+
+        .entry-footer {
+          margin: 12px 0 0 4px;
+          flex: 0 22px;
+          button {
+            font-family: "Roboto", sans-serif;
+            font-size: 12px;
+            padding: 4px 8px;
+            border: 1px solid #333;
+            border-radius: 3px;
+            box-shadow: 1px 1px 1px #3333;
+            background-color: #eee;
+            color: #333;
+            cursor: pointer;
+            &:disabled,
+            &:disabled:hover{
+              color: #777;
+              border: 1px solid #aaa;
+              background-color: #ccc;
+              box-shadow: none;
+              cursor: default;
+            }
+            &:hover {
+              color: #111;
+              background-color: #fff;
+            }
+            &:not(:last-child) {
+              margin-right: 3px;
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+
+}

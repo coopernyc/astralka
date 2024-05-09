@@ -58,8 +58,6 @@ export function chart_data(query: IQuery): any {
         });
         houses.push(h);
     });
-    //swisseph.swe_set_topo(loc.latitude, loc.longitude, loc.elevation ?? 0);
-
     const fl: number = swisseph.SEFLG_SPEED; // | swisseph.SEFLG_TOPOCTR;
     sky_objects.forEach((x: ISkyObject) => {
         let calc: any;
@@ -87,7 +85,6 @@ export function chart_data(query: IQuery): any {
         } else {
             const angle = swisseph.swe_degnorm(x.position - sky_objects.find(x => x.name === SkyObject.Sun)!.position).x360;
             x.oriental = angle > 180;
-            //console.log(`${x.name} ${angle}`);
         }
         
     });
@@ -100,9 +97,7 @@ export function chart_data(query: IQuery): any {
             const b = sky_objects[j];
             if (
                 (a.name === SkyObject.SouthNode && b.name === SkyObject.NorthNode) ||
-                (b.name === SkyObject.SouthNode && a.name === SkyObject.NorthNode) //||
-                // b.name === SkyObject.ParsFortuna ||
-                // a.name === SkyObject.ParsFortuna
+                (b.name === SkyObject.SouthNode && a.name === SkyObject.NorthNode)
             ) {
                 continue;
             }
@@ -132,12 +127,6 @@ export function chart_data(query: IQuery): any {
     }
     if (!_.isUndefined(query.transit)) {
         const transit = query.transit;
-
-        //julian = swisseph.swe_utc_to_jd(transit_datetime.year(), transit_datetime.month() + 1, transit_datetime.date(), transit_datetime.hours(), transit_datetime.minutes(), transit_datetime.seconds(), swisseph.SE_GREG_CAL);
-        //julian_ut = julian.julianDayUT;
-        //[latitude, longitude, elevation] = [40.922794, -73.79180, 70];
-        //swisseph.swe_set_topo(latitude, longitude, elevation);
-
         const date = moment(transit.date);
         let julian: any = swisseph.swe_utc_to_jd(
             date.year(), date.month() + 1, date.date(), 

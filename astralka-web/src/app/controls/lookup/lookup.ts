@@ -3,27 +3,29 @@ import {CdkPortal, PortalModule} from "@angular/cdk/portal";
 import {Overlay, OverlayConfig, OverlayModule, OverlayRef} from "@angular/cdk/overlay";
 import {ActiveDescendantKeyManager} from "@angular/cdk/a11y";
 import {
-  AfterViewInit,
+  AfterViewInit, ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, Input, OnChanges,
   OnInit,
   Output,
-  QueryList,
+  QueryList, SimpleChanges,
   ViewChild,
   ViewChildren
 } from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {debounceTime, distinctUntilChanged, Observable, Subject, switchMap, tap} from "rxjs";
 import {RestService} from "../../services/rest.service";
-import {IPersonInfo} from "../../common";
+import {IPersonInfo, PersonScope} from "../../common";
 import {LookupOption} from "./lookup-options";
+import {SessionStorageService} from "../../services/session.storage.service";
+import {ScrollingModule} from "@angular/cdk/scrolling";
 
 @Component({
     selector: 'lookup',
     standalone: true,
-    imports: [CommonModule, FormsModule, OverlayModule, PortalModule, LookupOption],
+    imports: [CommonModule, FormsModule, OverlayModule, PortalModule, LookupOption, ScrollingModule],
     template: `
         <input
             #input
@@ -36,16 +38,30 @@ import {LookupOption} from "./lookup-options";
         />
 
         <ng-template cdkPortal #overlayTemplate="cdkPortal" class="dropdown">
-            <div class="dd">
-                @for(person of list; track person.name) {
-                    <!-- <div class="dd-item">{{person.name}}</div> -->
-                    <lookup-option [value]="person" (selected)="selectOption($event)">{{person.name}}</lookup-option>
-                }
-            </div>
+            <cdk-virtual-scroll-viewport itemSize="26" minBufferPx="200" maxBufferPx="400" class="dd">
+              <lookup-option [class.pub]="person.scope === PersonScope.Public" *cdkVirtualFor="let person of list;" [value]="person" (selected)="selectOption($event)">
+                <div class="dd-item">
+                  <div style="flex: 1; overflow: hidden;">{{person.name}}</div>
+                  <div style="flex: 0 20px; tex-align: right;">{{person.scope === PersonScope.Private ? 'Prv' : 'Pub'}}</div>
+                </div>
+              </lookup-option>
+            </cdk-virtual-scroll-viewport>
+<!--            <div class="dd">-->
+<!--                @for(person of list; track person.name) {-->
+<!--                    &lt;!&ndash; <div class="dd-item">{{person.name}}</div> &ndash;&gt;-->
+<!--                    <lookup-option [value]="person" (selected)="selectOption($event)">-->
+<!--                      <div style="display: flex; flex-direction: row; width: 100%; overflow: hidden">-->
+<!--                        <div style="flex: 1; overflow: hidden;">{{person.name}}</div>-->
+<!--                        <div style="flex: 0 20px; tex-align: right;">{{person.scope === PersonScope.Private ? 'Prv' : 'Pub'}}</div>-->
+<!--                      </div>-->
+<!--                    </lookup-option>-->
+<!--                }-->
+<!--            </div>-->
         </ng-template>
-    `
+    `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AstralkaLookupControlComponent implements OnInit, AfterViewInit {
+export class AstralkaLookupControlComponent implements OnInit, AfterViewInit, OnChanges {
 
     public people$!: Observable<IPersonInfo[]>;
     private withRefresh = false;
@@ -55,17 +71,28 @@ export class AstralkaLookupControlComponent implements OnInit, AfterViewInit {
     private keyManager!: ActiveDescendantKeyManager<LookupOption>;
     public list!: IPersonInfo[];
 
+    @Input() query: string = "";
     @ViewChild("input") public input!: ElementRef;
     @ViewChild(CdkPortal) public contentTemplate!: CdkPortal;
     @ViewChildren(LookupOption) public options!: QueryList<LookupOption>;
     @Output() selected: EventEmitter<IPersonInfo> = new EventEmitter<IPersonInfo>();
 
-    constructor(private restService: RestService,
+    constructor(private rest: RestService,
         private overlay: Overlay,
+        private session: SessionStorageService,
         private cdr: ChangeDetectorRef) {
     }
 
-    public getValue(event: Event): string {
+    ngOnChanges(changes: SimpleChanges) {
+      if (changes['query']) {
+        this.query = changes['query'].currentValue ?? '';
+        if (this.input && this.input.nativeElement) {
+          this.setValue(this.query);
+        }
+      }
+    }
+
+  public getValue(event: Event): string {
         return (event.target as HTMLInputElement).value;
     }
 
@@ -86,6 +113,7 @@ export class AstralkaLookupControlComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+        this.setValue(this.query);
         this.keyManager = new ActiveDescendantKeyManager(this.options || [])
           .withHorizontalOrientation('ltr')
           .withVerticalOrientation()
@@ -169,7 +197,10 @@ export class AstralkaLookupControlComponent implements OnInit, AfterViewInit {
         this.people$ = this.query$.pipe(
             debounceTime(300),
             distinctUntilChanged(),
-            switchMap(name => this.restService.searchPerson(name, this.withRefresh)),
+            switchMap(name => {
+              const username = this.session.restoreUser().username;
+              return this.rest.searchPerson(name, username, this.withRefresh);
+            }),
             tap((list: any[]) => {
                 if (list && list.length > 0) {
                     this.showDropdown();
@@ -199,8 +230,10 @@ export class AstralkaLookupControlComponent implements OnInit, AfterViewInit {
         }
     }
     private hide(): void {
+      if (this.showing && this.overlayRef) {
         this.overlayRef.detach();
         this.showing = false;
+      }
     }
     private syncWidth(): void {
         if (!this.overlayRef) {
@@ -234,10 +267,14 @@ export class AstralkaLookupControlComponent implements OnInit, AfterViewInit {
 
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         return new OverlayConfig({
+          minWidth: "220px",
+          maxWidth: "220px",
           positionStrategy: positionStrategy,
           scrollStrategy: scrollStrategy,
           hasBackdrop: true,
           backdropClass: 'cdk-overlay-transparent-backdrop',
         });
     }
+
+  protected readonly PersonScope = PersonScope;
 }

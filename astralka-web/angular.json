@@ -91,7 +91,9 @@
               "buildTarget": "astralka-web:build:production"
             },
             "development": {
-              "buildTarget": "astralka-web:build:development"
+              "buildTarget": "astralka-web:build:development",
+              "sslCert": "ssl/server.crt",
+              "sslKey": "ssl/server.key"
             }
           },
           "defaultConfiguration": "development"

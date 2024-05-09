@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import {call_ai} from "./common";
 import {MongoClient} from "mongodb";
 import {loginRoute} from "./login.route";
+import {signupRoute} from "./signup.route";
 
 const logger = winston.createLogger({
     level: "info",
@@ -49,6 +50,14 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 app.post('/signin', cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     try {
         await loginRoute(req, res);
+    } catch (err) {
+        res.status(500).end();
+    }
+});
+
+app.post('/signup', cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await signupRoute(req, res);
     } catch (err) {
         res.status(500).end();
     }
@@ -100,8 +109,49 @@ app.post("/explain", cors(corsOptions), async (req: Request, res: Response, next
     res.json({result});
 });
 
+app.post("/remove", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
+    let load = req.body;
+    console.log(load);
+
+    const uri: string = process.env.MONGO_URI!;
+    const client = new MongoClient(uri);
+
+    async function run() {
+        try {
+            const database = client.db("astralka");
+            const people = database.collection("people");
+            const user_people = database.collection("user_people");
+            const users = database.collection("users");
+
+            const username = load.username;
+            const user = await users.findOne({username, enabled: true });
+            if (!user) {
+                res.status(400).end('User not found');
+                return;
+            }
+            if (load.scope === 0 && !_.includes(user.roles, "Administrator")) {
+                res.status(400).end('Cannot remove public person information');
+                return;
+            }
+            await user_people.deleteMany({
+                name: load.name,
+                user: username
+            });
+            await people.deleteMany({
+                name: load.name,
+                createdBy: username,
+            });
+            res.json({ success: true });
+        }
+        finally {
+            await client.close();
+        }
+    }
+    run().catch(console.dir);
+});
+
 app.post("/save", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
-    const entry = req.body;
+    let entry = req.body;
     console.log(entry);
 
     const uri: string = process.env.MONGO_URI!;
@@ -111,17 +161,69 @@ app.post("/save", cors(corsOptions), async (req: Request, res: Response, next: N
         try {
             const database = client.db("astralka");
             const people = database.collection("people");
+            const user_people = database.collection("user_people");
+            const users = database.collection("users");
+
+            const username = entry.username;
+            const user = await users.findOne({username, enabled: true });
+            if (!user) {
+                res.status(400).end('User not found');
+                return;
+            }
+            if (entry.scope === 0 && !_.includes(user.roles, "Administrator")) {
+                res.status(400).end('Cannot update public person information');
+                return;
+            }
+
+            entry = _.omit(entry, 'username');
+            const insertFields = {
+                createdBy: username,
+                createdDate: new Date()
+            };
+            const updateFields = _.assign({}, _.omit(entry, 'createdBy', 'createdDate'), {
+                updatedBy: username,
+                updatedDate: new Date()
+            });
+
+            // upsert in People
             await people.updateOne({
-                    name: entry.name
+                    name: entry.name,
+                    createdBy: username
                 },
                 {
+                    // update
                     $set: {
-                        ...entry
+                        ...updateFields
+                    },
+                    // insert
+                    $setOnInsert: {
+                        ...insertFields
                     }
                 },
                 {
                     upsert: true
                 });
+
+            if (entry.scope === 1) {
+                // if Private (1) person - upserting
+                await user_people.updateOne({
+                    name: entry.name,
+                    user: username
+                }, {
+                    $setOnInsert: {
+                        name: entry.name,
+                        user: username
+                    }
+                }, {
+                    upsert: true
+                });
+            } else {
+                // if Public (0) person - delete from user_people
+                await user_people.deleteMany({
+                    name: entry.name
+                });
+            }
+
             res.json({ success: true });
         } finally {
             await client.close();
@@ -132,21 +234,71 @@ app.post("/save", cors(corsOptions), async (req: Request, res: Response, next: N
 });
 
 app.post("/people", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
-    const name = req.body.name ?? "";
-    console.log(name);
+    const name = req.body.name;
+    const username = req.body.username;
+
+    console.log(`search [${name}] for ${username}`);
+
     if (_.isEmpty(name)) {
         res.json([]);
         return;
     }
     const uri: string = process.env.MONGO_URI!;
     const client = new MongoClient(uri);
-    let result: any[];
+    let result: any[] = [];
 
     async function run() {
         try {
             const database = client.db("astralka");
             const people = database.collection("people");
-            result = await people.find({name: {$regex: name, $options: "i"}}).toArray();
+            //result = await people.find({name: {$regex: name, $options: "i"}}).toArray();
+
+            const cursor = people.aggregate([
+                {
+                    $lookup: {
+                        from: "user_people",
+                        let: { people_name: "$name", people_user: "$createdBy" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            {$eq: [ "$name", "$$people_name" ] },
+                                            {$eq: [ "$user", "$$people_user" ] },
+                                            {$eq: [ "$user", username ]}
+                                        ]
+                                    }
+                                }
+                            },
+                            { $project: { name: 0, user: 0 } }
+                        ],
+                        as: "joined"
+                    }
+                },
+                {
+                    $match: {
+                        $expr: {
+                            $and: [
+                                { $regexMatch: { input: "$name", regex: name, options: "i" } },
+                                {
+                                    $or: [
+                                        {$eq: ["$scope", 0] },
+                                        {$ne: ["$joined", []]}
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $sort: { scope: -1, updatedDate: -1 }
+                }
+            ]);
+
+            for await (const doc of cursor) {
+                result.push(doc);
+            }
+
         } finally {
             await client.close();
             console.log('result', result);
@@ -168,11 +320,32 @@ async function run() {
 
         try {
             const database = client.db("astralka");
+
             const people = database.collection("people");
+            const user_people = database.collection("user_people");
+            const users = database.collection("users");
+
             await people.createIndex({
-                    "name": 1
+                    "name": 1,
+                    "createdBy": 1
                 },
                 {
+                    name: "people_unique_index",
+                    unique: true
+                });
+            await user_people.createIndex({
+                    "name": 1,
+                    "user": 1
+                },
+                {
+                    name: "user_people_unique_index",
+                    unique: true
+                });
+            await users.createIndex({
+                    "username": 1
+                },
+                {
+                    name: "users_unique_index",
                     unique: true
                 });
         } finally {

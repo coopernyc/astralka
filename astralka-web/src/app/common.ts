@@ -16,6 +16,11 @@ export enum Gender {
   Female,
   Male
 }
+export enum PersonScope {
+  Public,
+  Private
+
+}
 export const SYMBOL_PLANET = {
     Sun: "Sun",
     Moon: "Moon",
@@ -282,9 +287,28 @@ export interface IPersonInfo {
         elevation: number,
         name: string
     },
-    gender: number
-}
-
+    gender: number,
+    scope: number,
+    createdBy?: string,
+    createdDate?: Date,
+    updatedBy?: string,
+    updatedDate?: Date
+};
+export interface IPersonEntry {
+  name: string,
+  locationName: string,
+  latitude: number,
+  longitude: number,
+  dob: string,
+  timezone: number,
+  elevation: number,
+  gender: Gender,
+  scope: PersonScope
+};
+export const UserRole = {
+  Admin: 'Administrator',
+  User: 'User'
+};
 export const latinAboutSign = [
   {
     sign: SYMBOL_ZODIAC.Aries,

@@ -6,7 +6,7 @@ import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, 
     selector: 'lookup-option',
     standalone: true,
     imports: [CommonModule, A11yModule],
-    template: `<span #option><ng-content></ng-content></span>`,
+    template: `<div #option><ng-content></ng-content></div>`,
     host: {
         role: 'listbox',
         '[attr.aria-label]': 'value',

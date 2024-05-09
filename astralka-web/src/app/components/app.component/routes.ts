@@ -1,6 +1,7 @@
 import {Routes} from "@angular/router";
-import {AstralkaComponent} from "../astralka.main.component/astralka.component";
+import {AstralkaChartComponent} from "../chart.component/chart.component";
 import {AstralkaLoginComponent} from "../login.component/login.component";
+import {AstralkaSignUpComponent} from "../signup.component/signup.component";
 
 const routerConfig: Routes = [
   {
@@ -9,8 +10,13 @@ const routerConfig: Routes = [
     title: 'Astralka Login'
   },
   {
+    path: 'signup',
+    component: AstralkaSignUpComponent,
+    title: 'Astralka SignUp Page'
+  },
+  {
     path: 'astralka',
-    component: AstralkaComponent,
+    component: AstralkaChartComponent,
     title: 'Astralka Main Page'
   }
 ];

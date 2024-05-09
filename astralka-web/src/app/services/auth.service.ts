@@ -30,4 +30,18 @@ export class AstralkaAuthService {
       this.rest.serverUrl + '/signout', { username }, httpOptions
     );
   }
+
+  create_account(username: string, email: string, password: string, firstname: string, lastname: string) : Observable<any> {
+    return this.http.post(
+      this.rest.serverUrl + '/signup',
+      {
+        username,
+        email,
+        password,
+        firstname,
+        lastname
+      },
+      httpOptions
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import { RateLimiterMongo } from "rate-limiter-flexible";
 import {MongoClient, MongoClientOptions} from "mongodb";
+import _ from "lodash";
 
 const uri: string = process.env.MONGO_URI!;
 const mongoOpts: MongoClientOptions = {
@@ -23,14 +24,11 @@ const limiterConsecutiveFailsByUsernameAndIP = new RateLimiterMongo({
     blockDuration: 60 * 60, // Block for 1 hour
 });
 const getUsernameIPkey = (username: string, ip: string) => `${username}_${ip}`;
-interface IUserLoginStatus {
-    isLoggedIn: boolean;
-    exists: boolean;
-}
-async function authorise(username: string, password: string): Promise<IUserLoginStatus> {
-    let result: IUserLoginStatus = {
+async function authorise(username: string, password: string, ipAddr: string): Promise<any> {
+    let result: any = {
         isLoggedIn: false,
-        exists: false
+        exists: false,
+        roles: []
     };
     const uri: string = process.env.MONGO_URI!;
     const client = new MongoClient(uri);
@@ -38,6 +36,7 @@ async function authorise(username: string, password: string): Promise<IUserLogin
         const database = client.db("astralka");
         const users = database.collection("users");
 
+        // debug
         // add default user if it's no already exists
         await users.updateOne(
             {
@@ -48,7 +47,35 @@ async function authorise(username: string, password: string): Promise<IUserLogin
                     password: process.env.PASSWORD,
                     enabled: true,
                     isLoggedIn: false,
-                    lastUpdateDate: new Date()
+                    lastUpdateDate: new Date(),
+                    roles: [
+                        'User'
+                    ],
+                    firstname: 'Test',
+                    lastname: 'User',
+                    email: ''
+                }
+            },
+            {
+                upsert: true
+            });
+
+        await users.updateOne(
+            {
+                username: process.env.ADMIN_USERNAME
+            },{
+                $setOnInsert: {
+                    username: process.env.ADMIN_USERNAME,
+                    password: process.env.ADMIN_PASSWORD,
+                    enabled: true,
+                    isLoggedIn: false,
+                    lastUpdateDate: new Date(),
+                    roles: [
+                        'Administrator'
+                    ],
+                    firstname: 'ADMIN',
+                    lastname: 'ADMIN',
+                    email: ''
                 }
             },
             {
@@ -58,14 +85,20 @@ async function authorise(username: string, password: string): Promise<IUserLogin
         let found = await users
             .findOneAndUpdate(
                 {username, password, enabled: true },
-                { $set: { isLoggedIn: true, lastUpdateDate: new Date() } },
+                { $set:
+                        {
+                            isLoggedIn: true,
+                            lastUpdateDate: new Date(),
+                            ipAddr
+                        }
+                    },
                 { returnDocument: "after" });
 
         if (found) {
-            result = {
+            result = Object.assign({}, _.omit(found,  'password'), {
                 isLoggedIn: true,
                 exists: true
-            };
+            });
         } else {
             found = await users.findOne({username, enabled: true});
             if (found) {
@@ -106,12 +139,12 @@ export async function loginRoute(req: any, res: any): Promise<void> {
         res.set('Retry-After', String(retrySecs));
         res.status(429).send('Too Many Requests');
     } else {
-        const user: IUserLoginStatus = await authorise(req.body.username, req.body.password); // should be implemented in your project
-        if (!user.isLoggedIn) {
+        const userStatus: any = await authorise(req.body.username, req.body.password, ipAddr); // should be implemented in your project
+        if (!userStatus.isLoggedIn) {
             // Consume 1 point from limiters on wrong attempt and block if limits reached
             try {
                 const promises = [limiterSlowBruteByIP.consume(ipAddr)];
-                if (user.exists) {
+                if (userStatus.exists) {
                     // Count failed attempts by Username + IP only for registered users
                     promises.push(limiterConsecutiveFailsByUsernameAndIP.consume(usernameIPkey));
                 }
@@ -130,7 +163,20 @@ export async function loginRoute(req: any, res: any): Promise<void> {
                 // Reset on successful authorisation
                 await limiterConsecutiveFailsByUsernameAndIP.delete(usernameIPkey);
             }
-            res.json({authorized: true});
+
+            res.json(
+                {
+                    authorized: true,
+                    user: _.omit(userStatus,
+                '_id',
+                'exists',
+                'isLoggedIn',
+                'enabled',
+                'lastUpdateDate',
+                'ipAddr'
+                    )
+                }
+            );
         }
     }
 }

@@ -70,7 +70,7 @@ import _ from "lodash";
                   </div>
                   <div class="form-group footer">
                     <button type="submit">Sign In</button>
-                    <button type="button" disabled="true">Sign Up</button>
+                    <button type="button" (click)="goToSignUp()">Sign Up</button>
                   </div>
                 </form>
               </div>
@@ -108,11 +108,16 @@ export class AstralkaLoginComponent implements OnInit {
     this.auth.login(username, password)
       .subscribe({
         next: async (data: any) => {
-          this.session.storeUser({username});
-          await this.goToAstralka();
+          if (data && data.authorized) {
+            this.session.storeUser(data.user);
+            await this.goToAstralka();
+          } else {
+            this.failedMessage = 'Error! Not authorized';
+            this.failed = true;
+          }
         },
         error: (err: any) => {
-          this.failedMessage = 'Error! ' + (_.isString(err.error) ? err.error : err.message ?? 'Unknown Error. Try again later.');
+          this.failedMessage = 'Error! ' + _.isString(err.error) ? err.error : err.message ?? 'Cannot sign in.';
           this.failed = true;
         }
       });
@@ -120,5 +125,9 @@ export class AstralkaLoginComponent implements OnInit {
 
   private async goToAstralka(): Promise<void> {
     await this.router.navigate(['astralka']);
+  }
+
+  public async goToSignUp(): Promise<void> {
+    await this.router.navigate(['signup']);
   }
 }
