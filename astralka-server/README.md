@@ -9,9 +9,9 @@ The server is node express REST server
 > sudo npm install
 ````
 
->[!TIP] on Windows, if you run into some errors about msvc for node >= 18, search and run Install Additional tools for Node.js batch file.
+> [!TIP] on Windows, if you run into some errors about msvc for node >= 18, search and run Install Additional tools for Node.js batch file.
 
->[!TIP] on Windows, You would need to downgrade from python from 3.11+ to 3.10.x. 
+> [!TIP] on Windows, You would need to downgrade from python from 3.11+ to 3.10.x. 
 > You can have several version, don't forget to check option Add Python to Path when installing. 
 > One way is to make in Environment Variables -> Path make 3.10 paths to be before any other versions in the list.
 
