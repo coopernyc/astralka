@@ -1,5 +1,7 @@
 # Astralka Project #
 ![9cc0af38-16c9-4f72-b156-e3e6a650628d](https://github.com/coopernyc/astralka/assets/11201225/5fd9ffcb-453b-43eb-9b7f-729b2dc914a2)  
+
+## Gallery
 <img width="400" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/8ba12dc9-07ea-489b-97e5-fab8d0d15ced">
 <img width="400" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/81280a9a-6d4e-4116-9699-8e6b8fc3d617">
 
