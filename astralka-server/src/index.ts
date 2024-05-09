@@ -26,7 +26,7 @@ const app: Express = express();
 const port = process.env.PORT || 3010;
 console.log(process.env.CORS_ORIGINS!.split(", "));
 const corsOptions = {
-    origin: process.env.CORS_ORIGINS!.split(", "), // ['http://192.168.1.68:4200', 'http://localhost:4200'],
+    origin: process.env.CORS_ORIGINS!.split(", "),
     credentials: true
 };
 app.use(cors(corsOptions));
