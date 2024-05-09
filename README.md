@@ -6,22 +6,11 @@
 > [!WARNING]
 > In Development
 
-## Installation ##
-
-cd to astralka-server and run `npm install`
-
-update `src/config.json`
-
-```
-{
-    "server": "http://[ASTRALKA SERVER IP]:[ASTRALKA SERVER PORT]"
-}
-```
-
 > [!TIP]
 > on Windows, if you run into some errors about msvc for node >= 18, search and run `Install Additional tools for Node.js` batch file.
 
-run server with `npx ts-node src/index.ts`
+### Astralka-Server
+See documentation [here](astralka-server/README.md)
 
-cd to astralka-web and run `npm install`
-then run dev with `ng serve`.
+### Astralka-Web
+See documentation [here](astralka-web/README.md)

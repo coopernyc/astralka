@@ -1,14 +1,23 @@
-# AstralkaServer
-The server is node express REST server running on `http://localhost:3010/` where 3010 default port.
-
-Create .env file in the src folder like that.
-
-![img.png](img.png)
-
-Add your GEMINI API Key and path to your mongoDb.
-
-# Running the server
+# Astralka-Server
+The server is node express REST server
+## Installation
+1. Install Node.js. See [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs)
+2. Install mongoDb. See [here](https://www.mongodb.com/docs/manual/installation/)
+3. Install astralka-server
+````
+> cd astralka-server
+> sudo npm install
+````
+4. Create **.env** file in the root folder, add lines:
+````
+API_KEY=[YOUR GEMINI AI API KEY]
+MONGO_URI=mongodb://[YOUR MONGODB URL]
+CORS_ORIGINS=http://192.168.xxx.xxx:4200, http://localhost:4200
+ADMIN_USERNAME=[ADMIN USERNAME]
+ADMIN_PASSWORD=[ADMIN PASSWORD]
+PORT=[SERVER PORT] (if port is omited, default 3010)
+````
+## Running the server
 Run `npm run once` to start server. 
 Run `npm start` to start dev server with live reload.
 
-More information will be added soon.

@@ -38,27 +38,27 @@ async function authorise(username: string, password: string, ipAddr: string): Pr
 
         // debug
         // add default user if it's no already exists
-        await users.updateOne(
-            {
-                username: process.env.USERNAME
-            },{
-                $setOnInsert: {
-                    username: process.env.USERNAME,
-                    password: process.env.PASSWORD,
-                    enabled: true,
-                    isLoggedIn: false,
-                    lastUpdateDate: new Date(),
-                    roles: [
-                        'User'
-                    ],
-                    firstname: 'Test',
-                    lastname: 'User',
-                    email: ''
-                }
-            },
-            {
-                upsert: true
-            });
+        // await users.updateOne(
+        //     {
+        //         username: process.env.USERNAME
+        //     },{
+        //         $setOnInsert: {
+        //             username: process.env.USERNAME,
+        //             password: process.env.PASSWORD,
+        //             enabled: true,
+        //             isLoggedIn: false,
+        //             lastUpdateDate: new Date(),
+        //             roles: [
+        //                 'User'
+        //             ],
+        //             firstname: 'Test',
+        //             lastname: 'User',
+        //             email: ''
+        //         }
+        //     },
+        //     {
+        //         upsert: true
+        //     });
 
         await users.updateOne(
             {
