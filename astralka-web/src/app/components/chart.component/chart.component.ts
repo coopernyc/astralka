@@ -317,15 +317,33 @@ import {faBus, faGlobe, faSignOut, faUser} from "@fortawesome/free-solid-svg-ico
               <div class="bot-panel-handler">
                 {{ latin_phrase?.eng }}
               </div>
-              <div class="bot-panel-content" id="explanation">
-                @for (e of explanation; track e; let idx = $index) {
-                  @if (idx !== 0) {
-                    <hr class="una"/>
+              <div style="flex: 1; display: flex; flex-direction: row; overflow: hidden">
+                <div class="bot-panel-content" id="explanation" >
+                  @for (e of explanation; track e; let idx = $index) {
+                    @if (idx !== 0) {
+                      <hr class="una"/>
+                    }
+                    <p [innerHTML]="e.text | safeHtml"></p>
+                    <!-- + <span style='padding-right: 4px; color: #777; font-size: 10px;'>{{e.timestamp}}</span> -->
                   }
-                  <p [innerHTML]="e.text | safeHtml"></p>
-                  <!-- + <span style='padding-right: 4px; color: #777; font-size: 10px;'>{{e.timestamp}}</span> -->
-                }
+                </div>
+                <!-- placeholder for a rotating image component -->
+                <div style="flex: 0 320px; position: relative">
+                    <img [src]="'assets/libra_test_001.png'" width="320px" />
+                    <div style="position: absolute; left: 2px; top: 2px; width: 120px; height: 26px; background-color: transparent; border-radius: 3px; align-content: center; text-align: center; display: flex; flex-direction: row;     align-items: center; justify-content: start;">
+                      <span style="width: 24px; background-color: #111;">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="20"
+                             height="20"
+                             viewBox="0 0 20 20">
+                          <g svgg-symbol [x]="10" [y]="12" [name]="SYMBOL_ZODIAC.Libra" [options]="{scale: 1, stroke_color: '#fff'}"></g>
+                        </svg>
+                      </span>
+                      <span style="font-family: Gafata, sans-serif; font-size: 16px; color: #fff; background-color: #111;">Libra</span>
+                    </div>
+                </div>
               </div>
+
             </div>
           }
         </div>
@@ -1223,6 +1241,7 @@ export class AstralkaChartComponent implements OnInit {
   public _ = _;
   //protected readonly UserRole = UserRole;
   //protected readonly PersonScope = PersonScope;
+  protected readonly SYMBOL_ZODIAC = SYMBOL_ZODIAC;
 }
 
 

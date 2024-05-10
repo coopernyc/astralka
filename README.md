@@ -13,7 +13,9 @@
 
 > [!TIP]
 > on Windows, if you run into some errors about msvc for node >= 18, search and run `Install Additional tools for Node.js` batch file.
-> Also, you would need to downgrade from python from 3.11+ to 3.10.x to compile swisseph package.
+> 
+> Also, you would need to downgrade from python 3.11+ to 3.10.x to compile `swisseph` package.
+> 
 > You can have several python versions, don't forget to check `Add Python to Path` option  when installing it.
 > One way to use 3.10.x is to go to `Environment Variables` and change the `Path` list so 3.10 paths are before any other versions in the list.
 
