@@ -58,7 +58,7 @@ import {Router} from "@angular/router";
 import {AstralkaPersonComponent} from "../person.component/person.component";
 import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
-import {faBus, faGlobe, faSignOut, faUser} from "@fortawesome/free-solid-svg-icons";
+import {faMeteor, faSignOut, faUserAstronaut} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'astralka-chart',
@@ -329,7 +329,7 @@ import {faBus, faGlobe, faSignOut, faUser} from "@fortawesome/free-solid-svg-ico
                 </div>
                 <!-- placeholder for a rotating image component -->
                 <div style="flex: 0 320px; position: relative">
-                    <img [src]="'assets/libra_test_001.png'" width="320px" />
+                    <img alt="placeholder" [src]="'assets/libra_test_001.png'" width="320px" />
                     <div style="position: absolute; left: 2px; top: 2px; width: 120px; height: 26px; background-color: transparent; border-radius: 3px; align-content: center; text-align: center; display: flex; flex-direction: row;     align-items: center; justify-content: start;">
                       <span style="width: 24px; background-color: #111;">
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -428,7 +428,7 @@ export class AstralkaChartComponent implements OnInit {
         type: 'item',
         hidden: false,
         align: ToolbarAlign.Left,
-        label: faUser,
+        label: faUserAstronaut,
         disabled: () => false,
         tooltip: 'Person Natal Data Entry',
         action: () => {
@@ -440,7 +440,7 @@ export class AstralkaChartComponent implements OnInit {
         type: 'item',
         hidden: false,
         align: ToolbarAlign.Left,
-        label: faBus,
+        label: faMeteor,
         disabled: () => false,
         tooltip: 'Transits or Progression Date',
         action: () => {
