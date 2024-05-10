@@ -13,9 +13,9 @@
 
 > [!TIP]
 > on Windows, if you run into some errors about msvc for node >= 18, search and run `Install Additional tools for Node.js` batch file.
-> You would need to downgrade from python from 3.11+ to 3.10.x.
-> You can have several version, don't forget to check option Add Python to Path when installing.
-> One way is to make in Environment Variables -> Path make 3.10 paths to be before any other versions in the list.
+> Also, you would need to downgrade from python from 3.11+ to 3.10.x to compile swisseph package.
+> You can have several python versions, don't forget to check `Add Python to Path` option  when installing it.
+> One way to use 3.10.x is to go to `Environment Variables` and change the `Path` list so 3.10 paths are before any other versions in the list.
 
 ### Astralka-Server
 See documentation [here](astralka-server/README.md)
