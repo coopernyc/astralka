@@ -2,22 +2,28 @@
 :host {
   .toolbar-container {
     width: 100%;
-    height: 28px;
+    height: 32px;
     display: flex;
     flex-direction: row;
-    align-items: center;
-    padding: 2px 2px 3px 2px;
-    //background: #369 url(/assets/noise.png);
+
+    align-content: center;
+    justify-items: center;
+
     background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAoCAQAAAClM0ndAAAAhklEQVR4AdXO0QrCMBBE0bttkk38/w8WRERpdyjzVOc+HxhIHqJGMQcFFkpYRQotLLSw0IJ5aBdovruMYDA/kT8plF9ZKLFQcgF18hDj1SbQOMlCA4kao0iiXmah7qBWPdxpohsgVZyj7e5I9KcID+EhiDI5gxBYKLBQYKHAQoGFAoEks/YEGHYKB7hFxf0AAAAASUVORK5CYII=') repeat-x scroll left top #336699;
     color: #f1e9ce;
-    font-size: 14px;
+    font-size: 12px;
+    padding: 2px;
+
     .toolbar-left {
+      //border: 1px solid red;
       flex: 1;
+      justify-content: flex-start;
     }
     .toolbar-center {
       flex-wrap: nowrap;
       overflow: hidden;
       flex: 2;
+      padding-top: 2px;
       justify-content: center;
       text-align: center;
       @include font.gafata-regular;

@@ -1,9 +1,40 @@
-import _, { random } from "lodash";
+import _ from "lodash";
 import moment from "moment";
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
+import {
+  faBabyCarriage,
+  faBank,
+  faBookSkull,
+  faBrain,
+  faBriefcase,
+  faBurger,
+  faCar,
+  faClover,
+  faCocktail,
+  faComputer,
+  faCouch,
+  faCrown,
+  faDog,
+  faFan,
+  faGem,
+  faHeart,
+  faHeartPulse,
+  faLuggageCart,
+  faMobile,
+  faMoneyBill1,
+  faMusic,
+  faPalette,
+  faPeopleGroup,
+  faPeopleRoof,
+  faRing,
+  faShirt,
+  faSmile,
+  faVolleyballBall
+} from "@fortawesome/free-solid-svg-icons";
+import {faPagelines} from "@fortawesome/free-brands-svg-icons";
 
 export const SYMBOL_SCALE = 1;
-export const COLLISION_RADIUS = 7.5;
+export const COLLISION_RADIUS = 10;
 export const SYMBOL_STROKE_COLOR = "#000";
 export const SYMBOL_STROKE_WIDTH = "1";
 export const CHART_MARGIN = 10;
@@ -167,7 +198,7 @@ export function random_point_on_the_line(p1: {x: number, y: number}, p2: {x: num
 export function one_third_point_on_the_line(p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
   const a = (p2.y - p1.y) / (p2.x - p1.x);
   const b = p1.y - a * p1.x;
-  const d = (p2.x - p1.x);
+  //const d = (p2.x - p1.x);
   const rnd_x = p1.x + (p2.x - p1.x) / 3;
   return {x: rnd_x, y: a * rnd_x + b};
 }
@@ -298,32 +329,54 @@ export enum ToolbarCmdMask {
   NavBar,
   Context,
   All
-};
+}
 
 export enum ToolbarAlign {
   Left,
   Right
 }
+
+export enum ToolbarDisplay {
+  None = 0,
+  Icon,
+  Text,
+  IconAndText
+}
+
+export enum ToolbarMenuSpan {
+  Single,
+  Double,
+  Triple
+}
+
 export interface IToolbarCmdBase {
   mask: ToolbarCmdMask,
   hidden?: boolean,
   align?: ToolbarAlign|number
 }
 
+export interface IToolbarItem {
+  display: ToolbarDisplay;
+  disabled: () => boolean;
+  label?: string;
+  icon?: IconDefinition;
+  iconResolver?: () => { icon: IconDefinition|string, cssClass: string };
+  tooltip?: string;
+  options?: any;
+}
 export interface IToolbarSeparator extends IToolbarCmdBase {
-  type: 'separator'
+  type: 'separator';
 }
-export interface IToolbarNavCmd extends IToolbarCmdBase {
-  type: 'item',
-  label: IconDefinition|string,
-  action: () => void,
-  disabled: () => boolean,
-  iconResolver?: () => { icon: IconDefinition|string, cssClass: string },
-  tooltip?: string,
-  options?: any
+export interface IToolbarMenu extends IToolbarCmdBase, IToolbarItem {
+  type: 'menu';
+  commands: IToolbarCmd[];
+  menuSpan?: ToolbarMenuSpan;
 }
-
-export type IToolbarCmd = IToolbarNavCmd | IToolbarSeparator;
+export interface IToolbarNavCmd extends IToolbarCmdBase, IToolbarItem {
+  type: 'item';
+  action: () => void;
+}
+export type IToolbarCmd = IToolbarNavCmd | IToolbarSeparator | IToolbarMenu;
 
 export interface IPersonInfo {
     name: string,
@@ -342,7 +395,7 @@ export interface IPersonInfo {
     createdDate?: Date,
     updatedBy?: string,
     updatedDate?: Date
-};
+}
 export interface IPersonEntry {
   name: string,
   locationName: string,
@@ -353,7 +406,7 @@ export interface IPersonEntry {
   elevation: number,
   gender: Gender,
   scope: PersonScope
-};
+}
 export const UserRole = {
   Admin: 'Administrator',
   User: 'User'
@@ -419,4 +472,152 @@ export const latinAboutSign = [
     phrase: "Crede quod habes, et habes",
     eng: "Believe that you have it, and you do"
   }
+];
+
+export const perspectives = [
+  {
+    label: "Health",
+    icon: faHeartPulse,
+    prompt: "with health. List best ways to keep good health."
+  },
+  {
+    label: "Money",
+    icon:  faMoneyBill1,
+    prompt: "with money. List best potential sources of getting rich."
+  },
+  {
+    label: "Intellect",
+    icon:  faBrain,
+    prompt: "with intellect. List areas with the most intellectual interest."
+  },
+  {
+    label: "Emotions",
+    icon:  faSmile,
+    prompt: "with emotions. List the areas where emotions will prevail and help or make worth."
+  },
+  {
+    label: "Family",
+    icon:  faPeopleRoof,
+    prompt: "with family. List the areas where the family will help the most."
+  },
+  {
+    label: "Friends",
+    icon:  faPeopleGroup,
+    prompt: "with friends. List the most valuable quality of a friend. Also list the most compatible and incompatible signs."
+  },
+  {
+    label: "Cars",
+    icon:  faCar,
+    prompt: "with cars. Provide a list of the best suited makers and models."
+  },
+  {
+    label: "Romance",
+    icon:  faHeart,
+    prompt: "with romance. List the most valuable quality of a partner. Also list the most compatible and incompatible signs."
+  },
+  {
+    label: "Jobs",
+    icon:  faBriefcase,
+    prompt: "with jobs. List the most suitable and not suitable professions and the best choice jobs."
+  },
+  {
+    label: "Kids",
+    icon:  faBabyCarriage,
+    prompt: "with kids. Guess on a potential number of kids and their gender."
+  },
+  {
+    label: "Marriage",
+    icon:  faRing,
+    prompt: "with marriage. Also list the most compatible and incompatible signs. Guess number of marriages."
+  },
+  {
+    label: "Leadership",
+    icon:  faCrown,
+    prompt: "with leadership. List areas where can easily lead and areas conflicting with authorities."
+  },
+  {
+    label: "Food",
+    icon:  faBurger,
+    prompt: "with food. List most preferable world cuisines and their specific food."
+  },
+  {
+    label: "Travel",
+    icon:  faLuggageCart,
+    prompt: "with travel. List the most preferable world destination."
+  },
+  {
+    label: "Sports",
+    icon:  faVolleyballBall,
+    prompt: "with sport. List the most preferable sports and physical activities."
+  },
+  {
+    label: "Drinks",
+    icon:  faCocktail,
+    prompt: "with drinks. List the most preferable and least preferable brands and cocktail names of alcoholic drinks."
+  },
+  {
+    label: "Clothes",
+    icon:  faShirt,
+    prompt: "with clothing. List the most preferable and least preferable brands and styles."
+  },
+  {
+    label: "Hobbies",
+    icon:  faCouch,
+    prompt: "with hobbies. List the most preferable and least preferable hobbies and interest activities."
+  },
+  {
+    label: "Jewelries",
+    icon:  faGem,
+    prompt: "with jewelries. List the most suitable precious stones and metals, jewelry brands and styles."
+  },
+  {
+    label: "Colors",
+    icon:  faPalette,
+    prompt: "with colors. List the most and the least preferable colors and combination."
+  },
+  {
+    label: "Pets",
+    icon:  faDog,
+    prompt: "with pets. List the most and the least preferable kinds, breeds, colors and sizes of pets."
+  },
+  {
+    label: "Luck",
+    icon:  faClover,
+    prompt: "with luck. What are the chances in gambling investments and risky activities."
+  },
+  {
+    label: "Trees",
+    icon:  faPagelines,
+    prompt: "with trees. List the most and the least preferable kinds, colors and sizes of trees."
+  },
+  {
+    label: "Flowers",
+    icon:  faFan,
+    prompt: "with flowers. List the most and the least preferable kinds, colors of flowers. Also give recommendation for flower combination in a bucket."
+  },
+  {
+    label: "Music",
+    icon:  faMusic,
+    prompt: "with music. Indicate potential of playing music and on what instrument. Also, list the most and the least preferable genres, kinds, styles and bands."
+  },
+  {
+    label: "Inheritance",
+    icon:  faBookSkull,
+    prompt: "with inheritance."
+  },
+  {
+    label: "Investments",
+    icon:  faBank,
+    prompt: "with investments. List most and least preferable ways to invest and kinds of investments."
+  },
+  {
+    label: "Technology",
+    icon:  faComputer,
+    prompt: "with technology. List most and least preferable areas of technology. For information technology, specify which area, role and prefered programming language and style."
+  },
+  {
+    label: "Gadgets",
+    icon:  faMobile,
+    prompt: "with gadgets. List most and least preferable gadgets and devices, their brands and styles."
+  },
 ];

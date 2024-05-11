@@ -7,28 +7,45 @@ import _ from "lodash";
     standalone: true,
     imports: [CommonModule],
     template: `
-        <svg:text 
-            [attr.x]="x"
-            [attr.y]="y"            
-            [attr.dominant-baseline]="'central'"
-            [attr.fill]="fill_color"
-            [attr.stroke]="stroke_color"
-            [attr.stroke-width]="stroke_width"
-            [attr.stroke-dasharray]="stroke_dasharray"
-            [attr.font-size]="font_size"
+        @if (fillBackground) {
+          <svg:text
+              filter="url(#solid)"
+              [attr.x]="x"
+              [attr.y]="y"
+              [attr.dominant-baseline]="'central'"
+              [attr.fill]="fill_color"
+              [attr.stroke]="stroke_color"
+              [attr.stroke-width]="stroke_width"
+              [attr.stroke-dasharray]="stroke_dasharray"
+              [attr.font-size]="font_size"
+          >
+          {{text}}
+          </svg:text>
+        }
+        <svg:text
+          filter=""
+          [attr.x]="x"
+          [attr.y]="y"
+          [attr.dominant-baseline]="'central'"
+          [attr.fill]="fill_color"
+          [attr.stroke]="stroke_color"
+          [attr.stroke-width]="stroke_width"
+          [attr.stroke-dasharray]="stroke_dasharray"
+          [attr.font-size]="font_size"
         >
-        {{text}}
+          {{text}}
         </svg:text>
-    `,    
+    `,
 })
 export class ChartText {
     @Input() x: number = 0;
     @Input() y: number = 0;
     @Input() text: string = "";
-    @Input() options: any = {}
-    
+    @Input() options: any = {};
+    @Input() fillBackground: boolean = true;
+
     public get fill_color(): string {
-        return _.get(this.options, "fill", "#000");        
+        return _.get(this.options, "fill", "#000");
     }
     public get stroke_color(): string {
         return _.get(this.options, "stroke_color", "#000");

@@ -18,6 +18,7 @@ import {
   nl360,
   one_third_point_on_the_line,
   PersonScope,
+  perspectives,
   pos_in_zodiac,
   pos_in_zodiac_sign,
   rnd_suffix,
@@ -29,6 +30,8 @@ import {
   SYMBOL_ZODIAC,
   ToolbarAlign,
   ToolbarCmdMask,
+  ToolbarDisplay,
+  ToolbarMenuSpan,
   zodiac_sign
 } from '../../common';
 import {CommonModule} from '@angular/common';
@@ -59,7 +62,7 @@ import {Router} from "@angular/router";
 import {AstralkaPersonComponent} from "../person.component/person.component";
 import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
-import {faMeteor, faSignOut, faUserAstronaut} from "@fortawesome/free-solid-svg-icons";
+import {faBaby, faMeteor, faSignOut, faUserAstronaut, faUserNinja} from "@fortawesome/free-solid-svg-icons";
 import config from "assets/config.json";
 import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.image";
 
@@ -95,7 +98,7 @@ import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.i
 
       <div style="display: flex; flex-direction: column;" [style.width.px]="width">
         <astralka-toolbar [commands]="commands">
-          Type Person's name
+          Name
           <lookup
             style="margin-right: 2px;"
             [query]="selectedPerson? selectedPerson.name : ''"
@@ -154,7 +157,6 @@ import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.i
               <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
               <section>DateTime (UT): {{ moment($any(calculatedTransitDateStr)).format('DD MMM YYYY HH:mm:ss') }}
               </section>
-              <!-- <section>House System: {{houseSystemById}}</section> -->
               <section style="margin-top: 4px; text-align: right">
                 <astralka-transit-settings>Show Transits</astralka-transit-settings>
               </section>
@@ -162,65 +164,11 @@ import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.i
                 <astralka-aspect-settings>Show Aspects</astralka-aspect-settings>
               </section>
               <section>
-                <astralka-house-system>Setup House System</astralka-house-system>
+                <astralka-house-system>House System</astralka-house-system>
               </section>
               <section>
                 <button (click)="show_explanation = !show_explanation"
                         [innerHTML]="show_explanation?'Hide Explain':'Show Explain'"></button>
-              </section>
-              <section>
-                <button (click)="show_explanation=true;perspective('with health. List best ways to keep good health.')">
-                  Health
-                </button>
-              </section>
-              <section>
-                <button
-                  (click)="show_explanation=true;perspective('with money. List best potential sources of getting rich.')">
-                  Money
-                </button>
-              </section>
-              <section>
-                <button
-                  (click)="show_explanation=true;perspective('with intellect. List areas with the most intellectual interest.')">
-                  Intellect
-                </button>
-              </section>
-              <section>
-                <button (click)="show_explanation=true;perspective('with emotions.')">Emotions</button>
-              </section>
-              <section>
-                <button (click)="show_explanation=true;perspective('with family.')">Family</button>
-              </section>
-              <section>
-                <button (click)="show_explanation=true;perspective('with friends.')">Friends</button>
-              </section>
-              <section>
-                <button
-                  (click)="show_explanation=true;perspective('with cars. Provide a list of the best suited makers and models.')">
-                  Cars
-                </button>
-              </section>
-              <section>
-                <button
-                  (click)="show_explanation=true;perspective('with romance. Provide a list of best compatibility partners.')">
-                  Romance
-                </button>
-              </section>
-              <section>
-                <button (click)="show_explanation=true;perspective('with jobs. Provide a list of best choice jobs.')">
-                  Job
-                </button>
-              </section>
-              <section>
-                <button (click)="show_explanation=true;perspective('with kids. Guess on a potential number of kids.')">
-                  Kids
-                </button>
-              </section>
-              <section>
-                <button
-                  (click)="show_explanation=true;perspective('with travels. List best choice destinations for travel.')">
-                  Travel
-                </button>
               </section>
             </article>
           }
@@ -237,11 +185,18 @@ import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.i
                [attr.viewBox]="'0 0 ' + width + ' ' + height"
                #chart
           >
+            <defs>
+              <filter x="0" y="0" width="1" height="1" id="solid">
+                <feFlood flood-color="#f4eeeadd" />
+                <feComposite in2="SourceGraphic" operator="out" />
+              </filter>
+            </defs>
             <g>
+              <!-- outside rectangle -->
               <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="#0004"></rect>
-
-
+              <!-- outer circle -->
               <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius" [options]="{stroke_width: 2}"></g>
+              <!-- colored segments for zodiacs -->
               <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'">
                 <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#009900" stroke-width="5"
                             pathLength="360" stroke-dasharray="30 90 30 90 30 90" fill="none"/>
@@ -252,15 +207,20 @@ import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.i
                 <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#ffd900" stroke-width="5"
                             pathLength="360" stroke-dasharray="0 90 30 90 30 90 30" fill="none"/>
               </g>
+              <!-- inner 2 circles and 1 and 10 deg scale ruler -->
               <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
               <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius + 5" [options]="{stroke_color: '#777'}"></g>
               <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line
                  *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y"
                  [options]="l.options"></g>
+              <!-- zodiac symbols -->
               <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name"
                  [options]="zodiac_options(p)"></g>
+
+              <!-- only when personal data is ready to be displayed and person selected -->
               @if (this.data && this.selectedPerson) {
 
+                <!-- latin phrase for the sign drawn along a circular path -->
                 <g>
                   <path
                     id="sector_path_0"
@@ -275,10 +235,14 @@ import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.i
                   </text>
                 </g>
 
+                <!-- inner house circle -->
                 <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
 
-                <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+                <!-- natal planet symbols -->
+                <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name" [fillBackground]="true" [fillBackgroundColor]="'#f4eeeadd'"></g>
+                <!-- natal r for retrograde planet text -->
                 <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
+                <!-- natal planet angle in sign -->
                 <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
                    class="planets-angle"></g>
 
@@ -423,7 +387,12 @@ export class AstralkaChartComponent implements OnInit {
         type: 'item',
         hidden: false,
         align: ToolbarAlign.Left,
-        label: faUserAstronaut,
+        display: ToolbarDisplay.Icon,
+        iconResolver: () => {
+          return this.show_entry_form
+            ? { icon: faUserAstronaut, cssClass: 'icon-on'  }
+            : { icon: faUserAstronaut, cssClass: ''  }
+        },
         disabled: () => false,
         tooltip: 'Person Natal Data Entry',
         action: () => {
@@ -435,7 +404,12 @@ export class AstralkaChartComponent implements OnInit {
         type: 'item',
         hidden: false,
         align: ToolbarAlign.Left,
-        label: faMeteor,
+        display: ToolbarDisplay.Icon,
+        iconResolver: () => {
+          return this.show_transit_form
+            ? { icon: faMeteor, cssClass: 'icon-on'  }
+            : { icon: faMeteor, cssClass: ''  }
+        },
         disabled: () => false,
         tooltip: 'Transits or Progression Date',
         action: () => {
@@ -443,10 +417,40 @@ export class AstralkaChartComponent implements OnInit {
         }
       },
       {
+        mask: ToolbarCmdMask.NavBar,
+        type: 'menu',
+        hidden: false,
+        display: ToolbarDisplay.Icon,
+        menuSpan: ToolbarMenuSpan.Triple,
+        icon: faBaby,
+        //label: "Perspectives",
+        disabled: () => !(this.data && this.selectedPerson),
+        tooltip: 'Perspectives',
+        commands: perspectives
+          .sort((a: any, b: any) => a.label.localeCompare(b.label, 'standard', { sensitivity: 'case'}))
+          .map((perspective: any) => {
+          return {
+            mask: ToolbarCmdMask.NavBar,
+            type: 'item',
+            hidden: false,
+            display: ToolbarDisplay.IconAndText,
+            icon: perspective.icon,
+            label: perspective.label,
+            disabled: () => false,
+            tooltip: perspective.tooltip ?? perspective.label,
+            action: () => {
+              this.perspective(perspective.prompt);
+            }
+          };
+        })
+      },
+      {
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: false,
         align: ToolbarAlign.Right,
+        display: ToolbarDisplay.IconAndText,
+        icon: faUserNinja,
         label: this.username,
         disabled: () => false,
         tooltip: 'Profile',
@@ -458,7 +462,8 @@ export class AstralkaChartComponent implements OnInit {
         type: 'item',
         hidden: false,
         align: ToolbarAlign.Right,
-        label: faSignOut,
+        display: ToolbarDisplay.Icon,
+        icon: faSignOut,
         disabled: () => false,
         tooltip: 'Sign Out',
         action: () => {
@@ -524,7 +529,7 @@ export class AstralkaChartComponent implements OnInit {
         } else {
           const names: string[] = [
             ..._.values(SYMBOL_ZODIAC),
-            //..._.values(SYMBOL_PLANET),
+            ..._.values(SYMBOL_PLANET),
             //..._.values(SYMBOL_ASPECT)
           ];
           name = names[_.random(names.length - 1)];
@@ -726,6 +731,7 @@ export class AstralkaChartComponent implements OnInit {
   }
 
   public perspective(kind: string): void {
+    this.show_explanation = true;
     const prompt = `Given the following information as an outline natal data for a ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
     this.rest.do_explain({prompt});
   }

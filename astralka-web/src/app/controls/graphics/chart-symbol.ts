@@ -18,29 +18,35 @@ import _ from "lodash";
   standalone: true,
   imports: [CommonModule],
   template: `
-    <svg:g [attr.transform]="transform">
+    @if (fillBackground) {
+        <svg:circle [attr.cx]="x" [attr.cy]="y" [attr.r]="10" [attr.fill]="fillBackgroundColor" ></svg:circle>
+    }
+    <g [attr.transform]="transform">
+      <!--suppress HtmlUnknownTag -->
       <svg:path
         [attr.d]="path[0]"
         [attr.stroke]="stroke_color"
         [attr.stroke-width]="stroke_width"
         fill="none"
       />
+      <!--suppress HtmlUnknownTag -->
       <svg:path *ngIf="need2paths"
                 [attr.d]="path[1]"
                 [attr.stroke]="stroke_color"
                 [attr.stroke-width]="stroke_width"
                 fill="none"
       />
-    </svg:g>
+    </g>
   `
 })
 export class ChartSymbol {
 
   @Input() x: number = 0;
   @Input() y: number = 0;
-
   @Input() options: any = {};
   @Input() name: string = SYMBOL_ASPECT.Nonile;
+  @Input() fillBackground: boolean = false;
+  @Input() fillBackgroundColor: string = "transparent";
 
   constructor() {
 
@@ -418,9 +424,6 @@ export class ChartSymbol {
         break;
       case SYMBOL_ASPECT.Square:
         p.push("m" + x + ", " + y + "m0,4l4,0l0,-8l-8,0l0,8z");
-        break;
-      case SYMBOL_ASPECT.Sextile:
-        p.push("m" + x + ", " + y + "m5,5l-10,-10m0,10l10,-10m-10,5l10,0z");
         break;
       case SYMBOL_ASPECT.Sextile:
         p.push("m" + x + ", " + y + "m5,5l-10,-10m0,10l10,-10m-10,5l10,0z");

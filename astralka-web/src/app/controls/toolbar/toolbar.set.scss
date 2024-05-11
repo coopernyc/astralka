@@ -4,10 +4,14 @@
   flex-wrap: nowrap;
 
   button.toolbar-button {
+    font-family: "Roboto", sans-serif;
+    font-size: 12px;
+    height: 28px;
+    min-width: 30px;
     border: 1px solid #777;
     background-color: #eee;
+    padding-top: 2px;
     border-radius: 3px;
-    padding: 3px 6px;
     box-shadow: 1px 1px 1px #0003;
     cursor: pointer;
     color: #333;
@@ -24,8 +28,62 @@
       background-color: #fff;
     }
     &:not(:last-child) {
-      margin-right: 2px;
+      margin-right: 1px;
+    }
+    &.icon-on {
+      background-color: gold;
     }
   }
-
+  div.toolbar-separator {
+    width: 8px;
+  }
 }
+.toolbar-menu {
+  border: 1px solid #777;
+  background-color: #eee;
+  box-shadow: 2px 2px 2px #0003;
+  button.toolbar-menu-button {
+    font-family: "Roboto", sans-serif;
+    font-size: 12px;
+    //display: block;
+    border: none;
+    background-color: #eee;
+    padding: 4px 3px 3px 3px;
+    min-width: 100px;
+    max-width: 100px;
+    width: 100px;
+    cursor: pointer;
+    color: #333;
+    text-align: left;
+    &:disabled,
+    &:disabled:hover {
+      color: #777;
+      border: 1px solid #aaa;
+      background-color: #ccc;
+      box-shadow: none;
+      cursor: default;
+    }
+    &:hover {
+      color: #eee;
+      background-color: #336699;
+    }
+  }
+  &.double,
+  &.triple {
+    width: calc(100px * 2 + 2px);
+    button.toolbar-menu-button {
+      display: inline-block;
+    }
+  }
+  &.triple {
+    width: calc(100px * 3 + 2px);
+  }
+  div.toolbar-menu-separator {
+    height: 1px;
+    background-color: #777;
+  }
+}
+.icon-on {
+  background-color: goldenrod;
+}
+
