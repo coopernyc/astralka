@@ -1,0 +1,33 @@
+:host {
+  flex: 1;
+  .image-rotate-container {
+    position: relative;
+
+    .img-description {
+      position: absolute;
+      left: 2px; top: 2px;
+      width: 120px;
+      height: 26px;
+      background-color: transparent;
+      border-radius: 3px;
+      align-content: center;
+      text-align: center;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: start;
+      span.symbol {
+        width: 24px;
+        background-color: #1119;
+      }
+      span.description {
+        font-family: Gafata, sans-serif;
+        font-size: 16px;
+        color: #fff;
+        background-color: #1119;
+        line-height: 24px;
+        padding-right: 8px;
+      }
+    }
+  }
+}

@@ -8,6 +8,7 @@ import {call_ai} from "./common";
 import {MongoClient} from "mongodb";
 import {loginRoute} from "./login.route";
 import {signupRoute} from "./signup.route";
+import {imagesRoute} from "./images.route";
 
 const logger = winston.createLogger({
     level: "info",
@@ -33,6 +34,11 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
 
+if (process.env.IMAGES_DIR) {
+    console.log(`Images are statically served from /images -> ${process.env.IMAGES_DIR}`);
+    app.use('/static', express.static(process.env.IMAGES_DIR));
+}
+
 app.use((req: Request, res: Response, next: NextFunction) => {
     logger.info(`Received a ${req.method} request for ${req.url}`);
     next();
@@ -46,6 +52,23 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.send("Astralka Server");
     next();
 });
+
+app.get("/images", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await imagesRoute(req, res);
+    } catch (err) {
+        res.status(500).end();
+    }
+});
+
+// this rout used for service purposes of creating astralka-images
+// app.get("/img", async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//         await imgRoute(req, res);
+//     } catch (err) {
+//         res.status(500).end();
+//     }
+// });
 
 app.post('/signin', cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -98,20 +121,21 @@ app.post("/chart-data", cors(corsOptions), async (req: Request, res: Response, n
 });
 app.post("/explain", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     const prompt = _.get(req.body, "prompt");
-    console.log(prompt);
+    //console.log(prompt);
     let result = "";
     try {
         result = await call_ai(prompt);
     } catch (err: any) {
         console.log(err?.message);
     }
-    console.log('result', result);
+    //console.log('result', result);
+    //console.log('result', result);
     res.json({result});
 });
 
 app.post("/remove", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     let load = req.body;
-    console.log(load);
+    //console.log(load);
 
     const uri: string = process.env.MONGO_URI!;
     const client = new MongoClient(uri);
@@ -152,7 +176,7 @@ app.post("/remove", cors(corsOptions), async (req: Request, res: Response, next:
 
 app.post("/save", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     let entry = req.body;
-    console.log(entry);
+    //console.log(entry);
 
     const uri: string = process.env.MONGO_URI!;
     const client = new MongoClient(uri);
@@ -237,7 +261,7 @@ app.post("/people", cors(corsOptions), async (req: Request, res: Response, next:
     const name = req.body.name;
     const username = req.body.username;
 
-    console.log(`search [${name}] for ${username}`);
+    //console.log(`search [${name}] for ${username}`);
 
     if (_.isEmpty(name)) {
         res.json([]);
@@ -301,7 +325,7 @@ app.post("/people", cors(corsOptions), async (req: Request, res: Response, next:
 
         } finally {
             await client.close();
-            console.log('result', result);
+            //console.log('result', result);
             res.json(result);
         }
     }

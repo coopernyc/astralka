@@ -82,9 +82,17 @@ export class AstralkaPositionDataComponent extends AstralkaBasePortalComponent {
 
   public get_explanation_from_ai(stats: any) {
     const prompt: string = stats.label === "House"
-      ? `In maximum 30 words interpret ${stats.name} in ${stats?.position.sign}`
+      ? `In maximum 30 words interpret ${stats.name} in ${stats.position.sign}`
       : `In maximum 30 words interpret ${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in ${stats.house}`;
-    this.rest.do_explain({ prompt, params: this.stats});
+    let context: string;
+    if (this.kind === 'planets') {
+      const names = [stats.name, stats.position.sign];
+      context = names[_.random(names.length - 1)];
+    } else {
+      context = stats.position.sign;
+    }
+
+    this.rest.do_explain({ prompt, params: this.stats, context });
   }
 
   protected readonly SYMBOL_PLANET = SYMBOL_PLANET;

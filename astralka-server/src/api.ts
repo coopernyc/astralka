@@ -38,7 +38,7 @@ export function chart_data(query: IQuery): any {
     const natal = query.natal;
     const date = moment.utc(natal.dateUT);
 
-    console.log(date.year() + '-' + (date.month() + 1) + 'm' + date.date() + 'd ' + date.hours() + 'h' + date.minutes() + 'm' + date.seconds());
+    //console.log(date.year() + '-' + (date.month() + 1) + 'm' + date.date() + 'd ' + date.hours() + 'h' + date.minutes() + 'm' + date.seconds());
 
     let julian: any = swisseph.swe_utc_to_jd(
         date.year(), date.month() + 1, date.date(), 

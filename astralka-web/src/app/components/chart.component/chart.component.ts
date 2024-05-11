@@ -20,6 +20,7 @@ import {
   PersonScope,
   pos_in_zodiac,
   pos_in_zodiac_sign,
+  rnd_suffix,
   rotate_point_around_center,
   SYMBOL_ASPECT,
   SYMBOL_HOUSE,
@@ -59,6 +60,8 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
 import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {faMeteor, faSignOut, faUserAstronaut} from "@fortawesome/free-solid-svg-icons";
+import config from "assets/config.json";
+import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.image";
 
 @Component({
   selector: 'astralka-chart',
@@ -84,7 +87,8 @@ import {faMeteor, faSignOut, faUserAstronaut} from "@fortawesome/free-solid-svg-
     AstralkaHouseSystemSettingsComponent,
     AstralkaPersonComponent,
     AstralkaTransitComponent,
-    AstralkaToolbarComponent
+    AstralkaToolbarComponent,
+    AstralkaRotateImageComponent
   ],
   template: `
     <div class="astralka-container">
@@ -318,7 +322,7 @@ import {faMeteor, faSignOut, faUserAstronaut} from "@fortawesome/free-solid-svg-
                 {{ latin_phrase?.eng }}
               </div>
               <div style="flex: 1; display: flex; flex-direction: row; overflow: hidden">
-                <div class="bot-panel-content" id="explanation" >
+                <div class="bot-panel-content" id="explanation">
                   @for (e of explanation; track e; let idx = $index) {
                     @if (idx !== 0) {
                       <hr class="una"/>
@@ -328,22 +332,13 @@ import {faMeteor, faSignOut, faUserAstronaut} from "@fortawesome/free-solid-svg-
                   }
                 </div>
                 <!-- placeholder for a rotating image component -->
-                <div style="flex: 0 320px; position: relative">
-                    <img alt="placeholder" [src]="'assets/libra_test_001.png'" width="320px" />
-                    <div style="position: absolute; left: 2px; top: 2px; width: 120px; height: 26px; background-color: transparent; border-radius: 3px; align-content: center; text-align: center; display: flex; flex-direction: row;     align-items: center; justify-content: start;">
-                      <span style="width: 24px; background-color: #111;">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="20"
-                             height="20"
-                             viewBox="0 0 20 20">
-                          <g svgg-symbol [x]="10" [y]="12" [name]="SYMBOL_ZODIAC.Libra" [options]="{scale: 1, stroke_color: '#fff'}"></g>
-                        </svg>
-                      </span>
-                      <span style="font-family: Gafata, sans-serif; font-size: 16px; color: #fff; background-color: #111;">Libra</span>
-                    </div>
-                </div>
+                @if (config.rotate_images && rotate_image) {
+                  <div style="flex: 0 320px; display: flex;">
+                    <astralka-rotate-image [rotator]="rotate_image" [width]="320"
+                                           [height]="400"></astralka-rotate-image>
+                  </div>
+                }
               </div>
-
             </div>
           }
         </div>
@@ -352,7 +347,7 @@ import {faMeteor, faSignOut, faUserAstronaut} from "@fortawesome/free-solid-svg-
     </div>
 
   `,
-  styleUrls: ['./chart.component.scss'],
+  styleUrls: ['./chart.component.scss']
 })
 export class AstralkaChartComponent implements OnInit {
   public width: number = 800;
@@ -365,7 +360,6 @@ export class AstralkaChartComponent implements OnInit {
   public outer_radius: number = 0;
   public inner_radius: number = 0;
   public house_radius: number = 0;
-
   public offset_angle: number = 90;
   public show_explanation: boolean = false;
 
@@ -389,7 +383,6 @@ export class AstralkaChartComponent implements OnInit {
     offset: 0
   };
 
-  //public _transitIntervalValue: number = 0;
   private _planets: any[] = [];
   private _zodiac: any[] = [];
   private _houses: any[] = [];
@@ -408,6 +401,8 @@ export class AstralkaChartComponent implements OnInit {
   public sharedExplain$!: Observable<any>;
 
   public commands: IToolbarCmd[] = [];
+
+  public rotate_image!: any;
 
   constructor(
     private responsive: BreakpointObserver,
@@ -523,6 +518,21 @@ export class AstralkaChartComponent implements OnInit {
     this.sharedExplain$.subscribe((data: any) => {
       this.show_explanation = true;
       if (data.result === 'LOADING!') {
+        let name: string;
+        if (data.context) {
+          name = data.context;
+        } else {
+          const names: string[] = [
+            ..._.values(SYMBOL_ZODIAC),
+            //..._.values(SYMBOL_PLANET),
+            //..._.values(SYMBOL_ASPECT)
+          ];
+          name = names[_.random(names.length - 1)];
+        }
+        this.rotate_image = {
+          name: name + '.' + rnd_suffix(),
+          description: name
+        };
         return;
       }
       const md = markdownit('commonmark');
@@ -538,11 +548,6 @@ export class AstralkaChartComponent implements OnInit {
       }, 300);
     });
   }
-
-  // public get transitIntervalValue(): number {
-  //   return !_.isNaN(this._transitIntervalValue) ? this._transitIntervalValue : 0;
-  // }
-
 
   public get planets() {
     return this._planets;
@@ -679,7 +684,7 @@ export class AstralkaChartComponent implements OnInit {
 
   public onPersonSelected(person?: IPersonInfo): void {
     if (person) {
-      console.log(`Selected ${person}`);
+      //console.log(`Selected ${person}`);
       this.selectedPerson = person;
       this.entry = {
         name: person.name,
@@ -1218,30 +1223,16 @@ export class AstralkaChartComponent implements OnInit {
     });
   }
 
-  //debug
-  // public hasUserRole(role: string): boolean {
-  //   const user = this.session.restoreUser();
-  //   return user && _.includes(user.roles, role);
-  // }
   public get username(): string {
     const user = this.session.restoreUser();
     return user ? user.username : '';
-  }
-  public get userFirstLastName(): string {
-    const user = this.session.restoreUser();
-    if (user) {
-      return (user.firstname ?? '') + ' ' + (user.lastname ?? '');
-    }
-    return 'Unknown User';
   }
 
   protected readonly Gender = Gender;
   protected readonly convert_lat_to_DMS = convert_lat_to_DMS;
   protected readonly convert_long_to_DMS = convert_long_to_DMS;
   public _ = _;
-  //protected readonly UserRole = UserRole;
-  //protected readonly PersonScope = PersonScope;
-  protected readonly SYMBOL_ZODIAC = SYMBOL_ZODIAC;
+  public config: any = config;
 }
 
 

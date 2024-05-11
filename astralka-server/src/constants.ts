@@ -166,7 +166,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Scorpio],
                 friend: [ZodiacSign.Pisces],
                 enemy: [ZodiacSign.Virgo]
-            }
+            },
+
         },
         {
             name: SkyObject.Mercury,

@@ -3,6 +3,7 @@ import {Injectable, OnDestroy} from "@angular/core";
 import {catchError, map, Observable, of, ReplaySubject, Subject, switchMap} from "rxjs";
 import {IPersonInfo} from "../common";
 import _ from "lodash";
+import config from "assets/config.json";
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +16,7 @@ export class RestService implements OnDestroy {
   public ready$: ReplaySubject<void> = new ReplaySubject<void>(1);
 
   constructor(private http: HttpClient) {
-    this.http.get("config.json").subscribe((data: any) => {
-      this.serverUrl = data.server;
-      this.ready$.next();
-    });
+    this.serverUrl = config.server;
   }
 
   ngOnDestroy(): void {
@@ -47,7 +45,7 @@ export class RestService implements OnDestroy {
   }
 
   public do_explain(load: any): void {
-    this.explain$.next({ result: 'LOADING!' });
+    this.explain$.next({ result: 'LOADING!', context: load.context});
     const obs = this.http.post(`${this.serverUrl}/explain`, {prompt: load.prompt});
     obs.pipe(
       switchMap((x: any) => of(x.result)),

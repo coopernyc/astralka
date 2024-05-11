@@ -17,7 +17,12 @@ CORS_ORIGINS=http://192.168.xxx.xxx:4200, http://localhost:4200
 ADMIN_USERNAME=[ADMIN USERNAME]
 ADMIN_PASSWORD=[ADMIN PASSWORD]
 PORT=[SERVER PORT] (if port is omited, default 3010)
+IMAGES_DIR=[PATH_TO_astralka-images]
 ````
+
+You can download astralka-images from [https://github.com/coopernyc/astralka-images](https://github.com/coopernyc/astralka-images) or
+you can generate your own images based on the same folder structure.
+
 ## Running the server
 Run `npm run once` to start server. 
 Run `npm start` to start dev server with live reload.

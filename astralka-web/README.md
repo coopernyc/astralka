@@ -8,11 +8,18 @@ The project was generated with [Angular CLI](https://github.com/angular/angular-
 > sudo npm install
 ````
 
-Update **config.json** file in **src** folder, if necessary
+Update **config.json** file in **src/assets** folder, if necessary
 
 ````
 {
-    "server": "http://localhost:3010"
+    "server": "http://localhost:3010",
+    
+    // add rotate images if you want Zodiac or Planet or Aspect rotating image 
+    // in AI explanation area
+    
+    "rotate_images": {
+      "imageLoaderUrl": "http://localhost:3010/images"
+    }
 }
 ````
 
