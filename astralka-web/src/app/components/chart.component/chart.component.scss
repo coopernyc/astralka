@@ -185,7 +185,8 @@ form {
     color: #333;
     display: flex;
     flex-direction: column;
-    background: #fdedc8 url(/assets/noise.png);
+    //background: #fdedc8 url(/assets/noise.png);
+    background: #fdf4e0;
 
     .bot-panel-handler {
       position: relative;
@@ -219,7 +220,7 @@ form {
         font-family: "Gafata", sans-serif;
         font-size: 0.8rem;
         line-height: 1;
-        color: #376a57;
+        color: #295344;
         margin: 0.5em;
         min-height: 2em;
         &::first-letter {
