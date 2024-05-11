@@ -21,22 +21,23 @@ import _ from "lodash";
     @if (fillBackground) {
         <svg:circle [attr.cx]="x" [attr.cy]="y" [attr.r]="10" [attr.fill]="fillBackgroundColor" ></svg:circle>
     }
-    <g [attr.transform]="transform">
-      <!--suppress HtmlUnknownTag -->
+
+    <!--suppress HtmlUnknownTag -->
+    <svg:g [attr.transform]="transform">
       <svg:path
         [attr.d]="path[0]"
         [attr.stroke]="stroke_color"
         [attr.stroke-width]="stroke_width"
         fill="none"
       />
-      <!--suppress HtmlUnknownTag -->
+
       <svg:path *ngIf="need2paths"
                 [attr.d]="path[1]"
                 [attr.stroke]="stroke_color"
                 [attr.stroke-width]="stroke_width"
                 fill="none"
       />
-    </g>
+    </svg:g>
   `
 })
 export class ChartSymbol {
