@@ -9,7 +9,7 @@ import { RestService } from "../../services/rest.service";
     standalone: true,
     imports: [CommonModule, ChartSymbol, ChartText],
     template: `
-        <svg:g (click)="show_details()" cursor="pointer" *ngIf="stats?.name">
+        <svg:g xmlns:svg="http://www.w3.org/2000/svg" (click)="show_details()" cursor="pointer" *ngIf="stats?.name">
 
                 <g svgg-symbol [x]="x" [y]="y" [name]="stats?.name" [options]="{scale: 0.7, fill: '#0000'}"></g>
                 <g *ngIf="stats?.speed < 0" svgg-text [x]="x + 5" [y]="y" [text]="'r'"></g>

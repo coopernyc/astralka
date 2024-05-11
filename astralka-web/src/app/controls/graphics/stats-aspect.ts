@@ -1,18 +1,18 @@
-import { CommonModule } from "@angular/common";
-import { ChangeDetectorRef, Component, Input, NgZone, OnChanges, SimpleChanges } from "@angular/core";
-import { ChartSymbol } from "./chart-symbol";
-import { ChartText } from "./chart-text";
-import { SYMBOL_CUSP, SYMBOL_PLANET, aspect_color, convert_DD_to_D, convert_DD_to_DMS, zodiac_sign } from "../../common";
+import {CommonModule} from "@angular/common";
+import {Component, Input, OnChanges, SimpleChanges} from "@angular/core";
+import {ChartSymbol} from "./chart-symbol";
+import {ChartText} from "./chart-text";
+import {aspect_color, convert_DD_to_D, convert_DD_to_DMS, SYMBOL_CUSP, SYMBOL_PLANET, zodiac_sign} from "../../common";
 import _ from "lodash";
-import { RestService } from "../../services/rest.service";
-import { StatsLine } from "./stats-line";
+import {RestService} from "../../services/rest.service";
+import {StatsLine} from "./stats-line";
 
 @Component({
     selector: "[svgg-stat-aspect]",
     standalone: true,
     imports: [CommonModule, ChartSymbol, ChartText, StatsLine],
     template: `
-        <svg:g>
+        <svg:g xmlns:svg="http://www.w3.org/2000/svg">
             <g *ngIf="selected" transform="translate(10, 400)">
                 <g svgg-symbol [x]="0" [y]="0" [name]="selected.aspect.parties[0].name" [options]="{scale: 0.7}"></g>
                 <g svgg-symbol [x]="13" [y]="0" [name]="selected.name" [options]="options_for_explain(selected)"></g>
@@ -62,7 +62,7 @@ import { StatsLine } from "./stats-line";
             .rect {
                 stroke: #cccccc;
                 fill: #ffffff;
-                cursor: "pointer";
+                cursor: pointer;
             }
             .rect.selected {
                 fill: #fcfbc7;
@@ -213,7 +213,7 @@ export class StatsAspect implements OnChanges {
         }
     }
     public get formatted_selected(): string {
-        if (!this.selected) { return '' };
+        if (!this.selected) { return '' }
         const angle = this.selected.aspect_angle == 0 && this.selected.aspect.angle > 180 ? 360 - this.selected.aspect.angle : this.selected.aspect.angle;
         return `${this.selected.aspect.aspect.name} (${this.selected.aspect_angle}°) : ${convert_DD_to_DMS(angle)}`;
     }
@@ -230,18 +230,17 @@ export class StatsAspect implements OnChanges {
             //const result = this._response.match(/.{1,60}/g) as string[];
             const chunks: string[] = this._response.split(/\s+/);
             let i = 0;
-            const test = _.reduce(chunks, (acc: string[], v: string) => {
-                if (acc.length == 0) {
-                    acc.push(v);
-                } else if (acc[i].length + v.length > 75) {
-                    acc.push(v);
-                    i++;
-                } else {
-                    acc[i] += ' ' + v;
-                }
-                return acc;
+          return _.reduce(chunks, (acc: string[], v: string) => {
+              if (acc.length == 0) {
+                acc.push(v);
+              } else if (acc[i].length + v.length > 75) {
+                acc.push(v);
+                i++;
+              } else {
+                acc[i] += ' ' + v;
+              }
+              return acc;
             }, []);
-            return test;
         }
 
         return [];
@@ -255,18 +254,17 @@ export class StatsAspect implements OnChanges {
             //const result = this._response.match(/.{1,60}/g) as string[];
             const chunks: string[] = this._response2.split(/\s+/);
             let i = 0;
-            const test = _.reduce(chunks, (acc: string[], v: string) => {
-                if (acc.length == 0) {
-                    acc.push(v);
-                } else if (acc[i].length + v.length > 75) {
-                    acc.push(v);
-                    i++;
-                } else {
-                    acc[i] += ' ' + v;
-                }
-                return acc;
+          return _.reduce(chunks, (acc: string[], v: string) => {
+              if (acc.length == 0) {
+                acc.push(v);
+              } else if (acc[i].length + v.length > 75) {
+                acc.push(v);
+                i++;
+              } else {
+                acc[i] += ' ' + v;
+              }
+              return acc;
             }, []);
-            return test;
         }
 
         return [];

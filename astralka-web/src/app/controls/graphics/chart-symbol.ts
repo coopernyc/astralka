@@ -21,9 +21,7 @@ import _ from "lodash";
     @if (fillBackground) {
         <svg:circle [attr.cx]="x" [attr.cy]="y" [attr.r]="10" [attr.fill]="fillBackgroundColor" ></svg:circle>
     }
-
-    <!--suppress HtmlUnknownTag -->
-    <svg:g [attr.transform]="transform">
+    <svg:g xmlns:svg="http://www.w3.org/2000/svg" [attr.transform]="transform">
       <svg:path
         [attr.d]="path[0]"
         [attr.stroke]="stroke_color"
