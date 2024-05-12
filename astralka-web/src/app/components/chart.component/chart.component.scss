@@ -172,6 +172,7 @@ form {
 }
 
 #container {
+  user-select: none;
   position: relative;
   .bot-panel {
     z-index: 2;
@@ -202,6 +203,7 @@ form {
     }
 
     .bot-panel-content {
+
       flex: 1;
       padding: 4px;
       overflow: auto;

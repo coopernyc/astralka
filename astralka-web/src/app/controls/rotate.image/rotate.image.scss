@@ -3,8 +3,28 @@
   .image-rotate-container {
     position: relative;
 
+    .image-rotate-info {
+      width: 320px;
+      height: 400px;
+      background: navy url(/assets/noise.png);
+      color: #ccc;
+      padding: 18px 8px 8px 8px;
+      overflow: scroll;
+
+      .color-sample {
+        margin: 3px;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 1px solid #777;
+        border-radius: 3px;
+        //box-shadow: 1px 1px 1px #0005;
+      }
+    }
+
     .img-description {
       position: absolute;
+      cursor: pointer;
       left: 2px; top: 2px;
       width: 120px;
       height: 26px;

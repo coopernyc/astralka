@@ -8,7 +8,7 @@ import {
   faBrain,
   faBriefcase,
   faBurger,
-  faCar,
+  faCar, faChalkboardTeacher,
   faClover,
   faCocktail,
   faComputer,
@@ -29,10 +29,10 @@ import {
   faPeopleRoof, faPlaneDeparture, faPrescriptionBottle,
   faRing,
   faShirt,
-  faSmile,
+  faSmile, faSmoking, faSmokingBan,
   faVolleyballBall
 } from "@fortawesome/free-solid-svg-icons";
-import {faFacebook, faPagelines} from "@fortawesome/free-brands-svg-icons";
+import {faFacebook, faPagelines, faSpeakerDeck} from "@fortawesome/free-brands-svg-icons";
 
 export const SYMBOL_SCALE = 1;
 export const COLLISION_RADIUS = 10;
@@ -147,6 +147,342 @@ export const ZodiacSigns: string[] = [
     SYMBOL_ZODIAC.Aquarius,
     SYMBOL_ZODIAC.Pisces
 ];
+export const ZodiacSignMode = {
+  Cardinal: "Cardinal",
+  Fixed: "Fixed",
+  Mutable: "Mutable"
+}
+export const ZodiacSignElement = {
+  Fire: "Fire",
+  Earth: "Earth",
+  Air: "Air",
+  Water: "Water"
+}
+export enum StaticDataType {
+  Sign,
+  Planet,
+  Aspect
+}
+export function contextStaticData(context: string): any {
+  if (_.includes(ZodiacSigns, context)) {
+    return {
+      type: StaticDataType.Sign,
+      data: SymbolStaticData.ZodiacSign.find(x => x.sign === context)
+    };
+  }
+  return undefined;
+}
+
+export const SymbolStaticData = {
+  ZodiacSign: [
+    {
+      sign: SYMBOL_ZODIAC.Aries,
+      dates: "Mar 21 - Apr 19",
+      symbol: "The Ram",
+      mode: ZodiacSignMode.Cardinal,
+      element: ZodiacSignElement.Fire,
+      house: 1,
+      mantra: "I am",
+      bodyParts: "Head",
+      tarotCard: "The Emperor",
+      colors: [
+        {
+          name: "Red",
+          code: "red"
+        },
+        {
+          name: "Mustard",
+          code: "goldenrod"
+        }
+      ],
+      description: `
+        <p>Aries is the first sign of the zodiac, and that's pretty much how those born under this sign see themselves: first. Aries are the leaders of the pack, first in line to get things going. Whether or not everything gets done is another question altogether, for an Aries prefers to initiate rather than to complete.</p>
+        <p>Do you have a project needing a kick-start? Call an Aries, by all means. The leadership displayed by Aries is most impressive, so don't be surprised if they can rally the troops against seemingly insurmountable odds—they have that kind of personal magnetism.</p>
+        <p>An Aries sign won't shy away from new ground, either. Those born under this zodiac sign are often called the pioneers of the zodiac, and it's their fearless trek into the unknown that often wins the day. Aries is a bundle of energy and dynamism, kind of like a Pied Piper, leading people along with its charm and charisma. The dawning of a new day—and all of its possibilities—is pure bliss to an Aries.</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Taurus,
+      dates: "Apr 20 - May 20",
+      symbol: "The Bull",
+      mode: ZodiacSignMode.Fixed,
+      element: ZodiacSignElement.Earth,
+      house: 2,
+      mantra: "I have",
+      bodyParts: "Throat",
+      tarotCard: "The Hierophant",
+      colors: [
+        {
+          name: "Green",
+          code: "green"
+        },
+        {
+          name: "Light Pink",
+          code: "lightpink"
+        }
+      ],
+      description: `
+        <p>Taurus, the second sign of the zodiac and the ruler of the second house, is all about reward. Unlike the Aries love of the game, the typical Taurus personality loves the rewards of the game. Think physical pleasures and material goods, for those born under this sign revel in delicious excess. This zodiac sign is also tactile, enjoying a tender, even sensual, touch.</p>
+        <p>Taurus zodiac sign adores comfort and likes being surrounded by pleasing, soothing things. Along these lines, they also favor a good meal and a fine wine. The good life in all its guises, whether it's the arts or art of their own making (yes, these folks are artistic as well), is heaven on Earth to the Taurus-born.</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Gemini,
+      dates: "May 21 - Jun 20",
+      symbol: "The Twins",
+      mode: ZodiacSignMode.Mutable,
+      element: ZodiacSignElement.Air,
+      house: 3,
+      mantra: "I think",
+      bodyParts: "Arms, hands and lungs",
+      tarotCard: "The Lover",
+      colors: [
+        {
+          name: "Yellow",
+          code: "yellow"
+        },
+        {
+          name: "Blue",
+          code: "blue"
+        }
+      ],
+      description: `
+        <p>Gemini is the third sign of the zodiac, and those born under this sign will be quick to tell you all about it. That's because they love to talk! It's not just idle chatter with these folks, either. The driving force behind a Gemini zodiac sign's conversation is their mind. Ruling the third house, the Gemini-born are intellectually inclined, forever probing people and places in search of information.</p>
+        <p>The more information a Gemini collects, the better. Sharing that information later on with those they love is also a lot of fun, for Geminis are supremely interested in developing their relationships. Dalliances with those of this astrology sign are always enjoyable, since Geminis are bright, quick-witted, and the proverbial life of the party. Even though their intellectual minds can rationalize forever and a day, Geminis also have a surplus of imagination waiting to be tapped. Can a Gemini be boring? Never!</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Cancer,
+      dates: "Jun 21 - Jul 22",
+      symbol: "The Crab",
+      mode: ZodiacSignMode.Cardinal,
+      element: ZodiacSignElement.Water,
+      house: 4,
+      mantra: "I feel",
+      bodyParts: "Stomach, brain and breasts",
+      tarotCard: "The Chariot",
+      colors: [
+        {
+          name: "Silver",
+          code: "silver"
+        },
+        {
+          name: "White",
+          code: "white"
+        }
+      ],
+      description: `
+        <p>Leo is the fifth sign of the zodiac. These folks are impossible to miss since they love being center stage. Making an impression is Job #1 for Leos, and when you consider their personal magnetism, you see the job is quite easy. Leos are an ambitious lot, and their strength of purpose allows them to accomplish a great deal. The fact that this horoscope sign is also creative makes their endeavors fun for them and everyone else.</p>
+        <p>It's quite common to see a Leo on stage or in Hollywood since these folks never shy away from the limelight. They are also supremely talented and have a flair for the dramatic. Warmth and enthusiasm seem to seep from every Leo pore, making these folks a pleasure to be around. They do love pleasure and being the center of attention!</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Leo,
+      dates: "Jun 23 - Aug 22",
+      symbol: "The Lion",
+      mode: ZodiacSignMode.Fixed,
+      element: ZodiacSignElement.Fire,
+      house: 5,
+      mantra: "I will",
+      bodyParts: "Heart",
+      tarotCard: "Strength",
+      colors: [
+        {
+          name: "Gold",
+          code: "gold"
+        },
+        {
+          name: "Purple",
+          code: "purple"
+        }
+      ],
+      description: `
+        <p>Leo is the fifth sign of the zodiac. These folks are impossible to miss since they love being center stage. Making an impression is Job #1 for Leos, and when you consider their personal magnetism, you see the job is quite easy. Leos are an ambitious lot, and their strength of purpose allows them to accomplish a great deal. The fact that this horoscope sign is also creative makes their endeavors fun for them and everyone else.</p>
+        <p>It's quite common to see a Leo on stage or in Hollywood since these folks never shy away from the limelight. They are also supremely talented and have a flair for the dramatic. Warmth and enthusiasm seem to seep from every Leo pore, making these folks a pleasure to be around. They do love pleasure and being the center of attention!</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Virgo,
+      dates: "Aug 23 - Sep 22",
+      symbol: "The Virgin",
+      mode: ZodiacSignMode.Mutable,
+      element: ZodiacSignElement.Earth,
+      house: 6,
+      mantra: "I analyze",
+      bodyParts: "Digestive system",
+      tarotCard: "The Hermit",
+      colors: [
+        {
+          name: "Tan",
+          code: "tan"
+        },
+        {
+          name: "Warm Yellow",
+          code: "yellow"
+        }
+      ],
+      description: `
+        <p>Virgo is the sixth sign of the zodiac, to be exact, and that's the way Virgos like it: exacting. Those born under this horoscope sign are forever the butt of jokes for being so picky and critical (and they can be), but their 'attention to detail' is for a reason: to help others. Virgos, more than any other zodiac sign, were born to serve, and it gives them great joy. They are also tailor-made for the job, since common Virgo traits are being industrious, methodical, and efficient. The sense of duty borne by these folks is considerable, and it ensures that they will always work for the greater good.</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Libra,
+      dates: "Sep 23 - Oct 22",
+      symbol: "The Scales",
+      mode: ZodiacSignMode.Cardinal,
+      element: ZodiacSignElement.Air,
+      house: 7,
+      mantra: "I relate",
+      bodyParts: "Lover back and kidneys",
+      tarotCard: "Justice",
+      colors: [
+        {
+          name: "Ivory",
+          code: "ivory"
+        },
+        {
+          name: "Pink",
+          code: "pink"
+        },
+        {
+          name: "Light Blue",
+          code: "lightblue"
+        }
+      ],
+      description: `
+        <p>Libra is the seventh sign of the zodiac, and it's at this point in the zodiac that we start to see a shift. While the first six signs of the zodiac focus on the individual, the last six focus on the individual's contact with others and with the world. The Libra zodiac sign is first and foremost focused on others and how they relate to them. We can call this the sign of Partnership with a capital 'P' because these folks do not want to be alone!</p>
+        <p>For a Libra, everything is better if it's done as a pair. Libras are good when paired up, too, since they epitomize balance, harmony, and a sense of fair play. While they are true team players at work, their favorite partnership is at home: marriage. Libras feel most complete when they are coupled up with their lover, forever.</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Scorpio,
+      dates: "Oct 23 - Nov 21",
+      symbol: "The Scorpion",
+      mode: ZodiacSignMode.Fixed,
+      element: ZodiacSignElement.Water,
+      house: 8,
+      mantra: "I transform",
+      bodyParts: "Genitals and bowels",
+      tarotCard: "Death",
+      colors: [
+        {
+          name: "Red",
+          code: "red"
+        },
+        {
+          name: "Black",
+          code: "black"
+        }
+      ],
+      description: `
+        <p>Scorpio is the eighth sign of the zodiac, and that shouldn't be taken lightly—nor should Scorpios! Those born under this sign are dead serious in their mission to learn about others. There's no fluff or chatter for Scorpios, either; these folks will zero-in on the essential questions, gleaning the secrets that lie within.</p>
+        <p>The Scorpio zodiac sign concerns itself with beginnings and endings, and is unafraid of either. They also travel in a world that is black and white and has little use for gray. The curiosity of Scorpios is immeasurable, which may be why they are such adept investigators.</p>
+        <p>The folks with a Scorpio horoscope sign love to probe and know how to get to the bottom of things. The fact that they have a keen sense of intuition certainly helps.</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Sagittarius,
+      dates: "Nov 22 - Dec 21",
+      symbol: "The Centaur / Archer",
+      mode: ZodiacSignMode.Mutable,
+      element: ZodiacSignElement.Fire,
+      house: 9,
+      mantra: "I see",
+      bodyParts: "Hips, thighs and liver",
+      tarotCard: "Temperance",
+      colors: [
+        {
+          name: "Maroon",
+          code: "maroon"
+        },
+        {
+          name: "Navy Blue",
+          code: "navy"
+        }
+      ],
+      description: `
+        <p>Sagittarius, the ninth sign of the zodiac, is the home of the wanderers of the zodiac. It's not a mindless ramble for these folks, either. Sags are truth-seekers, and the best way for them to do this is to hit the road, talk to others and get some answers.</p>
+        <p>Knowledge is key to these folks since it fuels their broad-minded approach to life. Those born with a Sagittarius zodiac sign are keenly interested in philosophy and religion, and they find that these disciplines aid their internal quest. At the end of the day, what Sagittarius wants most is to know the meaning of life, and to accomplish this while feeling free and easy.</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Capricorn,
+      dates: "Dec 22 - Jan 19",
+      symbol: "The Sea-Goat",
+      mode: ZodiacSignMode.Cardinal,
+      element: ZodiacSignElement.Earth,
+      house: 10,
+      mantra: "I use",
+      bodyParts: "Knees",
+      tarotCard: "The Devil",
+      colors: [
+        {
+          name: "Brown",
+          code: "brown"
+        },
+        {
+          name: "Khaki",
+          code: "khaki"
+        }
+      ],
+      description: `
+        <p>Capricorn, the tenth sign and mountain goat of the zodiac, is all about hard work. Those born under this sign are more than happy to put in a full day at the office, realizing that it will likely take a lot of those days to get to the top. That's no problem, since Capricorns are both ambitious and determined: they will get there. Life is one big project for these folks, and they adapt to this by adopting a businesslike approach to most everything they do.</p>
+        <p>Capricorns are practical as well, taking things one step at a time and being as realistic and pragmatic as possible. Those with a Capricorn zodiac sign are extremely dedicated to their goals, almost to the point of stubbornness. Those victories sure smell sweet, though, and that thought alone will keep Capricorns going.</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Aquarius,
+      dates: "Jan 20 - Feb 18",
+      symbol: "The Water-Bearer",
+      mode: ZodiacSignMode.Fixed,
+      element: ZodiacSignElement.Air,
+      house: 11,
+      mantra: "I know",
+      bodyParts: "Shins",
+      tarotCard: "The Star",
+      colors: [
+        {
+          name: "Silver",
+          code: "silver"
+        },
+        {
+          name: "Blue",
+          code: "blue"
+        }
+      ],
+      description: `
+        <p>Aquarius is the eleventh sign of the zodiac, and Aquarians are the perfect representatives for the Age of Aquarius. Those born under this horoscope sign have the social conscience needed to carry us into the new millennium. Those of the Aquarius zodiac sign are humanitarian, philanthropic, and keenly interested in making the world a better place. Along those lines, they'd like to make the world work better, which is why they focus much of their energy on our social institutions and how they work (or don't work).</p>
+        <p>Aquarians are visionaries, progressive souls who love to spend time thinking about how things can be better. They are also quick to engage others in this process, which is why they have so many friends and acquaintances. Making the world a better place is a collaborative effort for Aquarians.</p>
+      `
+    },
+    {
+      sign: SYMBOL_ZODIAC.Pisces,
+      dates: "Feb 19 - Mar 20",
+      symbol: "The Two Fishes",
+      mode: ZodiacSignMode.Mutable,
+      element: ZodiacSignElement.Water,
+      house: 12,
+      mantra: "I believe",
+      bodyParts: "Feet",
+      tarotCard: "The Moon",
+      colors: [
+        {
+          name: "Purple",
+          code: "purple"
+        },
+        {
+          name: "White",
+          code: "white"
+        }
+      ],
+      description: `
+        <p>Pisces is the twelfth sign of the zodiac, and it is also the final sign in the zodiacal cycle. Hence, this sign brings together many of the characteristics of the eleven signs that have come before it. Pisces, however, are happiest keeping many of these qualities under wraps. These folks are selfless, spiritual, and very focused on their inner journey.</p>
+        <p>They also place great weight on what they are feeling. Yes, feelings define the Pisces zodiac sign, and it's not uncommon for them to feel their own burdens (and joys) as well as those of others. The intuition of the Pisces-born is highly evolved. Many people associate Pisces with dreams and secrets, and it's a fair association, since those born under this sign feel comfortable in an illusory world.</p>
+      `
+    }
+  ]
+}
+
 export function pad2(n: number | string): string {
     return _.padStart(n + '', 2);
 }
@@ -474,6 +810,19 @@ export const latinAboutSign = [
   }
 ];
 
+export function getContext(data: any): string {
+  if (data && data.context) {
+    return data.context;
+  } else {
+    const names: string[] = [
+      ..._.values(SYMBOL_ZODIAC),
+      ..._.values(SYMBOL_PLANET),
+      //..._.values(SYMBOL_ASPECT)
+    ];
+    return names[_.random(names.length - 1)];
+  }
+}
+
 export const perspectives = [
   {
     label: "Health",
@@ -638,7 +987,7 @@ export const perspectives = [
   {
     label: "Movies",
     icon:  faFilm,
-    prompt: "the most and least preferable genres of movies, name 5 from best to worst titles to watch based on analysis."
+    prompt: "the most and least preferable genres of movies, name 5 from best to worst titles to watch based on age, gender and analysis."
   },
   {
     label: "Social Media",
@@ -653,11 +1002,26 @@ export const perspectives = [
   {
     label: "Perfumes",
     icon:  faPrescriptionBottle,
-    prompt: "the most and least favorite perfumes and cosmetics, brands and styles, what would be the best gift?"
+    prompt: "the most and least favorite perfumes and cosmetics, brands and styles, given age and gender what would be the best gift?"
   },
   {
     label: "Gifts",
     icon:  faGifts,
-    prompt: "the most and least favorite gifts to receive, what would be the best gift? List 5 best and worst gifts based on analysis."
+    prompt: "the most and least favorite gifts to receive, given age and gender what would be the best gift? List 5 best and worst gifts based on analysis."
   },
+  {
+    label: "Politics",
+    icon:  faSpeakerDeck,
+    prompt: "the most and least political preferences. Based on age and analysis guess the most and least preferable party between: communist, ultra lefts, socialists, liberals, democrats, centrists, republicans, conservators, capitalists, ultra right, nationalists."
+  },
+  {
+    label: "Habits",
+    icon:  faSmokingBan,
+    prompt: "possibility of having the good and bad habits, traits and addictions. Based on analysis guess 3 of the worst and best of them."
+  },
+  {
+    label: "Study",
+    icon:  faChalkboardTeacher,
+    prompt: "the best and the least suitable fields of study. Guess level of education achievable and list of best choice study subjects."
+  }
 ];

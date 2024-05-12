@@ -9,7 +9,7 @@ import {
   convert_DD_to_D,
   convert_lat_to_DMS,
   convert_long_to_DMS,
-  Gender,
+  Gender, getContext,
   IPersonEntry,
   IPersonInfo,
   IToolbarCmd,
@@ -523,20 +523,11 @@ export class AstralkaChartComponent implements OnInit {
     this.sharedExplain$.subscribe((data: any) => {
       this.show_explanation = true;
       if (data.result === 'LOADING!') {
-        let name: string;
-        if (data.context) {
-          name = data.context;
-        } else {
-          const names: string[] = [
-            ..._.values(SYMBOL_ZODIAC),
-            ..._.values(SYMBOL_PLANET),
-            //..._.values(SYMBOL_ASPECT)
-          ];
-          name = names[_.random(names.length - 1)];
-        }
+        const name: string = getContext(data);
         this.rotate_image = {
           name: name + '.' + rnd_suffix(),
-          description: name
+          description: name,
+          data
         };
         return;
       }
