@@ -187,8 +187,8 @@ import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.i
           >
             <defs>
               <filter x="0" y="0" width="1" height="1" id="solid">
-                <feFlood flood-color="#f4eeeadd" />
-                <feComposite in2="SourceGraphic" operator="out" />
+                <feFlood flood-color="#f4eeeadd" result="floodFill" />
+                <feComposite in="SourceGraphic" in2="floodFill" operator="over" />
               </filter>
             </defs>
             <g>
@@ -732,7 +732,8 @@ export class AstralkaChartComponent implements OnInit {
 
   public perspective(kind: string): void {
     this.show_explanation = true;
-    const prompt = `Given the following information as an outline natal data for a ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
+    //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
+    const prompt = `Given the following information for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a analysis summary for ${kind}`;
     this.rest.do_explain({prompt});
   }
 

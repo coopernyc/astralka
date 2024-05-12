@@ -7,23 +7,8 @@ import _ from "lodash";
     standalone: true,
     imports: [CommonModule],
     template: `
-        @if (fillBackground) {
-          <svg:text
-              filter="url(#solid)"
-              [attr.x]="x"
-              [attr.y]="y"
-              [attr.dominant-baseline]="'central'"
-              [attr.fill]="fill_color"
-              [attr.stroke]="stroke_color"
-              [attr.stroke-width]="stroke_width"
-              [attr.stroke-dasharray]="stroke_dasharray"
-              [attr.font-size]="font_size"
-          >
-          {{text}}
-          </svg:text>
-        }
         <svg:text
-          filter=""
+          filter="url(#solid)"
           [attr.x]="x"
           [attr.y]="y"
           [attr.dominant-baseline]="'central'"
@@ -42,7 +27,6 @@ export class ChartText {
     @Input() y: number = 0;
     @Input() text: string = "";
     @Input() options: any = {};
-    @Input() fillBackground: boolean = true;
 
     public get fill_color(): string {
         return _.get(this.options, "fill", "#000");

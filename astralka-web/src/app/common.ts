@@ -15,23 +15,24 @@ import {
   faCouch,
   faCrown,
   faDog,
-  faFan,
-  faGem,
+  faFan, faFilm,
+  faGem, faGifts, faGlobe,
   faHeart,
-  faHeartPulse,
+  faHeartPulse, faHouse,
   faLuggageCart,
+  faMasksTheater,
   faMobile,
   faMoneyBill1,
   faMusic,
   faPalette,
   faPeopleGroup,
-  faPeopleRoof,
+  faPeopleRoof, faPlaneDeparture, faPrescriptionBottle,
   faRing,
   faShirt,
   faSmile,
   faVolleyballBall
 } from "@fortawesome/free-solid-svg-icons";
-import {faPagelines} from "@fortawesome/free-brands-svg-icons";
+import {faFacebook, faPagelines} from "@fortawesome/free-brands-svg-icons";
 
 export const SYMBOL_SCALE = 1;
 export const COLLISION_RADIUS = 10;
@@ -131,7 +132,7 @@ export const SYMBOL_ASPECT = {
     //Semiquintile: "Semiquintile"
 
 }
-export const ZodiacSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
+//export const ZodiacSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
 export const ZodiacSigns: string[] = [
     SYMBOL_ZODIAC.Aries,
     SYMBOL_ZODIAC.Taurus,
@@ -150,11 +151,11 @@ export function pad2(n: number | string): string {
     return _.padStart(n + '', 2);
 }
 export function convert_DD_to_DMS(degrees: number, sign = "°"): string {
-    var deg = degrees | 0;
-    var frac = Math.abs(degrees - deg);
-    var min = (frac * 60) | 0;
-    var sec = Math.round(frac * 3600 - min * 60);
-    return pad2(deg) + sign + pad2(min) + "'" + pad2(sec) + "\"";
+  const deg = degrees | 0;
+  const frac = Math.abs(degrees - deg);
+  const min = (frac * 60) | 0;
+  const sec = Math.round(frac * 3600 - min * 60);
+  return pad2(deg) + sign + pad2(min) + "'" + pad2(sec) + "\"";
 }
 
 export function convert_lat_to_DMS(lat: number): string {
@@ -180,20 +181,20 @@ export function pos_in_zodiac_sign(longitude: number): number {
 export function zodiac_sign(longitude: number): string {
     return ZodiacSigns[Math.floor(longitude / 30)];
 }
-export function zodiac_symbol(longitude: number): string {
-    return ZodiacSymbols[Math.floor(longitude / 30)];
-}
-export function format_pos_in_zodiac(position: number, sign_as_symbol: boolean = true): string {
-    const sign = sign_as_symbol ? zodiac_symbol(position) : ' ' + zodiac_sign(position) + ' ';
-    return convert_DD_to_DMS(pos_in_zodiac_sign(position), sign);
-}
-export function random_point_on_the_line(p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
-    const a = (p2.y - p1.y) / (p2.x - p1.x);
-    const b = p1.y - a * p1.x;
-    const d = (p2.x - p1.x);
-    const rnd_x = p1.x + d/5 + 3 * (p2.x - p1.x) / 5 * Math.random();
-    return {x: rnd_x, y: a * rnd_x + b};
-}
+// export function zodiac_symbol(longitude: number): string {
+//     return ZodiacSymbols[Math.floor(longitude / 30)];
+// }
+// export function format_pos_in_zodiac(position: number, sign_as_symbol: boolean = true): string {
+//     const sign = sign_as_symbol ? zodiac_symbol(position) : ' ' + zodiac_sign(position) + ' ';
+//     return convert_DD_to_DMS(pos_in_zodiac_sign(position), sign);
+// }
+// export function random_point_on_the_line(p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
+//     const a = (p2.y - p1.y) / (p2.x - p1.x);
+//     const b = p1.y - a * p1.x;
+//     const d = (p2.x - p1.x);
+//     const rnd_x = p1.x + d/5 + 3 * (p2.x - p1.x) / 5 * Math.random();
+//     return {x: rnd_x, y: a * rnd_x + b};
+// }
 
 export function one_third_point_on_the_line(p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
   const a = (p2.y - p1.y) / (p2.x - p1.x);
@@ -221,10 +222,10 @@ export function age(date: any): number {
 
 export function pos_in_zodiac(position: number) : any {
     const z_pos = pos_in_zodiac_sign(position);
-    var deg = z_pos | 0;
-    var frac = Math.abs(z_pos - deg);
-    var min = (frac * 60) | 0;
-    var sec = Math.round(frac * 3600 - min * 60);
+    const deg = z_pos | 0;
+    const frac = Math.abs(z_pos - deg);
+    const min = (frac * 60) | 0;
+    const sec = Math.round(frac * 3600 - min * 60);
     return {
         position: position,
         deg,
@@ -325,9 +326,8 @@ export function rnd_suffix() : string {
 }
 
 export enum ToolbarCmdMask {
-  None,
   NavBar,
-  Context,
+  //Context,
   All
 }
 
@@ -478,146 +478,186 @@ export const perspectives = [
   {
     label: "Health",
     icon: faHeartPulse,
-    prompt: "with health. List best ways to keep good health."
+    prompt: "prospects of health, mental stability and emotional balance, list 2 body organs to pay attention to."
   },
   {
     label: "Money",
     icon:  faMoneyBill1,
-    prompt: "with money. List best potential sources of getting rich."
+    prompt: "prospects of being rich, best and worst potential sources of getting rich."
   },
   {
     label: "Intellect",
     icon:  faBrain,
-    prompt: "with intellect. List areas with the most intellectual interest."
+    prompt: "intellectual capabilities, list the areas of live with the most and least intellectual interest."
   },
   {
     label: "Emotions",
     icon:  faSmile,
-    prompt: "with emotions. List the areas where emotions will prevail and help or make worth."
+    prompt: "emotional capabilities, list the areas of live where calm and harmonious or tense and stressful emotions will show."
   },
   {
     label: "Family",
     icon:  faPeopleRoof,
-    prompt: "with family. List the areas where the family will help the most."
+    prompt: "prospects and potentials of having family. List the areas where the family will help the most."
   },
   {
     label: "Friends",
     icon:  faPeopleGroup,
-    prompt: "with friends. List the most valuable quality of a friend. Also list the most compatible and incompatible signs."
+    prompt: "prospects for friends, their qualities, the most compatible and incompatible signs."
   },
   {
     label: "Cars",
     icon:  faCar,
-    prompt: "with cars. Provide a list of the best suited makers and models."
+    prompt: "the list of the most and least preferable cars styles, makers and models."
   },
   {
     label: "Romance",
     icon:  faHeart,
-    prompt: "with romance. List the most valuable quality of a partner. Also list the most compatible and incompatible signs."
+    prompt: "possibilities of romantic relationships, guess the most and least preferable partner qualities such as age, height, hair color and style, curvy of skinny, experienced or not. Draw the overall picture."
   },
   {
     label: "Jobs",
     icon:  faBriefcase,
-    prompt: "with jobs. List the most suitable and not suitable professions and the best choice jobs."
+    prompt: "the most suitable and not suitable professions and the best choice jobs. List 5 best and 5 worst jobs."
   },
   {
     label: "Kids",
     icon:  faBabyCarriage,
-    prompt: "with kids. Guess on a potential number of kids and their gender."
+    prompt: "potential of having kids. Guess on a potential number of kids and their gender."
   },
   {
     label: "Marriage",
     icon:  faRing,
-    prompt: "with marriage. Also list the most compatible and incompatible signs. Guess number of marriages."
+    prompt: "prospects of getting married, the most compatible and incompatible signs. Guess number of marriages."
   },
   {
     label: "Leadership",
     icon:  faCrown,
-    prompt: "with leadership. List areas where can easily lead and areas conflicting with authorities."
+    prompt: "potential of taking leadership and areas where can easily lead and areas conflicting with authorities."
   },
   {
     label: "Food",
     icon:  faBurger,
-    prompt: "with food. List most preferable world cuisines and their specific food."
+    prompt: "the most and least preferable world cuisines and their specific food. List 5 most and least preferable foods. Guess best fast food brand."
   },
   {
     label: "Travel",
     icon:  faLuggageCart,
-    prompt: "with travel. List the most preferable world destination."
+    prompt: "the most and least preferable world destinations for travel. List 10 destinations in the order starting from the best to worst."
   },
   {
     label: "Sports",
     icon:  faVolleyballBall,
-    prompt: "with sport. List the most preferable sports and physical activities."
+    prompt: "the most suitable sports and physical activities."
   },
   {
     label: "Drinks",
     icon:  faCocktail,
-    prompt: "with drinks. List the most preferable and least preferable brands and cocktail names of alcoholic drinks."
+    prompt: "the most preferable and least preferable brands and cocktail names of alcoholic drinks."
   },
   {
     label: "Clothes",
     icon:  faShirt,
-    prompt: "with clothing. List the most preferable and least preferable brands and styles."
+    prompt: "the most preferable and least preferable clothes, brands and styles."
   },
   {
     label: "Hobbies",
     icon:  faCouch,
-    prompt: "with hobbies. List the most preferable and least preferable hobbies and interest activities."
+    prompt: "the most preferable and least preferable hobbies and interest activities."
   },
   {
     label: "Jewelries",
     icon:  faGem,
-    prompt: "with jewelries. List the most suitable precious stones and metals, jewelry brands and styles."
+    prompt: "the most suitable precious stones and metals, kind of jewelry to wear if any, brands and styles."
   },
   {
     label: "Colors",
     icon:  faPalette,
-    prompt: "with colors. List the most and the least preferable colors and combination."
+    prompt: "the most and the least preferable colors and their combination. "
   },
   {
     label: "Pets",
     icon:  faDog,
-    prompt: "with pets. List the most and the least preferable kinds, breeds, colors and sizes of pets."
+    prompt: "the most and the least preferable kinds, breeds and sizes of pets. List 3 most and least favorite pets."
   },
   {
     label: "Luck",
     icon:  faClover,
-    prompt: "with luck. What are the chances in gambling investments and risky activities."
+    prompt: "the chances in gambling, risky activities and lottery suggestions. Guess 6 lucky numbers."
   },
   {
     label: "Trees",
     icon:  faPagelines,
-    prompt: "with trees. List the most and the least preferable kinds, colors and sizes of trees."
+    prompt: "the most and the least preferable kinds of trees."
   },
   {
     label: "Flowers",
     icon:  faFan,
-    prompt: "with flowers. List the most and the least preferable kinds, colors of flowers. Also give recommendation for flower combination in a bucket."
+    prompt: "the most and the least preferable flowers, give recommendation for preferable combination in a bucket. What would be the best birthday bucket?"
   },
   {
     label: "Music",
     icon:  faMusic,
-    prompt: "with music. Indicate potential of playing music and on what instrument. Also, list the most and the least preferable genres, kinds, styles and bands."
+    prompt: "the most and the least preferable genres, kinds, styles and bands in music, potential to play on music instrument and it's kind."
+  },
+  {
+    label: "Arts",
+    icon:  faMasksTheater,
+    prompt: "the most and the least favorite genres, kinds, styles of art, potentials to be an artist, musician, dancer, singer, writer or dancer, list 7 preferable titles/names/authors in those arts."
   },
   {
     label: "Inheritance",
     icon:  faBookSkull,
-    prompt: "with inheritance."
+    prompt: "possibilities of getting any inheritance or how family ancestors might affect."
   },
   {
     label: "Investments",
     icon:  faBank,
-    prompt: "with investments. List most and least preferable ways to invest and kinds of investments."
+    prompt: "the most and least preferable ways to invest and kinds of investments. Base on analysis guess 5 best Stocks."
   },
   {
     label: "Technology",
     icon:  faComputer,
-    prompt: "with technology. List most and least preferable areas of technology. For information technology, specify which area, role and prefered programming language and style."
+    prompt: "the most and least preferable areas of technology. For information technology, specify which area, role and favorite programming languages and programming style."
   },
   {
     label: "Gadgets",
     icon:  faMobile,
-    prompt: "with gadgets. List most and least preferable gadgets and devices, their brands and styles."
+    prompt: "the most and least preferable gadgets and devices, brands and styles. What would be the best present."
+  },
+  {
+    label: "Housing",
+    icon:  faHouse,
+    prompt: "the most and least preferable housing, living in the city or suburbs, in apartment or private house, renting or owning, draw the overall picture."
+  },
+  {
+    label: "Country",
+    icon:  faGlobe,
+    prompt: "the most and least preferable country to live, name 5 from best to worst preferable places based on analysis."
+  },
+  {
+    label: "Movies",
+    icon:  faFilm,
+    prompt: "the most and least preferable genres of movies, name 5 from best to worst titles to watch based on analysis."
+  },
+  {
+    label: "Social Media",
+    icon:  faFacebook,
+    prompt: "the most and least preferable social media, ability to monetize on content, list5 from best to worst preferable social media apps."
+  },
+  {
+    label: "Vacation",
+    icon:  faPlaneDeparture,
+    prompt: "the most and least preferable vacation destinations, guess 5 from best to worst preferable vacation styles between: beach, mountains, cold north, warm tropics, cruise, hotel, ocean, pool, hiking, staying one place, active, relaxing, museums and historical, all inclusive resort."
+  },
+  {
+    label: "Perfumes",
+    icon:  faPrescriptionBottle,
+    prompt: "the most and least favorite perfumes and cosmetics, brands and styles, what would be the best gift?"
+  },
+  {
+    label: "Gifts",
+    icon:  faGifts,
+    prompt: "the most and least favorite gifts to receive, what would be the best gift? List 5 best and worst gifts based on analysis."
   },
 ];

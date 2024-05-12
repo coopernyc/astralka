@@ -49,9 +49,9 @@
     border: none;
     background-color: #eee;
     padding: 4px 3px 3px 3px;
-    min-width: 100px;
-    max-width: 100px;
-    width: 100px;
+    min-width: 120px;
+    max-width: 120px;
+    width: 120px;
     cursor: pointer;
     color: #333;
     text-align: left;
@@ -70,13 +70,13 @@
   }
   &.double,
   &.triple {
-    width: calc(100px * 2 + 2px);
+    width: calc(120px * 2 + 2px);
     button.toolbar-menu-button {
       display: inline-block;
     }
   }
   &.triple {
-    width: calc(100px * 3 + 2px);
+    width: calc(120px * 3 + 2px);
   }
   div.toolbar-menu-separator {
     height: 1px;
