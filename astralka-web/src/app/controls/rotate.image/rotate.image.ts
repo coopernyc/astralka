@@ -29,7 +29,7 @@ import {SafeHtmlPipe} from "../safe.html.pipe";
                 <div style="flex: 0 80px">
                   <img
                     [alt]="info.data.tarotCard"
-                    [ngSrc]="'Tarot.'+info.data.tarotCard + '.' + rnd_suffix()"
+                    [ngSrc]="'Tarot.'+info.data.tarotCard"
                     [width]="80"
                     [height]="100"
                     [title]="'Tarot Card ' + info.data.tarotCard"
@@ -102,8 +102,8 @@ export class AstralkaRotateImageComponent implements OnChanges {
   }
 
   public toggle(event: any): void {
-    if (!this.show_info && this.rotator && this.rotator.data && this.rotator.data.context) {
-      this.info = contextStaticData(getContext(this.rotator.data));
+    if (!this.show_info && this.rotator && this.rotator.description) {
+      this.info = contextStaticData(this.rotator.description);
     }
     if (this.info) {
       this.show_info = !this.show_info;

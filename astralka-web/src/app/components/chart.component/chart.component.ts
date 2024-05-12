@@ -65,6 +65,7 @@ import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {faBaby, faMeteor, faSignOut, faUserAstronaut, faUserNinja} from "@fortawesome/free-solid-svg-icons";
 import config from "assets/config.json";
 import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.image";
+import {LocalStorageService} from "../../services/local.storage.service";
 
 @Component({
   selector: 'astralka-chart',
@@ -374,6 +375,7 @@ export class AstralkaChartComponent implements OnInit {
     private settings: SettingsService,
     private auth: AstralkaAuthService,
     private session: SessionStorageService,
+    private storage: LocalStorageService,
     private router: Router,
     private zone: NgZone
   ) {
@@ -543,6 +545,11 @@ export class AstralkaChartComponent implements OnInit {
         });
       }, 300);
     });
+
+    const person = this.storage.restore("astralka-person");
+    if (person) {
+      this.onPersonSelected(person);
+    }
   }
 
   public get planets() {
@@ -694,6 +701,8 @@ export class AstralkaChartComponent implements OnInit {
         scope: person.scope ?? PersonScope.Private,
       };
       this.draw();
+      //todo: provide checkbox for default auto-save
+      this.storage.store("astralka-person", this.selectedPerson);
     } else {
       this.selectedPerson = undefined;
       this.init();
