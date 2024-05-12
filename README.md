@@ -7,6 +7,7 @@
 <img width="400" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/74ca6c36-3281-49e4-95ec-0e8cef42dd27">
 <img width="400" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/5a359299-00a2-4c5d-aac1-1562c2980b37">
 <img width="800" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/c7f5c9da-6da4-45ad-99fc-27c021881856">
+<img width="800" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/329513f7-b49c-4f7b-841c-0934f761fde1">
 
 
 > [!WARNING]
