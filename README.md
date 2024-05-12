@@ -1,17 +1,24 @@
 # Astralka Project #
 ![9cc0af38-16c9-4f72-b156-e3e6a650628d](https://github.com/coopernyc/astralka/assets/11201225/5fd9ffcb-453b-43eb-9b7f-729b2dc914a2)  
 
-## Gallery
-<img width="400" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/8ba12dc9-07ea-489b-97e5-fab8d0d15ced">
-<img width="400" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/81280a9a-6d4e-4116-9699-8e6b8fc3d617">
-<img width="400" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/74ca6c36-3281-49e4-95ec-0e8cef42dd27">
-<img width="400" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/5a359299-00a2-4c5d-aac1-1562c2980b37">
-<img width="800" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/c7f5c9da-6da4-45ad-99fc-27c021881856">
+Astralka creates "very professional" astrological natal/transit/progression chart of a person, gives flexible settings on turning on/off various thing in drawing, calculations, choose different settings, ability to create public and private collections of charts, and **the best of all** it creates aggregated prompt for AI that is based on all calculated information from the chart to apply analysis and to give overall prognosis on different areas/categories of live.
+
+Other than to apply in practice new Angular & Typescript methods and features in building web portals or pseudo commercial products, you can also learn tons of interesting but mostly useless information regarding Astrology, Planets, Signs, Houses, Aspects etc. 
+
+> [!WARNING] 
+> Please remember, Astrology is not a science, but a mental exercise people practice from ancient times. 
+
+> [!TIP] 
+> Learn why girls so scared of "**Retrograde Mercury**"!!!
+
+> [!TIP] 
+> You can always re-roll you luck! You don't like prognosis? Try again for a new one. There's no proof or credibility either way! 
+
+> [!TIP] 
+> No more guessing on what bucket of flowers or gift to present on birthday!
+
+## Screenshot
 <img width="800" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/329513f7-b49c-4f7b-841c-0934f761fde1">
-
-
-> [!WARNING]
-> In Development
 
 > [!TIP]
 > on Windows, if you run into some errors about msvc for node >= 18, search and run `Install Additional tools for Node.js` batch file.
