@@ -8,17 +8,22 @@ import {
   faBrain,
   faBriefcase,
   faBurger,
-  faCar, faChalkboardTeacher,
+  faCar,
+  faChalkboardTeacher,
   faClover,
   faCocktail,
   faComputer,
   faCouch,
   faCrown,
   faDog,
-  faFan, faFilm,
-  faGem, faGifts, faGlobe,
+  faFan,
+  faFilm,
+  faGem,
+  faGifts,
+  faGlobe,
   faHeart,
-  faHeartPulse, faHouse,
+  faHeartPulse,
+  faHouse,
   faLuggageCart,
   faMasksTheater,
   faMobile,
@@ -26,10 +31,13 @@ import {
   faMusic,
   faPalette,
   faPeopleGroup,
-  faPeopleRoof, faPlaneDeparture, faPrescriptionBottle,
+  faPeopleRoof,
+  faPlaneDeparture,
+  faPrescriptionBottle,
   faRing,
   faShirt,
-  faSmile, faSmoking, faSmokingBan,
+  faSmile,
+  faSmokingBan,
   faVolleyballBall
 } from "@fortawesome/free-solid-svg-icons";
 import {faFacebook, faPagelines, faSpeakerDeck} from "@fortawesome/free-brands-svg-icons";
@@ -172,8 +180,32 @@ export function contextStaticData(context: string): any {
   }
   return undefined;
 }
-
+export const SYMBOL_TAROT = {
+  Emperor: "Emperor",
+  Hierophant: "Hierophant",
+  Lover: "Lover",
+  Chariot: "Chariot",
+  Strength: "Strength",
+  Hermit: "Hermit",
+  Justice: "Justice",
+  Death: "Death",
+  Temperance: "Temperance",
+  Devil: "Devil",
+  Star: "Star",
+  Moon: "Moon",
+  Sun: "Sun"
+}
 export const SymbolStaticData = {
+  Planets: [
+    {
+      name: SYMBOL_PLANET.Sun,
+      tarotCard: SYMBOL_TAROT.Sun,
+      Description: `
+        <p>As the sun puts forth light, so it brings forth life. This planet (also known as a luminary and a star) represents the self, one’s personality and ego, the spirit and what it is that makes the individual unique. It is our identity and our face to the world. The sun also speaks to creative ability and the power of the individual to meet the challenges of everyday life.</p>
+        <p></p>One’s natural father, husband and other male influences are ruled by the sun, as are children. The sun’s energy is a forceful one, and in its wake comes authority, the ability to lead and an individual’s essence, their core being. Through the will of this planet, we learn to manifest ourselves in the world.</p>
+      `
+    }
+  ],
   ZodiacSign: [
     {
       sign: SYMBOL_ZODIAC.Aries,
@@ -184,7 +216,7 @@ export const SymbolStaticData = {
       house: 1,
       mantra: "I am",
       bodyParts: "Head",
-      tarotCard: "The Emperor",
+      tarotCard: SYMBOL_TAROT.Emperor,
       colors: [
         {
           name: "Red",
@@ -210,7 +242,7 @@ export const SymbolStaticData = {
       house: 2,
       mantra: "I have",
       bodyParts: "Throat",
-      tarotCard: "The Hierophant",
+      tarotCard: SYMBOL_TAROT.Hierophant,
       colors: [
         {
           name: "Green",
@@ -235,7 +267,7 @@ export const SymbolStaticData = {
       house: 3,
       mantra: "I think",
       bodyParts: "Arms, hands and lungs",
-      tarotCard: "The Lover",
+      tarotCard: SYMBOL_TAROT.Lover,
       colors: [
         {
           name: "Yellow",
@@ -260,7 +292,7 @@ export const SymbolStaticData = {
       house: 4,
       mantra: "I feel",
       bodyParts: "Stomach, brain and breasts",
-      tarotCard: "The Chariot",
+      tarotCard: SYMBOL_TAROT.Chariot,
       colors: [
         {
           name: "Silver",
@@ -285,7 +317,7 @@ export const SymbolStaticData = {
       house: 5,
       mantra: "I will",
       bodyParts: "Heart",
-      tarotCard: "Strength",
+      tarotCard: SYMBOL_TAROT.Strength,
       colors: [
         {
           name: "Gold",
@@ -310,7 +342,7 @@ export const SymbolStaticData = {
       house: 6,
       mantra: "I analyze",
       bodyParts: "Digestive system",
-      tarotCard: "The Hermit",
+      tarotCard: SYMBOL_TAROT.Hermit,
       colors: [
         {
           name: "Tan",
@@ -334,7 +366,7 @@ export const SymbolStaticData = {
       house: 7,
       mantra: "I relate",
       bodyParts: "Lover back and kidneys",
-      tarotCard: "Justice",
+      tarotCard: SYMBOL_TAROT.Justice,
       colors: [
         {
           name: "Ivory",
@@ -363,7 +395,7 @@ export const SymbolStaticData = {
       house: 8,
       mantra: "I transform",
       bodyParts: "Genitals and bowels",
-      tarotCard: "Death",
+      tarotCard: SYMBOL_TAROT.Death,
       colors: [
         {
           name: "Red",
@@ -389,7 +421,7 @@ export const SymbolStaticData = {
       house: 9,
       mantra: "I see",
       bodyParts: "Hips, thighs and liver",
-      tarotCard: "Temperance",
+      tarotCard: SYMBOL_TAROT.Temperance,
       colors: [
         {
           name: "Maroon",
@@ -414,7 +446,7 @@ export const SymbolStaticData = {
       house: 10,
       mantra: "I use",
       bodyParts: "Knees",
-      tarotCard: "The Devil",
+      tarotCard: SYMBOL_TAROT.Devil,
       colors: [
         {
           name: "Brown",
@@ -439,7 +471,7 @@ export const SymbolStaticData = {
       house: 11,
       mantra: "I know",
       bodyParts: "Shins",
-      tarotCard: "The Star",
+      tarotCard: SYMBOL_TAROT.Star,
       colors: [
         {
           name: "Silver",
@@ -464,7 +496,7 @@ export const SymbolStaticData = {
       house: 12,
       mantra: "I believe",
       bodyParts: "Feet",
-      tarotCard: "The Moon",
+      tarotCard: SYMBOL_TAROT.Moon,
       colors: [
         {
           name: "Purple",

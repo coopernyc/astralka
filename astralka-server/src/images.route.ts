@@ -7,7 +7,11 @@ import _ from "lodash";
 export async function imagesRoute(req: any, res: any): Promise<void> {
     const images_dir: string = process.env.IMAGES_DIR!;
 
+    let tarot_filename!: string;
     const folder = req.query.src.split('.')[0];
+    if (folder === 'Tarot') {
+        tarot_filename = req.query.src.split('.')[1];
+    }
     const width = _.toNumber(req.query.width);
 
     const list = await fsp.readdir(path.join(images_dir, folder));
@@ -30,7 +34,10 @@ export async function imagesRoute(req: any, res: any): Promise<void> {
     //console.log(files);
     if (files.length) {
 
-        const original_filename = files[_.random(files.length - 1)].replace('-x640', '');
+        const original_filename = tarot_filename
+            ? tarot_filename.toLowerCase()+".png"
+            : files[_.random(files.length - 1)].replace('-x640', '');
+
         const original_filepath = path.join(path.join(images_dir, folder),original_filename);
 
         const resolution_filename = _.replace(original_filename, '.png', `-x${width}.png`);

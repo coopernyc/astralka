@@ -15,15 +15,26 @@ import {SafeHtmlPipe} from "../safe.html.pipe";
         <div class="image-rotate-info">
           @switch(info.type) {
             @case(StaticDataType.Sign) {
-              <h3>{{info.data.dates}}</h3>
-              <h4>{{info.data.mode}}, {{info.data.element}} element, "<i>{{info.data.mantra}}</i>"</h4>
-              <div>Body parts: {{info.data.bodyParts}}</div>
-              <div>Tarot card: {{info.data.tarotCard}}</div>
-              <div>Colors</div>
-              <div style="align-items: center; display: flex">
-                @for(color of info.data.colors; track color.name) {
-                  <div class="color-sample" [style.background-color]="color.code"></div><span>{{color.name}}</span>
-                }
+              <div style="display: flex;" (click)="toggle($event)">
+                <div style="flex: 1">
+                  <h3>{{info.data.dates}}</h3>
+                  <h4>{{info.data.mode}}, Element: {{info.data.element}}, Moto: <i>{{info.data.mantra}}</i></h4>
+                  <div>Body parts: {{info.data.bodyParts}}</div>
+                  <div style="align-items: center; display: flex; margin-top: 6px;">
+                    @for(color of info.data.colors; track color.name) {
+                      <div class="color-sample" [style.background-color]="color.code"></div><span>{{color.name}}</span>
+                    }
+                  </div>
+                </div>
+                <div style="flex: 0 80px">
+                  <img
+                    [alt]="info.data.tarotCard"
+                    [ngSrc]="'Tarot.'+info.data.tarotCard + '.' + rnd_suffix()"
+                    [width]="80"
+                    [height]="100"
+                    [title]="'Tarot Card ' + info.data.tarotCard"
+                  />
+                </div>
               </div>
               <div [innerHTML]="info.data.description | safeHtml"></div>
               <p>&nbsp;</p>
@@ -40,7 +51,7 @@ import {SafeHtmlPipe} from "../safe.html.pipe";
           title="Click for new image"
         />
       }
-      <div class="img-description" (click)="toggle()" title="Toggle Info">
+      <div class="img-description" (click)="toggle($event)" title="Toggle Info">
         <span class="symbol">
           <svg xmlns="http://www.w3.org/2000/svg"
                width="20"
@@ -90,8 +101,8 @@ export class AstralkaRotateImageComponent implements OnChanges {
     };
   }
 
-  public toggle(): void {
-    if (!this.show_info) {
+  public toggle(event: any): void {
+    if (!this.show_info && this.rotator && this.rotator.data && this.rotator.data.context) {
       this.info = contextStaticData(getContext(this.rotator.data));
     }
     if (this.info) {
@@ -100,7 +111,9 @@ export class AstralkaRotateImageComponent implements OnChanges {
         this.info = undefined;
       }
     }
+    event.preventDefault();
   }
 
   protected readonly StaticDataType = StaticDataType;
+  protected readonly rnd_suffix = rnd_suffix;
 }

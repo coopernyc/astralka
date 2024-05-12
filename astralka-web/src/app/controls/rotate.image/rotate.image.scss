@@ -1,4 +1,9 @@
 :host {
+
+  ::ng-deep p {
+    text-align: justify;
+  }
+
   flex: 1;
   .image-rotate-container {
     position: relative;
@@ -6,26 +11,40 @@
     .image-rotate-info {
       width: 320px;
       height: 400px;
-      background: navy url(/assets/noise.png);
+      background: #003366 url(/assets/noise.png);
       color: #ccc;
       padding: 18px 8px 8px 8px;
       overflow: scroll;
 
+      font-family: "Lato", sans-serif;
+      h3 {
+        margin: 18px 0 8px 0;
+        font-weight: 800;
+      }
+      h2, h1, h4 {
+        margin: 4px 0;
+        font-weight: 600;
+      }
+
       .color-sample {
-        margin: 3px;
+        margin: 0 4px 0 0;
+        &:not(:first-child) {
+          margin-left: 4px;
+        }
         display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 1px solid #777;
+        width: 13px;
+        height: 13px;
+        line-height: 13px;
+        border: 1px solid #fff;
         border-radius: 3px;
-        //box-shadow: 1px 1px 1px #0005;
+        box-shadow: 1px 1px 1px #000;
       }
     }
 
     .img-description {
       position: absolute;
       cursor: pointer;
-      left: 2px; top: 2px;
+      left: 6px; top: 2px;
       width: 120px;
       height: 26px;
       background-color: transparent;
@@ -38,13 +57,13 @@
       justify-content: start;
       span.symbol {
         width: 24px;
-        background-color: #1119;
+        background-color: #0369;
       }
       span.description {
         font-family: Gafata, sans-serif;
         font-size: 16px;
         color: #fff;
-        background-color: #1119;
+        background-color: #0369;
         line-height: 24px;
         padding-right: 8px;
       }
