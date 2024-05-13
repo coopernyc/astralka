@@ -9,7 +9,8 @@ import {
   convert_DD_to_D,
   convert_lat_to_DMS,
   convert_long_to_DMS,
-  Gender, getContext,
+  Gender,
+  getContext,
   IPersonEntry,
   IPersonInfo,
   IToolbarCmd,
@@ -293,7 +294,7 @@ import {LocalStorageService} from "../../services/local.storage.service";
                       <hr class="una"/>
                     }
                     <p [innerHTML]="e.text | safeHtml"></p>
-                    <!-- + <span style='padding-right: 4px; color: #777; font-size: 10px;'>{{e.timestamp}}</span> -->
+                    <div class="timestamp">{{e.timestamp}}</div>
                   }
                 </div>
                 <!-- placeholder for a rotating image component -->
@@ -446,6 +447,18 @@ export class AstralkaChartComponent implements OnInit {
           };
         })
       },
+      // {
+      //   mask: ToolbarCmdMask.All,
+      //   type: 'item',
+      //   hidden: false,
+      //   align: ToolbarAlign.Left,
+      //   display: ToolbarDisplay.Icon,
+      //   icon: faMapPin,
+      //   disabled: () => !this.selectedPerson,
+      //   tooltip: 'Save selected Person to Shortcuts',
+      //   action: () => {
+      //   }
+      // },
       {
         mask: ToolbarCmdMask.All,
         type: 'item',
@@ -535,7 +548,7 @@ export class AstralkaChartComponent implements OnInit {
       }
       const md = markdownit('commonmark');
       const result = md.render(data.result);
-      this._explanation.push({text: result, info: data.params, timestamp: moment().format("HH:mm:ss")});
+      this._explanation.push({text: result, info: data.params, timestamp: moment().format("LLL")});
       _.delay(() => {
         this.zone.run(() => {
           const div = document.getElementById("explanation") as HTMLDivElement;

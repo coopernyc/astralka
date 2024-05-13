@@ -849,7 +849,7 @@ export function getContext(data: any): string {
     const names: string[] = [
       ..._.values(SYMBOL_ZODIAC),
       ..._.values(SYMBOL_PLANET),
-      //..._.values(SYMBOL_ASPECT)
+      ..._.values(SYMBOL_ASPECT)
     ];
     return names[_.random(names.length - 1)];
   }

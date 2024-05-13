@@ -23,6 +23,12 @@
 
 :host {
 
+  ::ng-deep p {
+    margin: 0;
+    padding: 0;
+    text-align: justify;
+  }
+
   flex: 1;
   display: flex;
 
@@ -208,6 +214,14 @@ form {
       padding: 4px;
       overflow: auto;
 
+      .timestamp {
+        font-family: "Ubuntu Mono", monospace;
+        padding-right: 6px;
+        color: #b6b595;
+        font-size: 9px;
+        text-align: right;
+      }
+
       .una {
         text-align: center;
         display: block;
@@ -223,20 +237,20 @@ form {
         font-size: 0.8rem;
         line-height: 1;
         color: #295344;
-        margin: 0.5em;
+        margin: 0.5em 0.5em 0 0.5em;
         min-height: 2em;
         &::first-letter {
           background: #F4D132;
           font-family: 'Cinzel Decorative', serif;
           float: left;
           font-size: 1.2rem;
-          color: #9a9740;
+          color: #295344;
           line-height: 100%;
           margin-top: 0.33rem;
           margin-right: 0.5rem;
           border-radius: 50%;
           text-shadow: 1px 1px 0 #fff;
-          box-shadow: 0 0 0 5px #e5e5e5;
+          box-shadow: 0 0 0 5px #F4D13266;
         }
       }
     }
