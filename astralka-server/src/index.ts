@@ -5,7 +5,7 @@ import _ from "lodash";
 import cors from "cors";
 import bodyParser from "body-parser";
 import {call_ai} from "./common";
-import {MongoClient} from "mongodb";
+import {MongoClient, ObjectId} from "mongodb";
 import {loginRoute} from "./login.route";
 import {signupRoute} from "./signup.route";
 import {imagesRoute} from "./images.route";
@@ -172,6 +172,146 @@ app.post("/remove", cors(corsOptions), async (req: Request, res: Response, next:
         }
     }
     run().catch(console.dir);
+});
+
+async function qp_list(username: string): Promise<any[]> {
+    const uri: string = process.env.MONGO_URI!;
+    const client = new MongoClient(uri);
+    let result: any[] = [];
+    try {
+        const database = client.db("astralka");
+        const quick_pick = database.collection("quick_pick");
+        const people = database.collection("people");
+        const users = database.collection("users");
+        const user = await users.findOne({username, enabled: true });
+        if (!user) {
+            return result;
+        }
+
+        const cursor = quick_pick.aggregate([
+            {
+                $lookup: {
+                    from: "people",
+                    let: { qp_id: { "$toObjectId": "$id" } },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$_id", "$$qp_id"]
+                                }
+                            }
+                        }
+                    ],
+                    as: "joined"
+                }
+            },
+            {
+                $match: {
+                    $and: [
+                        { "username": {$eq: "cooper"} }
+                    ]
+                }
+            },
+            {
+                $unwind: "$joined"
+            },
+            {
+                $replaceRoot: { newRoot: { $mergeObjects: [ { qp_id: "$_id" }, { person: "$joined" }]} }
+            }
+        ]);
+
+        // const cursor = quick_pick.find({username});
+        for await (const doc of cursor) {
+            result.push(doc);
+        }
+    } finally {
+        await client.close();
+    }
+    return result;
+}
+
+app.post("/save-to-qp", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
+    const id: string = req.body.id;
+    const username: string = req.body.username;
+
+    const uri: string = process.env.MONGO_URI!;
+    const client = new MongoClient(uri);
+
+    async function run() {
+        try {
+            const database = client.db("astralka");
+            const quick_pick = database.collection("quick_pick");
+            const users = database.collection("users");
+
+            const user = await users.findOne({username, enabled: true });
+            if (!user) {
+                res.status(400).end('User not found');
+                return;
+            }
+
+            // upsert in quick_pick
+            await quick_pick.updateOne({id, username },
+                {
+                    // update
+                    $set: {
+                        username,
+                        id
+                    }
+                },
+                {
+                    upsert: true
+                });
+
+            const list = await qp_list(username);
+            res.json(list);
+        } finally {
+            await client.close();
+        }
+    }
+
+    run().catch(console.dir);
+
+});
+
+// remove-from-qp
+
+app.post("/remove-from-qp", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
+    const id: string = req.body.id;
+    const username: string = req.body.username;
+
+    const uri: string = process.env.MONGO_URI!;
+    const client = new MongoClient(uri);
+
+    async function run() {
+        try {
+            const database = client.db("astralka");
+            const quick_pick = database.collection("quick_pick");
+            const users = database.collection("users");
+
+            const user = await users.findOne({username, enabled: true });
+            if (!user) {
+                res.status(400).end('User not found');
+                return;
+            }
+
+            // upsert in quick_pick
+            await quick_pick.deleteOne({ _id: new ObjectId(id) });
+
+            const list = await qp_list(username);
+            res.json(list);
+        } finally {
+            await client.close();
+        }
+    }
+
+    run().catch(console.dir);
+
+});
+
+app.post("/qp-list", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
+    const username: string = req.body.username;
+    const list = await qp_list(username);
+    res.json(list);
 });
 
 app.post("/save", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {

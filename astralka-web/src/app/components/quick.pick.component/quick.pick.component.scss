@@ -1,0 +1,32 @@
+:host {
+  flex: 1;
+  display: flex;
+  .quick-pick-container {
+    flex: 1;
+    border-top: 1px solid #555;
+    background-color: #376a57;
+    padding: 1px;
+    margin: 0;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    .quick-pick {
+      //border: 1px solid #999;
+      &:not(:first-child) {
+        border-left: 1px solid #999;
+      }
+      button {
+        margin: 0;
+        border: 0;
+        outline: none;
+        font-size: 10px;
+        height: 21px;
+        cursor: pointer;
+        &:hover {
+          background-color: #fff;
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import {Component, DestroyRef, inject, NgZone, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, DestroyRef, inject, NgZone, OnInit} from '@angular/core';
 import {ChartSymbol} from '../../controls/graphics/chart-symbol';
 import _ from "lodash";
 import moment from "moment-timezone";
@@ -20,6 +20,7 @@ import {
   one_third_point_on_the_line,
   PersonScope,
   perspectives,
+  point_on_the_line,
   pos_in_zodiac,
   pos_in_zodiac_sign,
   rnd_suffix,
@@ -63,10 +64,21 @@ import {Router} from "@angular/router";
 import {AstralkaPersonComponent} from "../person.component/person.component";
 import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
-import {faBaby, faMeteor, faSignOut, faUserAstronaut, faUserNinja} from "@fortawesome/free-solid-svg-icons";
+import {
+  faBaby,
+  faLocationDot,
+  faLocationPin,
+  faMeteor,
+  faSave,
+  faSignOut,
+  faUserAstronaut,
+  faUserNinja
+} from "@fortawesome/free-solid-svg-icons";
 import config from "assets/config.json";
 import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.image";
 import {LocalStorageService} from "../../services/local.storage.service";
+import {AstralkaQuickPickComponent} from "../quick.pick.component/quick.pick.component";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 @Component({
   selector: 'astralka-chart',
@@ -93,11 +105,12 @@ import {LocalStorageService} from "../../services/local.storage.service";
     AstralkaPersonComponent,
     AstralkaTransitComponent,
     AstralkaToolbarComponent,
-    AstralkaRotateImageComponent
+    AstralkaRotateImageComponent,
+    AstralkaQuickPickComponent,
+    FaIconComponent
   ],
   template: `
     <div class="astralka-container">
-
       <div style="display: flex; flex-direction: column;" [style.width.px]="width">
         <astralka-toolbar [commands]="commands">
           Name
@@ -107,6 +120,9 @@ import {LocalStorageService} from "../../services/local.storage.service";
             (selected)="onPersonSelected($event)">
           </lookup>
         </astralka-toolbar>
+        @if (show_quick_pick) {
+            <astralka-quick-pick [picks]="picks" (select)="onPersonSelected($event)" (remove)="removePersonFromQuickPick($event)"></astralka-quick-pick>
+        }
         @if (show_entry_form) {
           <astralka-person
             [entry]="entry"
@@ -321,6 +337,7 @@ export class AstralkaChartComponent implements OnInit {
   public margin: number = 100;
   public show_entry_form: boolean = false;
   public show_transit_form: boolean = false;
+  public show_quick_pick: boolean = false;
   public cx: number = 0;
   public cy: number = 0;
   public outer_radius: number = 0;
@@ -378,7 +395,8 @@ export class AstralkaChartComponent implements OnInit {
     private session: SessionStorageService,
     private storage: LocalStorageService,
     private router: Router,
-    private zone: NgZone
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {
   }
 
@@ -447,18 +465,36 @@ export class AstralkaChartComponent implements OnInit {
           };
         })
       },
-      // {
-      //   mask: ToolbarCmdMask.All,
-      //   type: 'item',
-      //   hidden: false,
-      //   align: ToolbarAlign.Left,
-      //   display: ToolbarDisplay.Icon,
-      //   icon: faMapPin,
-      //   disabled: () => !this.selectedPerson,
-      //   tooltip: 'Save selected Person to Shortcuts',
-      //   action: () => {
-      //   }
-      // },
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        display: ToolbarDisplay.Icon,
+        iconResolver: () => {
+          return this.show_quick_pick
+            ? { icon: faLocationPin, cssClass: 'icon-on'  }
+            : { icon: faLocationPin, cssClass: ''  }
+        },
+        disabled: () => !this.picks.length,
+        tooltip: 'Toggle Quick Pick',
+        action: () => {
+          this.show_quick_pick = !this.show_quick_pick;
+        }
+      },
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        display: ToolbarDisplay.Icon,
+        icon: faSave,
+        disabled: () => !this.selectedPerson,
+        tooltip: 'Save to Quick Pick',
+        action: () => {
+          this.savePersonToQuickPick();
+        }
+      },
       {
         mask: ToolbarCmdMask.All,
         type: 'item',
@@ -524,6 +560,14 @@ export class AstralkaChartComponent implements OnInit {
       return;
     }
 
+    this.rest.getQuickPickList(this.username).subscribe((data: any) => {
+      this._picks = data ?? [];
+      if (this._picks.length) {
+        this.show_quick_pick = true;
+        this.cdr.detectChanges();
+      }
+    });
+
     this.settings.settings_change$.pipe(
       takeUntilDestroyed(this._destroyRef)
     ).subscribe(_ => {
@@ -535,7 +579,9 @@ export class AstralkaChartComponent implements OnInit {
       shareReplay(2)
     );
 
-    this.sharedExplain$.subscribe((data: any) => {
+    this.sharedExplain$.pipe(
+      takeUntilDestroyed(this._destroyRef)
+    ).subscribe((data: any) => {
       this.show_explanation = true;
       if (data.result === 'LOADING!') {
         const name: string = getContext(data);
@@ -701,6 +747,9 @@ export class AstralkaChartComponent implements OnInit {
   public onPersonSelected(person?: IPersonInfo): void {
     if (person) {
       //console.log(`Selected ${person}`);
+      if (person.name !== _.get(this.selectedPerson, "name", '')) {
+        this._explanation = [];
+      }
       this.selectedPerson = person;
       this.entry = {
         name: person.name,
@@ -779,6 +828,26 @@ export class AstralkaChartComponent implements OnInit {
     this.onPersonSelected();
   }
 
+  private _picks: any[] = [];
+  public get picks(): any[] {
+    return this._picks;
+  }
+  public savePersonToQuickPick(): void {
+    const found = this._picks.find(x => x.person._id === _.get(this.selectedPerson, '_id', ''));
+    if (!found) {
+      if (this.selectedPerson && this.selectedPerson._id) {
+        this.rest.saveToQuickPick(this.selectedPerson._id, this.username).subscribe((data: any) => {
+          this._picks = data;
+        });
+      }
+    }
+  }
+  public removePersonFromQuickPick(id: string) {
+    this.rest.removeFromQuickPick(id, this.username).subscribe((data: any) => {
+      this._picks = data;
+    });
+  }
+
   private init(): void {
     this._planets = [];
     this._zodiac = [];
@@ -789,7 +858,7 @@ export class AstralkaChartComponent implements OnInit {
     this._aspects = [];
     this.data = {};
 
-    this._explanation = [];
+    //this._explanation = [];
 
     this.cx = Math.trunc(this.width / 2);
     this.cy = Math.trunc(this.width / 2) - this.margin / 2;
@@ -905,22 +974,25 @@ export class AstralkaChartComponent implements OnInit {
     skyObjectsAdjusted.forEach((so: any) => {
       // assemble sky objects
       const x = _.find(data.SkyObjects, x => x.name === so.name);
-      const p = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15, so.angle - this.offset_angle);
+      const p_adjusted = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15, so.angle - this.offset_angle);
+      const p_adjusted_label = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 32.5, so.angle - this.offset_angle);
+
       const p1 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius, x.position);
       const p2 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 5, x.position);
-      const p_label = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 32.5, so.angle - this.offset_angle);
-      this._lines.push({
-        p1,
-        p2
-      })
+
+      const p_adjusted_ = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15, so.angle);
+      const p3 = point_on_the_line(3, p2, p_adjusted_);
+
+      this._lines.push({p1, p2}, {p1:p2, p2:p3});
+
       this._planets.push({
         name: x.name,
-        ...p,
+        ...p_adjusted,
         text: (x.speed < 0 ? 'r' : ''),
         label: {
           angle: convert_DD_to_D(pos_in_zodiac_sign(x.position)),
           pos: {
-            ...p_label
+            ...p_adjusted_label
           }
         }
       });
@@ -941,6 +1013,13 @@ export class AstralkaChartComponent implements OnInit {
         const p1 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius, x.position);
         const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 5, x.position);
         const p_label = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 36, so.angle - this.offset_angle);
+
+        const p_ = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15, so.angle);
+        const p3 = point_on_the_line(3, p2, p_);
+
+        this._lines.push({p1, p2}, {p1:p2, p2:p3});
+
+
         this._lines.push({
           p1,
           p2
@@ -1253,6 +1332,8 @@ export class AstralkaChartComponent implements OnInit {
   protected readonly convert_long_to_DMS = convert_long_to_DMS;
   public _ = _;
   public config: any = config;
+  protected readonly faLocationPin = faLocationPin;
+  protected readonly faLocationDot = faLocationDot;
 }
 
 

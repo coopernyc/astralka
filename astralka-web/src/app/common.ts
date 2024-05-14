@@ -564,12 +564,22 @@ export function zodiac_sign(longitude: number): string {
 //     return {x: rnd_x, y: a * rnd_x + b};
 // }
 
+export function point_on_the_line(n: number, p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
+  if (n == 0 || (p1.x == p2.x && p1.y == p2.y)) {
+    return p1;
+  }
+  if (p2.x == p1.x) {
+    return { x: p1.x, y: (p2.x - p1.x) / n };
+  } else {
+    const a = (p2.y - p1.y) / (p2.x - p1.x);
+    const b = p1.y - a * p1.x;
+    const m = p1.x + (p2.x - p1.x) / n;
+    return {x: m, y: a * m + b};
+  }
+}
+
 export function one_third_point_on_the_line(p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
-  const a = (p2.y - p1.y) / (p2.x - p1.x);
-  const b = p1.y - a * p1.x;
-  //const d = (p2.x - p1.x);
-  const rnd_x = p1.x + (p2.x - p1.x) / 3;
-  return {x: rnd_x, y: a * rnd_x + b};
+  return point_on_the_line(3, p1, p2);
 }
 
 export function rotate_point_around_center(c: {x: number, y: number}, p: {x: number, y: number}, angle: number) : {x: number, y: number} {
@@ -747,6 +757,7 @@ export interface IToolbarNavCmd extends IToolbarCmdBase, IToolbarItem {
 export type IToolbarCmd = IToolbarNavCmd | IToolbarSeparator | IToolbarMenu;
 
 export interface IPersonInfo {
+    _id?: string,
     name: string,
     date: string,
     timezone: number,
