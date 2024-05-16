@@ -49,9 +49,7 @@ export class AstralkaQuickPickComponent {
     if (event) {
       const index1: number = this.picks.findIndex(x => x.qp_id === event.data);
       const index2: number = this.picks.findIndex(x => x.qp_id === event.zone);
-      const temp = this.picks[index1];
-      this.picks[index1] = this.picks[index2];
-      this.picks[index2] = temp;
+      this.picks[index1] = this.picks.splice(index2, 1, this.picks[index1])[0];
       this.swapped.next(this.picks);
     }
   }

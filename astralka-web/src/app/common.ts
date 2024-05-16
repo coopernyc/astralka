@@ -810,6 +810,21 @@ export const latinAboutSign = [
     eng: "War is sweet to those who have never fought"
   },
   {
+    sign: SYMBOL_ZODIAC.Aries,
+    phrase: "Martius animus",
+    eng: "Martial Spirit"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Aries,
+    phrase: "Audax et fortis",
+    eng: "Bold and Strong"
+  },
+  {
+    sign: SYMBOL_ZODIAC.Aries,
+    phrase: "Semper audere",
+    eng: "Always to dare"
+  },
+  {
     sign: SYMBOL_ZODIAC.Taurus,
     phrase: "Abusus non tollit usum",
     eng: "Misuse does not remove use"

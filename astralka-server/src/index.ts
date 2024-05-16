@@ -236,6 +236,48 @@ async function qp_list(username: string): Promise<any[]> {
     return result;
 }
 
+app.post("/resave-qp", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
+    const username: string = req.body.username;
+
+    const update = req.body.ids.map((id: string) => {
+        return {
+            id,
+            username
+        };
+    });
+
+    const uri: string = process.env.MONGO_URI!;
+    const client = new MongoClient(uri);
+
+    async function run() {
+        try {
+            const database = client.db("astralka");
+            const quick_pick = database.collection("quick_pick");
+            const users = database.collection("users");
+
+            const user = await users.findOne({username, enabled: true });
+            if (!user) {
+                res.status(400).end('User not found');
+                return;
+            }
+
+            // remove all
+            await quick_pick.deleteMany({username} );
+            // update all
+            await quick_pick.insertMany(update);
+
+            const list = await qp_list(username);
+
+            res.json(list);
+        } finally {
+            await client.close();
+        }
+    }
+
+    run().catch(console.dir);
+
+});
+
 app.post("/save-to-qp", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     const id: string = req.body.id;
     const username: string = req.body.username;

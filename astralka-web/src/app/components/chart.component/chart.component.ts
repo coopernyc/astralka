@@ -121,7 +121,12 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
           </lookup>
         </astralka-toolbar>
         @if (show_quick_pick) {
-            <astralka-quick-pick [picks]="picks" (select)="onPersonSelected($event)" (remove)="removePersonFromQuickPick($event)"></astralka-quick-pick>
+          <astralka-quick-pick
+            [picks]="picks"
+            (select)="onPersonSelected($event)"
+            (remove)="removePersonFromQuickPick($event)"
+            (swapped)="reSaveQuickPick($event)"
+          ></astralka-quick-pick>
         }
         @if (show_entry_form) {
           <astralka-person
@@ -205,8 +210,8 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
           >
             <defs>
               <filter x="0" y="0" width="1" height="1" id="solid">
-                <feFlood flood-color="#f4eeeadd" result="floodFill" />
-                <feComposite in="SourceGraphic" in2="floodFill" operator="over" />
+                <feFlood flood-color="#f4eeeadd" result="floodFill"/>
+                <feComposite in="SourceGraphic" in2="floodFill" operator="over"/>
               </filter>
             </defs>
             <g>
@@ -231,7 +236,8 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
               @if (this.data && this.selectedPerson) {
                 <!-- inner house circle -->
-                <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius" [options]="{fill: data.dayChart ? '#420' : '#024'}"></g>
+                <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"
+                   [options]="{fill: data.dayChart ? '#420' : '#024'}"></g>
               }
 
               <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line
@@ -260,7 +266,8 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
                 </g>
 
                 <!-- natal planet symbols -->
-                <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name" [fillBackground]="true" [fillBackgroundColor]="'#f4eeeadd'"></g>
+                <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name" [fillBackground]="true"
+                   [fillBackgroundColor]="'#f4eeeadd'"></g>
                 <!-- natal r for retrograde planet text -->
                 <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
                 <!-- natal planet angle in sign -->
@@ -301,7 +308,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
             <div
               [overlayLoader]="sharedExplain$"
               class="bot-panel"
-              [style.top.px]="height - 400 - 2" [style.width.px]="width - 4"
+              [style.top.px]="height - 423 - 2" [style.width.px]="width - 4"
             >
               <div class="bot-panel-handler">
                 {{ latin_phrase?.eng }}
@@ -312,14 +319,14 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
                     @if (idx !== 0) {
                       <hr class="una"/>
                     }
-                    <p [innerHTML]="e.text | safeHtml"></p>
+                    <p class="explanation-wrap" [innerHTML]="e.text | safeHtml"></p>
                     <div class="foot-print">
-                      <div class="retry" (click)="retryExplanation(e)">
-                        <span>
-                          re-try for better answer <fa-icon [icon]="faDice" />
+                      <div class="retry">
+                        <span (click)="retryExplanation(e)">
+                          re-try for better answer <fa-icon [icon]="faDice"/>
                         </span>
                       </div>
-                      <div class="timestamp">{{e.timestamp}}</div>
+                      <div class="timestamp">{{ e.timestamp }}</div>
                     </div>
 
                   }
@@ -608,6 +615,11 @@ export class AstralkaChartComponent implements OnInit {
       }
       const md = markdownit('commonmark');
       const result = md.render(data.result);
+      this._latin_phrase = _.chain(latinAboutSign)
+        .filter((x: any) => x.sign === this.sign)
+        .shuffle()
+        .first()
+        .value();
       this._explanation.push({text: result, info: data.params, timestamp: moment().format("MMMM Do YYYY, h:mm:ss a")});
       _.delay(() => {
         this.zone.run(() => {
@@ -687,9 +699,10 @@ export class AstralkaChartComponent implements OnInit {
     return '';
   }
 
+  private _latin_phrase!: any;
   public get latin_phrase(): any {
     if (this.sign) {
-      return latinAboutSign.find((x: any) => x.sign === this.sign);
+      return this._latin_phrase;
     }
     return null;
   }
@@ -781,9 +794,9 @@ export class AstralkaChartComponent implements OnInit {
         scope: person.scope ?? PersonScope.Private,
       };
       this.draw();
-      //todo: provide checkbox for default auto-save
       this.storage.store("astralka-person", this.selectedPerson);
     } else {
+      this._latin_phrase = undefined;
       this.selectedPerson = undefined;
       this.init();
     }
@@ -865,6 +878,13 @@ export class AstralkaChartComponent implements OnInit {
       this._picks = data;
     });
   }
+  public reSaveQuickPick(data: any) {
+    const load = data.map((x: any) => x.person._id);
+    this.rest.reSaveToQuickPick(load, this.username)
+      .subscribe((data) => {
+        this._picks = data;
+      });
+  }
 
   private init(): void {
     this._planets = [];
@@ -915,6 +935,12 @@ export class AstralkaChartComponent implements OnInit {
     this.data = _.clone(data);
     //debug
     console.log(data);
+
+    this._latin_phrase = _.chain(latinAboutSign)
+      .filter((x: any) => x.sign === this.sign)
+      .shuffle()
+      .first()
+      .value();
 
     for (let i = 0; i < 12; i++) {
       // assemble houses
@@ -1330,7 +1356,15 @@ export class AstralkaChartComponent implements OnInit {
   }
 
   private scrollToBottom(element: HTMLDivElement) {
-    element.scroll({top: element.scrollHeight, behavior: 'smooth'});
+    const all_explanations = element.querySelectorAll('.explanation-wrap');
+    if (all_explanations) {
+      if (all_explanations.length > 1) {
+        const last = all_explanations[all_explanations.length - 1];
+        last.scrollIntoView({behavior: "smooth"});
+      }
+    } else {
+      element.scroll({top: element.scrollHeight, behavior: 'smooth'});
+    }
   }
 
   public logout(): void {

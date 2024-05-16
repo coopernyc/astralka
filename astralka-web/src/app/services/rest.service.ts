@@ -79,6 +79,16 @@ export class RestService implements OnDestroy {
     ) : of(null);
   }
 
+  public reSaveToQuickPick(ids: string[], username: string): Observable<any> {
+    const obs = this.http.post(`${this.serverUrl}/resave-qp`, {ids, username});
+    return obs ? obs.pipe(
+      catchError(err => {
+        console.log(err);
+        return of(null);
+      })
+    ) : of(null);
+  }
+
   public saveToQuickPick(id: string, username: string): Observable<any> {
     const obs = this.http.post(`${this.serverUrl}/save-to-qp`, {id, username});
     return obs ? obs.pipe(

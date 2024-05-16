@@ -27,11 +27,12 @@
 
 :host {
 
-  ::ng-deep p {
-    margin: 0;
-    padding: 0;
-    text-align: justify;
-  }
+  //::ng-deep p {
+  //  margin: 0;
+  //  padding: 0;
+  //  text-align: justify;
+  //  text-indent: 25px;
+  //}
 
   flex: 1;
   display: flex;
@@ -187,7 +188,7 @@ form {
   .bot-panel {
     z-index: 2;
     position: absolute;
-    height: 400px;
+    height: 423px;
     margin-left: 2px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -217,6 +218,15 @@ form {
       flex: 1;
       padding: 4px;
       overflow: auto;
+      overflow-y: scroll;
+
+      .explanation-wrap {
+        ::ng-deep p:first-child:not(:only-child) {
+          margin: 0.5em 0;
+          font-size: 14px;
+          color: #376a57;
+        }
+      }
 
       .foot-print {
         margin-top: 8px;
@@ -227,8 +237,8 @@ form {
         display: flex;
         .retry {
           flex: 3;
-          cursor: pointer;
           span {
+            cursor: pointer;
             &:hover {
               color: #333;
             }
