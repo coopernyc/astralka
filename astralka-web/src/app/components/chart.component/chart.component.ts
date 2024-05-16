@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, DestroyRef, inject, NgZone, OnInit} from '@angular/core';
 import {ChartSymbol} from '../../controls/graphics/chart-symbol';
 import _ from "lodash";
-import moment from "moment-timezone";
+import moment from "moment";
 import {
   aspect_color,
   calculate_arrow,
@@ -466,6 +466,9 @@ export class AstralkaChartComponent implements OnInit {
         })
       },
       {
+        type: 'separator', mask: ToolbarCmdMask.All
+      },
+      {
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: false,
@@ -490,7 +493,7 @@ export class AstralkaChartComponent implements OnInit {
         display: ToolbarDisplay.Icon,
         icon: faSave,
         disabled: () => !this.selectedPerson,
-        tooltip: 'Save to Quick Pick',
+        tooltip: 'Save Selected Person to Quick Pick',
         action: () => {
           this.savePersonToQuickPick();
         }

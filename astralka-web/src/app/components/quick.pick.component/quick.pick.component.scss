@@ -12,17 +12,17 @@
     justify-content: center;
     flex-wrap: wrap;
     .quick-pick {
-      //border: 1px solid #999;
-      &:not(:first-child) {
-        border-left: 1px solid #999;
-      }
+      margin: 1px;
       button {
         margin: 0;
         border: 0;
         outline: none;
-        font-size: 10px;
+        font-size: 11px;
         height: 21px;
         cursor: pointer;
+        &:not(.close-button) {
+          padding: 0 2px 0 8px;
+        }
         &:hover {
           background-color: #fff;
         }

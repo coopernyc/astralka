@@ -1,7 +1,7 @@
 import {Component, Input} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {age, convert_lat_to_DMS, convert_long_to_DMS, Gender} from "../../common";
-import moment from "moment-timezone";
+import moment from "moment";
 import {AstralkaAspectMatrixComponent} from "../../controls/matrix/matrix";
 import {AstralkaPositionDataComponent} from "../../controls/position.data/position.data";
 

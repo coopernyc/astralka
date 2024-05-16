@@ -5,6 +5,7 @@ import {AstralkaAuthService} from "../../services/auth.service";
 import {SessionStorageService} from "../../services/session.storage.service";
 import {FormsModule} from "@angular/forms";
 import _ from "lodash";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'astralka-login',
@@ -70,7 +71,7 @@ import _ from "lodash";
                   </div>
                   <div class="form-group footer">
                     <button type="submit">Sign In</button>
-                    <button type="button" (click)="goToSignUp()">Sign Up</button>
+                    <button type="button" [disabled]="environment.production" (click)="goToSignUp()">Sign Up</button>
                   </div>
                 </form>
               </div>
@@ -130,4 +131,6 @@ export class AstralkaLoginComponent implements OnInit {
   public async goToSignUp(): Promise<void> {
     await this.router.navigate(['signup']);
   }
+
+  protected readonly environment = environment;
 }
