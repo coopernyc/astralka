@@ -5,7 +5,11 @@
   font-weight: 400;
   font-style: normal;
 }
-
+@mixin germania-one-regular {
+  font-family: "Germania One", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
 @mixin info-mxn {
   position: absolute;
   z-index: 2;
@@ -100,10 +104,10 @@ svg {
   overflow: hidden;
 
   .segment-label {
-    font-size: 16px;
-    @include gafata-regular;
-    fill: #dca72266;
-    stroke: #dca72233;
+    font-size: 32px;
+    @include germania-one-regular;
+    fill: #dca72233;
+    stroke: none;
     font-weight: 600;
   }
 }
@@ -214,12 +218,26 @@ form {
       padding: 4px;
       overflow: auto;
 
-      .timestamp {
+      .foot-print {
+        margin-top: 8px;
+        padding: 2px 6px;
         font-family: "Ubuntu Mono", monospace;
-        padding-right: 6px;
         color: #b6b595;
         font-size: 9px;
-        text-align: right;
+        display: flex;
+        .retry {
+          flex: 3;
+          cursor: pointer;
+          span {
+            &:hover {
+              color: #333;
+            }
+          }
+        }
+        .timestamp {
+          flex: 0 120px;
+          text-align: right;
+        }
       }
 
       .una {

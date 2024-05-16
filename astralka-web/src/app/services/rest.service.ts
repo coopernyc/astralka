@@ -53,7 +53,7 @@ export class RestService implements OnDestroy {
         console.log(err);
         return of(`ERROR! ${err.message}`);
       })
-    ).subscribe(x => this.explain$.next({result: x, params: load.params}));
+    ).subscribe(x => this.explain$.next({result: x, params: load}));
   }
 
   public explain(prompt: any): Observable<any> {

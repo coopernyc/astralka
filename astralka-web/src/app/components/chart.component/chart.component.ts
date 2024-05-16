@@ -65,10 +65,10 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
 import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {
-  faBaby,
+  faBaby, faDice,
   faLocationDot,
   faLocationPin,
-  faMeteor,
+  faMeteor, faRefresh,
   faSave,
   faSignOut,
   faUserAstronaut,
@@ -228,6 +228,12 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
               <!-- inner 2 circles and 1 and 10 deg scale ruler -->
               <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
               <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius + 5" [options]="{stroke_color: '#777'}"></g>
+
+              @if (this.data && this.selectedPerson) {
+                <!-- inner house circle -->
+                <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius" [options]="{fill: data.dayChart ? '#420' : '#024'}"></g>
+              }
+
               <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line
                  *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y"
                  [options]="l.options"></g>
@@ -252,9 +258,6 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
                     </textPath>
                   </text>
                 </g>
-
-                <!-- inner house circle -->
-                <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"></g>
 
                 <!-- natal planet symbols -->
                 <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name" [fillBackground]="true" [fillBackgroundColor]="'#f4eeeadd'"></g>
@@ -310,7 +313,15 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
                       <hr class="una"/>
                     }
                     <p [innerHTML]="e.text | safeHtml"></p>
-                    <div class="timestamp">{{e.timestamp}}</div>
+                    <div class="foot-print">
+                      <div class="retry" (click)="retryExplanation(e)">
+                        <span>
+                          re-try for better answer <fa-icon [icon]="faDice" />
+                        </span>
+                      </div>
+                      <div class="timestamp">{{e.timestamp}}</div>
+                    </div>
+
                   }
                 </div>
                 <!-- placeholder for a rotating image component -->
@@ -597,7 +608,7 @@ export class AstralkaChartComponent implements OnInit {
       }
       const md = markdownit('commonmark');
       const result = md.render(data.result);
-      this._explanation.push({text: result, info: data.params, timestamp: moment().format("LLL")});
+      this._explanation.push({text: result, info: data.params, timestamp: moment().format("MMMM Do YYYY, h:mm:ss a")});
       _.delay(() => {
         this.zone.run(() => {
           const div = document.getElementById("explanation") as HTMLDivElement;
@@ -612,6 +623,10 @@ export class AstralkaChartComponent implements OnInit {
     if (person) {
       this.onPersonSelected(person);
     }
+  }
+
+  public retryExplanation(e: any): void {
+    this.rest.do_explain(e.info);
   }
 
   public get planets() {
@@ -943,7 +958,7 @@ export class AstralkaChartComponent implements OnInit {
 
       const c = nl360(a + nl180(b.position - a) / 2) - this.offset_angle;
       let p = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 10, c);
-      const p_label = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 22, c);
+      const p_label = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 10, a - this.offset_angle);
       this._cusps.push(
         {
           name: 'Cusp' + house.symbol,
@@ -1052,18 +1067,25 @@ export class AstralkaChartComponent implements OnInit {
     );
     _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name')
       .forEach((x: any) => {
-        const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
-        const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.position);
+        let p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
+        let p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius, x.position);
         this.lines.push({
           p1,
           p2,
-          options: {stroke_color: "#000000"}
+          options: {stroke_color: "#000"}
+        });
+        p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 1, x.position);
+        p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.position);
+        this.lines.push({
+          p1,
+          p2,
+          options: {stroke_color: "#fff"}
         });
       });
 
     aspects.forEach((x: any) => {
-      const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.parties[0].position);
-      const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 2, x.parties[1].position);
+      const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[0].position);
+      const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[1].position);
       let options = aspect_color(x.aspect.angle);
       this.lines.push({
         p1,
@@ -1337,6 +1359,8 @@ export class AstralkaChartComponent implements OnInit {
   public config: any = config;
   protected readonly faLocationPin = faLocationPin;
   protected readonly faLocationDot = faLocationDot;
+  protected readonly faRefresh = faRefresh;
+  protected readonly faDice = faDice;
 }
 
 

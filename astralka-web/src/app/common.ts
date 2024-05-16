@@ -578,6 +578,19 @@ export function point_on_the_line(n: number, p1: {x: number, y: number}, p2: {x:
   }
 }
 
+export interface IDraggableOptions {
+  zones?: string[],
+  data?: any
+}
+export interface IDroppableOptions {
+  data?: any;
+  zone?: string;
+}
+export interface IDroppableEventObject {
+  data: any;
+  zone: any;
+}
+
 export function one_third_point_on_the_line(p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
   return point_on_the_line(3, p1, p2);
 }
@@ -619,54 +632,54 @@ export function aspect_color(angle: number): any {
     let options = {};
     switch (angle) {
         case 0:
-            options = { stroke_color: "#27a5a5", stroke_width: 1 };
+            options = { stroke_color: "#49c1c1", stroke_width: 1 };
             break;
 
         case 180:
         case 90:
-            options = { stroke_color: "#bb0000" };
+            options = { stroke_color: "#fb5757" };
             break;
         case 45:
         case 135:
-            options = { stroke_color: "#bb0000", stroke_dasharray: "1,2" };
+            options = { stroke_color: "#fb5757", stroke_dasharray: "1,2" };
             break;
 
         case 120:
         case 60:
-            options = { stroke_color: "#009900" };
+            options = { stroke_color: "#00ff00" };
             break;
         case 150:
         case 30:
-            options = { stroke_color: "#009900", stroke_dasharray: "1,2" };
+            options = { stroke_color: "#00ff00", stroke_dasharray: "1,2" };
             break;
 
 
         case 144:
         case 72:
-            options = { stroke_color: "#000099" };
+            options = { stroke_color: "#5959fa" };
             break;
         case 36:
         case 18:
         case 108:
-            options = { stroke_color: "#000099", stroke_dasharray: "1,2" };
+            options = { stroke_color: "#5959fa", stroke_dasharray: "1,2" };
             break;
 
         case 80:
         case 40:
-            options = { stroke_color: "#cc0099" };
+            options = { stroke_color: "#5959fa" };
             break;
         case 100:
         case 20:
-            options = { stroke_color: "#cc0099", stroke_dasharray: "1,2" };
+            options = { stroke_color: "#5959fa", stroke_dasharray: "1,2" };
             break;
 
 
         case 102.8:
         case 51.4:
-            options = { stroke_color: "#a79720"};
+            options = { stroke_color: "#ffe100"};
             break;
         case 154.2:
-            options = { stroke_color: "#a79720", stroke_dasharray: "1,1"};
+            options = { stroke_color: "#ffe100", stroke_dasharray: "1,1"};
             break;
     }
     return options;

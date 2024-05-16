@@ -7,7 +7,7 @@ import {CommonModule, NgOptimizedImage} from "@angular/common";
   imports: [CommonModule, NgOptimizedImage],
   template: `
     <div class="loader">
-      <div>Gemini AI is processing the request</div>
+      <div>Gemini AI is processing your request</div>
       <img ngSrc="assets/loading.gif" alt="loading" height="17" width="200"/>
     </div>
   `,
