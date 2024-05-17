@@ -2,17 +2,22 @@ import _ from "lodash";
 import moment from "moment";
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 import {
+  faArrowDownUpAcrossLine,
   faBabyCarriage,
-  faBank, faBook,
+  faBank,
+  faBook,
   faBookSkull,
+  faBottleDroplet,
   faBrain,
   faBriefcase,
   faBurger,
   faCar,
-  faChalkboardTeacher, faChessRook, faChurch,
+  faChalkboardTeacher,
+  faChessRook,
+  faChurch,
   faClover,
-  faCocktail, faCommentDollar,
-  faComputer,
+  faCocktail,
+  faCommentDollar,
   faCouch,
   faCrown,
   faDog,
@@ -24,16 +29,19 @@ import {
   faHeart,
   faHeartPulse,
   faHouse,
-  faLuggageCart, faMarsAndVenus,
+  faLuggageCart,
+  faMarsAndVenus,
   faMasksTheater,
+  faMicrochip,
   faMobile,
   faMoneyBill1,
   faMusic,
   faPalette,
   faPeopleGroup,
   faPeopleRoof,
-  faPlaneDeparture, faPlateWheat,
-  faPrescriptionBottle,
+  faPersonChalkboard,
+  faPlaneDeparture,
+  faPlateWheat,
   faRing,
   faShirt,
   faSmile,
@@ -962,7 +970,7 @@ export const perspectives = [
   },
   {
     label: "Leadership",
-    icon:  faCrown,
+    icon:  faPersonChalkboard,
     prompt: "potential of taking leadership and areas where can easily lead and areas conflicting with authorities."
   },
   {
@@ -978,22 +986,22 @@ export const perspectives = [
   {
     label: "Sports",
     icon:  faVolleyballBall,
-    prompt: "the most suitable sports and physical activities."
+    prompt: "the most and the least suitable sports and physical activities, list 5 the most and the least favorite sports."
   },
   {
     label: "Drinks",
     icon:  faCocktail,
-    prompt: "the most preferable and least preferable brands and cocktail names of alcoholic drinks."
+    prompt: "the most and least preferable alcoholic drinks, list 5 the most and the least favorite labels."
   },
   {
     label: "Clothes",
     icon:  faShirt,
-    prompt: "the most preferable and least preferable clothes, brands and styles."
+    prompt: "the most  and least preferable clothes, brands and styles, list 5 the most and the least favorite styles and brands."
   },
   {
     label: "Hobbies",
     icon:  faCouch,
-    prompt: "the most preferable and least preferable hobbies and interest activities."
+    prompt: "the most and the least preferable hobbies and interest activities, list 5 the most and the least suitable of them."
   },
   {
     label: "Jewelries",
@@ -1057,7 +1065,7 @@ export const perspectives = [
   },
   {
     label: "Technology",
-    icon:  faComputer,
+    icon:  faMicrochip,
     prompt: "the most and least preferable areas of technology. For information technology, specify which area, role and favorite programming languages and programming style."
   },
   {
@@ -1092,8 +1100,8 @@ export const perspectives = [
   },
   {
     label: "Perfumes",
-    icon:  faPrescriptionBottle,
-    prompt: "the most and least favorite perfumes and cosmetics, brands and styles, given age and gender what would be the best gift?"
+    icon:  faBottleDroplet,
+    prompt: "the most and least favorite perfumes and cosmetics, for woman indicate if heavy makeup or natural look more suitable, given age and gender list 3 of the best and worst perfume brand and label to gift."
   },
   {
     label: "Gifts",
@@ -1129,5 +1137,10 @@ export const perspectives = [
     label: "Stability",
     icon:  faChessRook,
     prompt: "the stability factor of live, guess on would it be easy going and calm verse bumpy road and stormy unrest, list periods of live with most and least stability."
+  },
+  {
+    label: "Immigration",
+    icon:  faArrowDownUpAcrossLine,
+    prompt: "the possibility of immigration to another country, in what period of life and guess what countries are most and the least suitable for that."
   }
 ];
