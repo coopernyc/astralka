@@ -16,12 +16,13 @@ Other than to apply in practice new Angular & Typescript methods and features in
 <img width="800" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/aebd0900-8367-4387-8bbf-5b304b3c6d9f">
 
 > [!TIP]
-> on Windows, if you run into some errors about msvc for node >= 18, search and run `Install Additional tools for Node.js` batch file.
-> on Linux, it fails sometimes to build swisseph or sharp dependencies. Try to use yarn instead of npm - worked for me. 
+> on Windows, if you run into some errors about msvc for node >= 18, search and run `Install Additional tools for Node.js` batch file. 
 > Also, you would need to downgrade from python 3.11+ to 3.10.x to compile `swisseph` package.
 > 
 > You can have several python versions, don't forget to check `Add Python to Path` option  when installing it.
 > One way to use 3.10.x is to go to `Environment Variables` and change the `Path` list so 3.10 paths are before any other versions in the list.
+> 
+> > on Linux, it fails sometimes to build swisseph or sharp dependencies. Try to use yarn instead of npm - worked for me.
 
 ### Astralka-Server
 See documentation [here](astralka-server/README.md)
