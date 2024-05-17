@@ -22,7 +22,7 @@ Other than to apply in practice new Angular & Typescript methods and features in
 > You can have several python versions, don't forget to check `Add Python to Path` option  when installing it.
 > One way to use 3.10.x is to go to `Environment Variables` and change the `Path` list so 3.10 paths are before any other versions in the list.
 > 
-> > on Linux, it fails sometimes to build swisseph or sharp dependencies. Try to use yarn instead of npm - worked for me.
+> on Linux, it fails sometimes to build swisseph or sharp dependencies. Try to use yarn instead of npm - worked for me.
 
 ### Astralka-Server
 See documentation [here](astralka-server/README.md)
