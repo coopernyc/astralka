@@ -1,7 +1,8 @@
 # Astralka-Server
 The server is node express REST server
 
-![image](https://github.com/coopernyc/astralka/assets/11201225/427a5df0-c462-4353-bf47-4f203f019825)
+![00306-1693125230 copy](https://github.com/coopernyc/astralka/assets/11201225/6e488b8e-0bba-442b-a61e-8730cbcbac73)
+
 
 ## Installation
 1. Install Node.js. See [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs)
