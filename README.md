@@ -13,7 +13,7 @@ Other than to apply in practice new Angular & Typescript methods and features in
 > Learn why girls so scared of "**Retrograde Mercury**"!!!
 
 > [!TIP] 
-> You can always re-roll you luck! You don't like prognosis? Try again for a new one. There's no proof or credibility either way! 
+> You can always re-roll you luck! You don't like prediction? Try again for a new one. There's no proof or credibility either way! 
 
 > [!TIP] 
 > No more guessing on what bucket of flowers or gift to present on birthday!
