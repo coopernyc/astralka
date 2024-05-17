@@ -1,4 +1,7 @@
 # Astralka Project #
+
+![image](https://github.com/coopernyc/astralka/assets/11201225/5d85f578-1ab8-43ff-9190-34758d3192d3)
+
 Astralka creates "very professional" astrological natal/transit/progression chart of a person, gives flexible settings on turning on/off various thing in drawing, calculations, choose different settings, ability to create public and private collections of charts, and **the best of all** it creates aggregated prompt for AI that is based on all calculated information from the chart to apply analysis and to give overall prognosis on different areas/categories of live.
 
 Other than to apply in practice new Angular & Typescript methods and features in building web portals or pseudo commercial products, you can also learn tons of interesting but mostly useless information regarding Astrology, Planets, Signs, Houses, Aspects etc. 
