@@ -654,31 +654,31 @@ export function aspect_color(angle: number): any {
 
         case 120:
         case 60:
-            options = { stroke_color: "#00ff00" };
+            options = { stroke_color: "#7ffa7f" };
             break;
         case 150:
         case 30:
-            options = { stroke_color: "#00ff00", stroke_dasharray: "1,2" };
+            options = { stroke_color: "#7ffa7f", stroke_dasharray: "1,2" };
             break;
 
 
         case 144:
         case 72:
-            options = { stroke_color: "#5959fa" };
+            options = { stroke_color: "#9c9cfb" };
             break;
         case 36:
         case 18:
         case 108:
-            options = { stroke_color: "#5959fa", stroke_dasharray: "1,2" };
+            options = { stroke_color: "#9c9cfb", stroke_dasharray: "1,2" };
             break;
 
         case 80:
         case 40:
-            options = { stroke_color: "#5959fa" };
+            options = { stroke_color: "#9c9cfb" };
             break;
         case 100:
         case 20:
-            options = { stroke_color: "#5959fa", stroke_dasharray: "1,2" };
+            options = { stroke_color: "#9c9cfb", stroke_dasharray: "1,2" };
             break;
 
 

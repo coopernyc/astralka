@@ -61,7 +61,7 @@ import {RestService} from "../../services/rest.service";
                 </rect>
               } @else if (m.type === 0) {
                 <rect [attr.y]="m.x - step/2" [attr.x]="m.y - step/2" [attr.width]="step" [attr.height]="step"
-                      class="rect-type-0"
+                      class="rect planet"
                 >
                   <title>{{ m.name }}</title>
                 </rect>
@@ -75,9 +75,10 @@ import {RestService} from "../../services/rest.service";
               }
               <g pointer-events="none" svgg-symbol [x]="m.x" [y]="m.y" [name]="m.name" [options]="options(m)"></g>
               <g pointer-events="none" class="angle" svgg-text [y]="m.x" [x]="m.y"
-                 [text]="m.aspect ? convert_DD_ro_D(m.aspect.angle) : ''"></g>
+                 [text]="m.aspect ? convert_DD_ro_D(m.aspect.angle) : ''"
+                 [options]="{filtered: false, fill: '#49c1c1'}"></g>
               <g *ngIf="m.type===0 && m.retrograde" svgg-text [x]="m.x + 6" [y]="m.y + 3" [text]="'r'"
-                 [options]="{stroke_color: '#333'}"></g>
+                 [options]="{stroke_color: 'none', fill: 'goldenrod', filtered: false}"></g>
             </g>
           </g>
         </svg>
@@ -91,29 +92,12 @@ export class AstralkaAspectMatrixComponent extends AstralkaBasePortalComponent i
 
   public readonly step: number = 22;
   public selected: any = null;
-
+  protected readonly convert_DD_ro_D = convert_DD_to_D;
   private pool: any[] = [];
   private loaded: boolean = false;
 
-  protected get aspects(): any[] {
-    return this.data ? this.data.Aspects : [];
-  }
-
-  protected get sky_objects(): any[] {
-    return this.data ? this.data.SkyObjects : [];
-  }
-
   constructor(overlay: Overlay, private rest: RestService) {
     super(overlay);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes["data"]) {
-      this.loaded = false;
-      if (!changes["data"].currentValue || _.isEmpty(changes["data"].currentValue)) {
-        this.selected = null;
-      }
-    }
   }
 
   public get matrix(): any {
@@ -165,14 +149,42 @@ export class AstralkaAspectMatrixComponent extends AstralkaBasePortalComponent i
     return this.pool;
   }
 
+  protected get aspects(): any[] {
+    return this.data ? this.data.Aspects : [];
+  }
+
+  protected get sky_objects(): any[] {
+    return this.data ? this.data.SkyObjects : [];
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes["data"]) {
+      this.loaded = false;
+      if (!changes["data"].currentValue || _.isEmpty(changes["data"].currentValue)) {
+        this.selected = null;
+      }
+    }
+  }
+
   public options(m: any): any {
     let options: any = {scale: 1};
     if (m.type === 0) {
-      options = {scale: 0.7, stroke_color: "#333"};
+      options = {scale: 0.75, stroke_color: "goldenrod"};
       return options;
     }
     _.merge(options, aspect_color(m.aspect_angle));
     return options;
+  }
+
+  public get_explanation_from_ai(m: any): void {
+    this.pool = _.flatten(_.partition(this.pool, x => x !== m));
+    if (m && m.type === 1 && m.aspect) {
+      this.selected = m;
+      const party0 = this.format_party(this.selected.aspect.parties[0]);
+      const party1 = this.format_party(this.selected.aspect.parties[1]);
+      const prompt = `Write in 30-40 words interpretation of ${party0} is in ${this.selected.aspect.aspect.name} with ${party1}.`;
+      this.rest.do_explain({prompt, params: m, context: this.selected.aspect.aspect.name});
+    }
   }
 
   private format_party(party: any): string {
@@ -185,18 +197,4 @@ export class AstralkaAspectMatrixComponent extends AstralkaBasePortalComponent i
     }
     return result;
   }
-  public get_explanation_from_ai(m: any): void {
-    this.pool = _.flatten(_.partition(this.pool, x => x !== m));
-    if (m && m.type === 1 && m.aspect) {
-      this.selected = m;
-      const party0 = this.format_party(this.selected.aspect.parties[0]);
-      const party1 = this.format_party(this.selected.aspect.parties[1]);
-      const prompt = `Write in 30-40 words interpretation of ${party0} is in ${this.selected.aspect.aspect.name} with ${party1}.`;
-      this.rest.do_explain({ prompt, params: m, context: this.selected.aspect.aspect.name });
-    }
-  }
-
-  protected readonly SYMBOL_PLANET = SYMBOL_PLANET;
-  protected readonly _ = _;
-  protected readonly convert_DD_ro_D = convert_DD_to_D;
 }

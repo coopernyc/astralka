@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {PortalModule} from "@angular/cdk/portal";
-import {Overlay, OverlayConfig, OverlayModule} from "@angular/cdk/overlay";
+import {ConnectedPosition, Overlay, OverlayModule} from "@angular/cdk/overlay";
 import {CommonModule} from "@angular/common";
 import {SettingsService} from "../../services/settings.service";
 import {FormsModule} from "@angular/forms";
@@ -58,35 +58,23 @@ export class AstralkaAspectSettingsComponent extends AstralkaBasePortalComponent
     return this.settings.aspect_settings_iter;
   }
 
-  protected override getOverlayConfig(): OverlayConfig {
-    const positionStrategy = this.overlay
-      .position()
-      .flexibleConnectedTo(this.btn.nativeElement)
-      .withPush(true)
-      .withPositions([
-        {
-          originX: 'end',
-          originY: 'bottom',
-          overlayX: 'end',
-          overlayY: 'top',
-          offsetY: 2,
-        },
-        {
-          originX: 'end',
-          originY: 'top',
-          overlayX: 'end',
-          overlayY: 'bottom',
-          offsetY: -2,
-        },
-      ]);
-
-    const scrollStrategy = this.overlay.scrollStrategies.reposition();
-    return new OverlayConfig({
-      positionStrategy: positionStrategy,
-      scrollStrategy: scrollStrategy,
-      hasBackdrop: true,
-      backdropClass: 'cdk-overlay-transparent-backdrop',
-    });
+  protected override get connectedPositions(): ConnectedPosition[] {
+    return [
+      {
+        originX: 'end',
+        originY: 'bottom',
+        overlayX: 'end',
+        overlayY: 'top',
+        offsetY: 2,
+      },
+      {
+        originX: 'end',
+        originY: 'top',
+        overlayX: 'end',
+        overlayY: 'bottom',
+        offsetY: -2,
+      },
+    ];
   }
 
   public update(item: any, value: boolean): void {

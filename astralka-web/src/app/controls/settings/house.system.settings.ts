@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {Overlay, OverlayConfig, OverlayModule} from "@angular/cdk/overlay";
+import {ConnectedPosition, Overlay, OverlayModule} from "@angular/cdk/overlay";
 import {PortalModule} from "@angular/cdk/portal";
 import {AstralkaBasePortalComponent} from "../base.portal";
 import {ChartSymbol} from "../graphics/chart-symbol";
@@ -39,35 +39,23 @@ export class AstralkaHouseSystemSettingsComponent extends AstralkaBasePortalComp
     super(overlay);
   }
 
-  protected override getOverlayConfig(): OverlayConfig {
-    const positionStrategy = this.overlay
-      .position()
-      .flexibleConnectedTo(this.btn.nativeElement)
-      .withPush(true)
-      .withPositions([
-        {
-          originX: 'end',
-          originY: 'bottom',
-          overlayX: 'end',
-          overlayY: 'top',
-          offsetY: 2,
-        },
-        {
-          originX: 'end',
-          originY: 'top',
-          overlayX: 'end',
-          overlayY: 'bottom',
-          offsetY: -2,
-        },
-      ]);
-
-    const scrollStrategy = this.overlay.scrollStrategies.reposition();
-    return new OverlayConfig({
-      positionStrategy: positionStrategy,
-      scrollStrategy: scrollStrategy,
-      hasBackdrop: true,
-      backdropClass: 'cdk-overlay-transparent-backdrop',
-    });
+  protected override get connectedPositions(): ConnectedPosition[] {
+    return [
+      {
+        originX: 'end',
+        originY: 'bottom',
+        overlayX: 'end',
+        overlayY: 'top',
+        offsetY: 2,
+      },
+      {
+        originX: 'end',
+        originY: 'top',
+        overlayX: 'end',
+        overlayY: 'bottom',
+        offsetY: -2,
+      },
+    ];
   }
 
   public get house_systems(): IterableIterator<any> {

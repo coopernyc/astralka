@@ -8,7 +8,7 @@ import _ from "lodash";
     imports: [CommonModule],
     template: `
         <svg:text
-          filter="url(#solid)"
+          [attr.filter]="filtered ? 'url(#solid)'  : 'none'"
           [attr.x]="x"
           [attr.y]="y"
           [attr.dominant-baseline]="'central'"
@@ -42,5 +42,8 @@ export class ChartText {
     }
     public get font_size(): string {
         return _.get(this.options, "font_size", 10);
+    }
+    public get filtered(): string {
+      return _.get(this.options, "filtered", true);
     }
 }

@@ -88,6 +88,7 @@ import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.i
 import {LocalStorageService} from "../../services/local.storage.service";
 import {AstralkaQuickPickComponent} from "../quick.pick.component/quick.pick.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {AstralkaTransitMatrixComponent} from "../../controls/matrix/transit.matrix";
 
 @Component({
   selector: 'astralka-chart',
@@ -116,7 +117,8 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
     AstralkaToolbarComponent,
     AstralkaRotateImageComponent,
     AstralkaQuickPickComponent,
-    FaIconComponent
+    FaIconComponent,
+    AstralkaTransitMatrixComponent
   ],
   template: `
     <div class="astralka-container">
@@ -172,22 +174,22 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
               <section>Age: {{ age }}, Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
               <section>House System: {{ selectedHouseSystemName }}</section>
               <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}, Score: {{ avg_score.toFixed(3) }}</section>
-              <section>{{show_natal_aspects ? "Showing NATAL aspects": "Showing TRANSIT aspects"}}</section>
+              <section>{{ show_natal_aspects ? "Showing NATAL aspects" : "Showing TRANSIT aspects" }}</section>
               <section style="margin-top: 1em">
                 <astralka-position-data [kind]="'planets'" [positions]="stat_lines" [title]="'Natal Planets Position'">
-                  <fa-icon [icon]="faBaby" />
+                  <fa-icon [icon]="faBaby"/>
                   Planets
                 </astralka-position-data>
               </section>
               <section>
                 <astralka-position-data [kind]="'houses'" [positions]="stat_lines" [title]="'Natal Houses Position'">
-                  <fa-icon [icon]="faBaby" />
+                  <fa-icon [icon]="faBaby"/>
                   Houses
                 </astralka-position-data>
               </section>
               <section>
                 <astralka-matrix [data]="data" [title]="'Natal Aspects Matrix'">
-                  <fa-icon [icon]="faBaby" />
+                  <fa-icon [icon]="faBaby"/>
                   Matrix
                 </astralka-matrix>
               </section>
@@ -201,40 +203,41 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
               </section>
               <section style="margin-top: 1em; text-align: right">
                 <astralka-house-system>
-                  <fa-icon [icon]="faTools" />
+                  <fa-icon [icon]="faTools"/>
                   House System
                 </astralka-house-system>
               </section>
               <section>
                 <astralka-transit-settings>
-                  <fa-icon [icon]="faEye" />
+                  <fa-icon [icon]="faEye"/>
                   Transits
                 </astralka-transit-settings>
               </section>
               <section>
                 <astralka-aspect-settings>
-                  <fa-icon [icon]="faEye" />
+                  <fa-icon [icon]="faEye"/>
                   Aspects
                 </astralka-aspect-settings>
               </section>
               <section>
                 <button (click)="show_explanation = !show_explanation">
-                  <fa-icon [icon]="show_explanation ? faEyeSlash : faEye" />
+                  <fa-icon [icon]="show_explanation ? faEyeSlash : faEye"/>
                   Explanation
                 </button>
               </section>
               <section style="margin-top: 1em">
-                <astralka-position-data [kind]="'transits'" [positions]="stat_lines" [title]="'Transit Planets Position'">
-                  <fa-icon [icon]="faMeteor" />
+                <astralka-position-data [kind]="'transits'" [positions]="stat_lines"
+                                        [title]="'Transit Planets Position'">
+                  <fa-icon [icon]="faMeteor"/>
                   Planets
                 </astralka-position-data>
               </section>
-<!--              <section>-->
-<!--                <astralka-matrix [data]="data" [title]="'Transit Aspects Matrix'">-->
-<!--                  <fa-icon [icon]="faMeteor" />-->
-<!--                  Matrix-->
-<!--                </astralka-matrix>-->
-<!--              </section>-->
+              <section>
+                <astralka-transit-matrix [data]="data" [title]="'Transit Aspects Matrix'">
+                  <fa-icon [icon]="faMeteor"/>
+                  Matrix
+                </astralka-transit-matrix>
+              </section>
             </article>
           }
 
@@ -307,7 +310,9 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
                   </text>
                 </g>
                 <g>
-                  <text class="chart-label" [attr.x]="cx + 7" [attr.y]="cy + inner_radius / 5">{{show_natal_aspects ? "NATAL":"TRANSIT"}}</text>
+                  <text class="chart-label" [attr.x]="cx + 7"
+                        [attr.y]="cy + inner_radius / 5">{{ show_natal_aspects ? "NATAL" : "TRANSIT" }}
+                  </text>
                 </g>
 
                 <!-- natal planet symbols -->
@@ -428,27 +433,32 @@ export class AstralkaChartComponent implements OnInit {
     elevation: 0,
     offset: 0
   };
-
-  private _planets: any[] = [];
-  private _zodiac: any[] = [];
-  private _houses: any[] = [];
-  private _cusps: any[] = [];
-  private _lines: any[] = [];
-  private _aspect_labels: any[] = [];
-  private _stat_lines: any[] = [];
-  private _aspects: any[] = [];
   public data: any = {};
   public selectedPerson: IPersonInfo | undefined;
-
   public moment = moment;
-  private _explanation: any[] = [];
-  private _destroyRef = inject(DestroyRef);
-
   public sharedExplain$!: Observable<any>;
-
   public commands: IToolbarCmd[] = [];
-
   public rotate_image!: any;
+  public show_natal_aspects: boolean = true;
+  public avg_score: number = -1;
+  public _ = _;
+  public config: any = config;
+  protected readonly Gender = Gender;
+  protected readonly convert_lat_to_DMS = convert_lat_to_DMS;
+  protected readonly convert_long_to_DMS = convert_long_to_DMS;
+  protected readonly faLocationPin = faLocationPin;
+  protected readonly faLocationDot = faLocationDot;
+  protected readonly faRefresh = faRefresh;
+  protected readonly faDice = faDice;
+  protected readonly faB = faB;
+  protected readonly faBaby = faBaby;
+  protected readonly faEye = faEye;
+  protected readonly faGears = faGears;
+  protected readonly faGear = faGear;
+  protected readonly faTools = faTools;
+  protected readonly faEyeSlash = faEyeSlash;
+  protected readonly faMeteor = faMeteor;
+  private _destroyRef = inject(DestroyRef);
 
   constructor(
     private responsive: BreakpointObserver,
@@ -463,6 +473,132 @@ export class AstralkaChartComponent implements OnInit {
   ) {
   }
 
+  private _planets: any[] = [];
+
+  public get planets() {
+    return this._planets;
+  }
+
+  private _zodiac: any[] = [];
+
+  public get zodiac() {
+    return this._zodiac;
+  }
+
+  private _houses: any[] = [];
+
+  public get houses() {
+    return this._houses;
+  }
+
+  private _cusps: any[] = [];
+
+  public get cusps() {
+    return this._cusps;
+  }
+
+  private _lines: any[] = [];
+
+  public get lines(): any[] {
+    return this._lines;
+  }
+
+  private _aspect_labels: any[] = [];
+
+  public get aspect_labels(): any[] {
+    return this._aspect_labels;
+  }
+
+  private _stat_lines: any[] = [];
+
+  public get stat_lines(): any[] {
+    return this._stat_lines;
+  }
+
+  private _aspects: any[] = [];
+
+  public get aspects(): any[] {
+    return this._aspects;
+  }
+
+  private _explanation: any[] = [];
+
+  public get explanation(): any[] {
+    return this._explanation;
+  }
+
+  public get selectedHouseSystemName(): string {
+    return this.settings.house_system_selected.name;
+  }
+
+  public get age(): number {
+    if (this.data && this.selectedPerson) {
+      const bd = moment.utc(this.selectedPerson.date);
+      return moment.utc().diff(bd, 'years');
+    }
+    return NaN;
+  }
+
+  public get sign(): string {
+    if (this.data && this.data.SkyObjects) {
+      return zodiac_sign(this.data.SkyObjects.find((x: any) => x.name === SYMBOL_PLANET.Sun).position);
+    }
+    return '';
+  }
+
+  private _latin_phrase!: any;
+
+  public get latin_phrase(): any {
+    if (this.sign) {
+      return this._latin_phrase;
+    }
+    return null;
+  }
+
+  public get sky_objects(): any[] {
+    if (_.isEmpty(this.data)) {
+      return [];
+    }
+    return this._planets.map(p => {
+      return this.data.SkyObjects.find((x: any) => x.name === p.name);
+    }) || [];
+  }
+
+  public get calculatedTransitDateStr(): string {
+    if (this.transit) {
+      return moment(this.transit.date).utc().add(this.transit.offset, 'days').toISOString().replace('Z', '')
+    }
+    return '';
+  }
+
+  private _picks: any[] = [];
+
+  public get picks(): any[] {
+    return this._picks;
+  }
+
+  public get username(): string {
+    const user = this.session.restoreUser();
+    return user ? user.username : '';
+  }
+
+  private get natal_description_for_ai(): string {
+
+    const planets: string[] = _.reduce(this.stat_lines, (acc: string[], line: any) => {
+      if (line.stats.kind === 'houses' || line.stats.kind === 'transits') {
+        return acc;
+      }
+      const stats = line.stats;
+      acc.push(`${stats.label} in ${stats.position.sign}/${stats.house}`);
+      return acc;
+    }, []);
+    _.reduce(this.aspects, (acc: string[], asp: any) => {
+      acc.push(`${asp.parties[0].name} in ${asp.aspect.name} with ${asp.parties[1].name}`);
+      return acc;
+    }, planets);
+    return planets.join(", ");
+  }
+
   ngOnInit(): void {
 
     this.commands = [
@@ -474,8 +610,8 @@ export class AstralkaChartComponent implements OnInit {
         display: ToolbarDisplay.Icon,
         iconResolver: () => {
           return this.show_entry_form
-            ? { icon: faUserAstronaut, cssClass: 'icon-on'  }
-            : { icon: faUserAstronaut, cssClass: ''  }
+            ? {icon: faUserAstronaut, cssClass: 'icon-on'}
+            : {icon: faUserAstronaut, cssClass: ''}
         },
         disabled: () => false,
         tooltip: 'Person Natal Data Entry',
@@ -491,8 +627,8 @@ export class AstralkaChartComponent implements OnInit {
         display: ToolbarDisplay.Icon,
         iconResolver: () => {
           return this.show_transit_form
-            ? { icon: faMeteor, cssClass: 'icon-on'  }
-            : { icon: faMeteor, cssClass: ''  }
+            ? {icon: faMeteor, cssClass: 'icon-on'}
+            : {icon: faMeteor, cssClass: ''}
         },
         disabled: () => false,
         tooltip: 'Transits or Progression Date',
@@ -508,8 +644,8 @@ export class AstralkaChartComponent implements OnInit {
         display: ToolbarDisplay.Icon,
         iconResolver: () => {
           return this.show_natal_aspects
-            ? { icon: faMarsAndVenus, cssClass: ''  }
-            : { icon: faMarsAndVenus, cssClass: 'icon-on'  }
+            ? {icon: faMarsAndVenus, cssClass: ''}
+            : {icon: faMarsAndVenus, cssClass: 'icon-on'}
         },
         disabled: () => !this.data || !this.selectedPerson,
         tooltip: 'Toggle between Natal and Transit Aspects',
@@ -529,22 +665,22 @@ export class AstralkaChartComponent implements OnInit {
         disabled: () => !(this.data && this.selectedPerson),
         tooltip: 'Perspectives',
         commands: perspectives
-          .sort((a: any, b: any) => a.label.localeCompare(b.label, 'standard', { sensitivity: 'case'}))
+          .sort((a: any, b: any) => a.label.localeCompare(b.label, 'standard', {sensitivity: 'case'}))
           .map((perspective: any) => {
-          return {
-            mask: ToolbarCmdMask.NavBar,
-            type: 'item',
-            hidden: false,
-            display: ToolbarDisplay.IconAndText,
-            icon: perspective.icon,
-            label: perspective.label,
-            disabled: () => false,
-            tooltip: perspective.tooltip ?? perspective.label,
-            action: () => {
-              this.perspective(perspective.prompt);
-            }
-          };
-        })
+            return {
+              mask: ToolbarCmdMask.NavBar,
+              type: 'item',
+              hidden: false,
+              display: ToolbarDisplay.IconAndText,
+              icon: perspective.icon,
+              label: perspective.label,
+              disabled: () => false,
+              tooltip: perspective.tooltip ?? perspective.label,
+              action: () => {
+                this.perspective(perspective.prompt);
+              }
+            };
+          })
       },
       {
         type: 'separator', mask: ToolbarCmdMask.All
@@ -557,8 +693,8 @@ export class AstralkaChartComponent implements OnInit {
         display: ToolbarDisplay.Icon,
         iconResolver: () => {
           return this.show_quick_pick
-            ? { icon: faLocationPin, cssClass: 'icon-on'  }
-            : { icon: faLocationPin, cssClass: ''  }
+            ? {icon: faLocationPin, cssClass: 'icon-on'}
+            : {icon: faLocationPin, cssClass: ''}
         },
         disabled: () => !this.picks.length,
         tooltip: 'Toggle Quick Pick',
@@ -704,85 +840,6 @@ export class AstralkaChartComponent implements OnInit {
     this.rest.do_explain(e.info);
   }
 
-  public get planets() {
-    return this._planets;
-  }
-
-
-  public get zodiac() {
-    return this._zodiac;
-  }
-
-
-  public get houses() {
-    return this._houses;
-  }
-
-
-  public get cusps() {
-    return this._cusps;
-  }
-
-
-  public get lines(): any[] {
-    return this._lines;
-  }
-
-
-  public get aspect_labels(): any[] {
-    return this._aspect_labels;
-  }
-
-
-  public get stat_lines(): any[] {
-    return this._stat_lines;
-  }
-
-
-  public get aspects(): any[] {
-    return this._aspects;
-  }
-
-  public get selectedHouseSystemName(): string {
-    return this.settings.house_system_selected.name;
-  }
-
-  public get age(): number {
-    if (this.data && this.selectedPerson) {
-      const bd = moment.utc(this.selectedPerson.date);
-      return moment.utc().diff(bd, 'years');
-    }
-    return NaN;
-  }
-
-  public get sign(): string {
-    if (this.data && this.data.SkyObjects) {
-      return zodiac_sign(this.data.SkyObjects.find((x: any) => x.name === SYMBOL_PLANET.Sun).position);
-    }
-    return '';
-  }
-
-  private _latin_phrase!: any;
-  public get latin_phrase(): any {
-    if (this.sign) {
-      return this._latin_phrase;
-    }
-    return null;
-  }
-
-  public get sky_objects(): any[] {
-    if (_.isEmpty(this.data)) {
-      return [];
-    }
-    return this._planets.map(p => {
-      return this.data.SkyObjects.find((x: any) => x.name === p.name);
-    }) || [];
-  }
-
-  public get explanation(): any[] {
-    return this._explanation;
-  }
-
   public zodiac_options(p: any): any {
     let color = "#ffdd00";
     switch (p.name) {
@@ -808,13 +865,6 @@ export class AstralkaChartComponent implements OnInit {
         break;
     }
     return {stroke_color: color};
-  }
-
-  public get calculatedTransitDateStr(): string {
-    if (this.transit) {
-      return moment(this.transit.date).utc().add(this.transit.offset, 'days').toISOString().replace('Z', '')
-    }
-    return '';
   }
 
   public draw() {
@@ -870,23 +920,6 @@ export class AstralkaChartComponent implements OnInit {
     return {x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a)};
   }
 
-  private get natal_description_for_ai(): string {
-
-    const planets: string[] = _.reduce(this.stat_lines, (acc: string[], line: any) => {
-      if (line.stats.kind === 'houses' || line.stats.kind === 'transits') {
-        return acc;
-      }
-      const stats = line.stats;
-      acc.push(`${stats.label} in ${stats.position.sign}/${stats.house}`);
-      return acc;
-    }, []);
-    _.reduce(this.aspects, (acc: string[], asp: any) => {
-      acc.push(`${asp.parties[0].name} in ${asp.aspect.name} with ${asp.parties[1].name}`);
-      return acc;
-    }, planets);
-    return planets.join(", ");
-  }
-
   public perspective(kind: string): void {
     this.show_explanation = true;
     //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
@@ -923,10 +956,6 @@ export class AstralkaChartComponent implements OnInit {
     this.onPersonSelected();
   }
 
-  private _picks: any[] = [];
-  public get picks(): any[] {
-    return this._picks;
-  }
   public savePersonToQuickPick(): void {
     const found = this._picks.find(x => x.person._id === _.get(this.selectedPerson, '_id', ''));
     if (!found) {
@@ -937,17 +966,33 @@ export class AstralkaChartComponent implements OnInit {
       }
     }
   }
+
   public removePersonFromQuickPick(id: string) {
     this.rest.removeFromQuickPick(id, this.username).subscribe((data: any) => {
       this._picks = data;
     });
   }
+
   public reSaveQuickPick(data: any) {
     const load = data.map((x: any) => x.person._id);
     this.rest.reSaveToQuickPick(load, this.username)
       .subscribe((data) => {
         this._picks = data;
       });
+  }
+
+  public logout(): void {
+    const user: any = this.session.restoreUser();
+    this.auth.logout(user.username).subscribe({
+      next: () => {
+        //console.log(res);
+        this.session.clean();
+        window.location.reload();
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
   }
 
   private init(): void {
@@ -990,8 +1035,6 @@ export class AstralkaChartComponent implements OnInit {
       index++;
     });
   }
-
-  public show_natal_aspects: boolean = true;
 
   private handleChartData(data: any) {
     this.offset_angle = data.Houses[0].position;
@@ -1093,7 +1136,7 @@ export class AstralkaChartComponent implements OnInit {
       const p_adjusted_ = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15, so.angle);
       const p3 = point_on_the_line(3, p2, p_adjusted_);
 
-      this._lines.push({p1, p2}, {p1:p2, p2:p3});
+      this._lines.push({p1, p2}, {p1: p2, p2: p3});
 
       this._planets.push({
         name: x.name,
@@ -1127,7 +1170,7 @@ export class AstralkaChartComponent implements OnInit {
         const p_ = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15, so.angle);
         const p3 = point_on_the_line(3, p2, p_);
 
-        this._lines.push({p1, p2}, {p1:p2, p2:p3});
+        this._lines.push({p1, p2}, {p1: p2, p2: p3});
 
 
         this._lines.push({
@@ -1210,7 +1253,7 @@ export class AstralkaChartComponent implements OnInit {
         _.includes(aspect_names_enabled, x.aspect.name) &&
         _.includes(transit_names_enabled, x.parties[0].name) &&
         !_.some(x.parties, p => {
-            return _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name);
+          return _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name);
         })
       );
       _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name')
@@ -1310,8 +1353,6 @@ export class AstralkaChartComponent implements OnInit {
       cnt++;
     });
   }
-
-  public avg_score: number = -1;
 
   private format_dignities(so: any): string {
 
@@ -1509,43 +1550,6 @@ export class AstralkaChartComponent implements OnInit {
       element.scroll({top: element.scrollHeight, behavior: 'smooth'});
     }
   }
-
-  public logout(): void {
-    const user: any = this.session.restoreUser();
-    this.auth.logout(user.username).subscribe({
-      next: () => {
-        //console.log(res);
-        this.session.clean();
-        window.location.reload();
-      },
-      error: (err: any) => {
-        console.log(err);
-      }
-    });
-  }
-
-  public get username(): string {
-    const user = this.session.restoreUser();
-    return user ? user.username : '';
-  }
-
-  protected readonly Gender = Gender;
-  protected readonly convert_lat_to_DMS = convert_lat_to_DMS;
-  protected readonly convert_long_to_DMS = convert_long_to_DMS;
-  public _ = _;
-  public config: any = config;
-  protected readonly faLocationPin = faLocationPin;
-  protected readonly faLocationDot = faLocationDot;
-  protected readonly faRefresh = faRefresh;
-  protected readonly faDice = faDice;
-  protected readonly faB = faB;
-  protected readonly faBaby = faBaby;
-  protected readonly faEye = faEye;
-  protected readonly faGears = faGears;
-  protected readonly faGear = faGear;
-  protected readonly faTools = faTools;
-  protected readonly faEyeSlash = faEyeSlash;
-  protected readonly faMeteor = faMeteor;
 }
 
 
