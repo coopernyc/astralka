@@ -1,11 +1,12 @@
-import {Overlay, OverlayConfig, OverlayRef} from "@angular/cdk/overlay";
-import {Directive, ElementRef, ViewChild} from "@angular/core";
+import {ConnectedPosition, Overlay, OverlayConfig, OverlayRef} from "@angular/cdk/overlay";
+import {Directive, ElementRef, Input, ViewChild} from "@angular/core";
 import {CdkPortal} from "@angular/cdk/portal";
 
 @Directive()
 export class AstralkaBasePortalComponent {
   private overlayRef!: OverlayRef;
   private showing: boolean = false;
+  @Input() title!: string;
   @ViewChild(CdkPortal) public contentTemplate!: CdkPortal;
   @ViewChild("button") public btn!: ElementRef;
 
@@ -26,27 +27,31 @@ export class AstralkaBasePortalComponent {
     this.showing = false;
   }
 
+  protected get connectedPositions(): ConnectedPosition[] {
+    return [
+      {
+        originX: 'start',
+        originY: 'bottom',
+        overlayX: 'start',
+        overlayY: 'top',
+        offsetY: 2,
+      },
+      {
+        originX: 'start',
+        originY: 'top',
+        overlayX: 'start',
+        overlayY: 'bottom',
+        offsetY: -2,
+      },
+    ];
+  }
+
   protected getOverlayConfig(): OverlayConfig {
     const positionStrategy = this.overlay
       .position()
       .flexibleConnectedTo(this.btn.nativeElement)
       .withPush(true)
-      .withPositions([
-        {
-          originX: 'start',
-          originY: 'bottom',
-          overlayX: 'start',
-          overlayY: 'top',
-          offsetY: 2,
-        },
-        {
-          originX: 'start',
-          originY: 'top',
-          overlayX: 'start',
-          overlayY: 'bottom',
-          offsetY: -2,
-        },
-      ]);
+      .withPositions(this.connectedPositions);
 
     const scrollStrategy = this.overlay.scrollStrategies.reposition();
     return new OverlayConfig({

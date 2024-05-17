@@ -104,12 +104,19 @@ svg {
   position: relative;
   overflow: hidden;
 
+  .chart-label,
   .segment-label {
     font-size: 32px;
     @include germania-one-regular;
     fill: #dca72233;
     stroke: none;
     font-weight: 600;
+  }
+  .chart-label {
+    text-anchor: middle;
+    font-size: 22px;
+    fill: #dca72244;
+    letter-spacing: 7px;
   }
 }
 

@@ -9,9 +9,9 @@ import {
   faBriefcase,
   faBurger,
   faCar,
-  faChalkboardTeacher,
+  faChalkboardTeacher, faChessRook,
   faClover,
-  faCocktail,
+  faCocktail, faCommentDollar,
   faComputer,
   faCouch,
   faCrown,
@@ -32,7 +32,7 @@ import {
   faPalette,
   faPeopleGroup,
   faPeopleRoof,
-  faPlaneDeparture,
+  faPlaneDeparture, faPlateWheat,
   faPrescriptionBottle,
   faRing,
   faShirt,
@@ -1094,5 +1094,20 @@ export const perspectives = [
     label: "Study",
     icon:  faChalkboardTeacher,
     prompt: "the best and the least suitable fields of study. Guess level of education achievable and list of best choice study subjects."
+  },
+  {
+    label: "Diet",
+    icon:  faPlateWheat,
+    prompt: "the best and the least suitable diet, guess the possibility of being overweight or underweight, list 5 most and least preferable dishes."
+  },
+  {
+    label: "Spendings",
+    icon:  faCommentDollar,
+    prompt: "the spending habits, such as frugal and saving or careless and incautious, financial security, long-term saving for retirement or short-term and living fully every single day."
+  },
+  {
+    label: "Stability",
+    icon:  faChessRook,
+    prompt: "the stability factor of live, guess on would it be easy going and calm verse bumpy road and stormy unrest, list periods of live with most and least stability."
   }
 ];

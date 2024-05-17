@@ -65,8 +65,13 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
 import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {
+  faB,
   faBaby,
   faDice,
+  faEye,
+  faEyeSlash,
+  faGear,
+  faGears,
   faLocationDot,
   faLocationPin,
   faMarsAndVenus,
@@ -74,6 +79,7 @@ import {
   faRefresh,
   faSave,
   faSignOut,
+  faTools,
   faUserAstronaut,
   faUserNinja
 } from "@fortawesome/free-solid-svg-icons";
@@ -166,14 +172,24 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
               <section>Age: {{ age }}, Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
               <section>House System: {{ selectedHouseSystemName }}</section>
               <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}, Score: {{ avg_score.toFixed(3) }}</section>
-              <section>
-                <astralka-position-data [positions]="stat_lines">Planets</astralka-position-data>
+              <section>{{show_natal_aspects ? "Showing NATAL aspects": "Showing TRANSIT aspects"}}</section>
+              <section style="margin-top: 1em">
+                <astralka-position-data [kind]="'planets'" [positions]="stat_lines" [title]="'Natal Planets Position'">
+                  <fa-icon [icon]="faBaby" />
+                  Planets
+                </astralka-position-data>
               </section>
               <section>
-                <astralka-position-data [kind]="'houses'" [positions]="stat_lines">Houses</astralka-position-data>
+                <astralka-position-data [kind]="'houses'" [positions]="stat_lines" [title]="'Natal Houses Position'">
+                  <fa-icon [icon]="faBaby" />
+                  Houses
+                </astralka-position-data>
               </section>
               <section>
-                <astralka-matrix [data]="data">Matrix</astralka-matrix>
+                <astralka-matrix [data]="data" [title]="'Natal Aspects Matrix'">
+                  <fa-icon [icon]="faBaby" />
+                  Matrix
+                </astralka-matrix>
               </section>
             </article>
           }
@@ -181,21 +197,44 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
             <article id="transit-info" [style.left.px]="width - 220">
               <section><b>Transit/Progression Data</b></section>
               <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
-              <section>DateTime (UT): {{ moment($any(calculatedTransitDateStr)).format('DD MMM YYYY HH:mm:ss') }}
+              <section>Date Time: {{ moment($any(calculatedTransitDateStr)).format('MMMM Do YYYY, h:mm:ss a') }}
               </section>
-              <section style="margin-top: 4px; text-align: right">
-                <astralka-transit-settings>Show Transits</astralka-transit-settings>
-              </section>
-              <section>
-                <astralka-aspect-settings>Show Aspects</astralka-aspect-settings>
-              </section>
-              <section>
-                <astralka-house-system>House System</astralka-house-system>
+              <section style="margin-top: 1em; text-align: right">
+                <astralka-house-system>
+                  <fa-icon [icon]="faTools" />
+                  House System
+                </astralka-house-system>
               </section>
               <section>
-                <button (click)="show_explanation = !show_explanation"
-                        [innerHTML]="show_explanation?'Hide Explain':'Show Explain'"></button>
+                <astralka-transit-settings>
+                  <fa-icon [icon]="faEye" />
+                  Transits
+                </astralka-transit-settings>
               </section>
+              <section>
+                <astralka-aspect-settings>
+                  <fa-icon [icon]="faEye" />
+                  Aspects
+                </astralka-aspect-settings>
+              </section>
+              <section>
+                <button (click)="show_explanation = !show_explanation">
+                  <fa-icon [icon]="show_explanation ? faEyeSlash : faEye" />
+                  Explanation
+                </button>
+              </section>
+              <section style="margin-top: 1em">
+                <astralka-position-data [kind]="'transits'" [positions]="stat_lines" [title]="'Transit Planets Position'">
+                  <fa-icon [icon]="faMeteor" />
+                  Planets
+                </astralka-position-data>
+              </section>
+<!--              <section>-->
+<!--                <astralka-matrix [data]="data" [title]="'Transit Aspects Matrix'">-->
+<!--                  <fa-icon [icon]="faMeteor" />-->
+<!--                  Matrix-->
+<!--                </astralka-matrix>-->
+<!--              </section>-->
             </article>
           }
 
@@ -266,6 +305,9 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
                       {{ latin_phrase?.phrase }}
                     </textPath>
                   </text>
+                </g>
+                <g>
+                  <text class="chart-label" [attr.x]="cx + 7" [attr.y]="cy + inner_radius / 5">{{show_natal_aspects ? "NATAL":"TRANSIT"}}</text>
                 </g>
 
                 <!-- natal planet symbols -->
@@ -355,7 +397,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 export class AstralkaChartComponent implements OnInit {
   public width: number = 800;
   public height: number = 1200;
-  public margin: number = 100;
+  public margin: number = 160;
   public show_entry_form: boolean = false;
   public show_transit_form: boolean = false;
   public show_quick_pick: boolean = false;
@@ -576,7 +618,7 @@ export class AstralkaChartComponent implements OnInit {
         breakpoint: '(min-width: 805px)',
         width: 800,
         height: 1100,
-        margin: 100
+        margin: 120
       }
     ];
 
@@ -829,8 +871,9 @@ export class AstralkaChartComponent implements OnInit {
   }
 
   private get natal_description_for_ai(): string {
+
     const planets: string[] = _.reduce(this.stat_lines, (acc: string[], line: any) => {
-      if (_.startsWith(line.stats.name, 'Cusp')) {
+      if (line.stats.kind === 'houses' || line.stats.kind === 'transits') {
         return acc;
       }
       const stats = line.stats;
@@ -1219,6 +1262,25 @@ export class AstralkaChartComponent implements OnInit {
     this.data.SkyObjects.forEach((so: any) => {
       const STAT_MARGIN = 12;
       this._stat_lines.push({
+        kind: 'planets',
+        x: STAT_MARGIN,
+        y: STAT_MARGIN + cnt * 18,
+        stats: {
+          name: so.name,
+          label: so.name,
+          position: pos_in_zodiac(so.position),
+          speed: so.speed,
+          house: so.house.symbol + ' House',
+          dignities: this.format_dignities(so)
+        }
+      });
+      cnt++;
+    });
+    cnt = 1;
+    this.data.Transit.SkyObjects.forEach((so: any) => {
+      const STAT_MARGIN = 12;
+      this._stat_lines.push({
+        kind: 'transits',
         x: STAT_MARGIN,
         y: STAT_MARGIN + cnt * 18,
         stats: {
@@ -1236,6 +1298,7 @@ export class AstralkaChartComponent implements OnInit {
     this.data.Houses.forEach((so: any) => {
       const STAT_MARGIN = 12;
       this._stat_lines.push({
+        kind: 'houses',
         x: 300,
         y: STAT_MARGIN + cnt * 18,
         stats: {
@@ -1475,6 +1538,14 @@ export class AstralkaChartComponent implements OnInit {
   protected readonly faLocationDot = faLocationDot;
   protected readonly faRefresh = faRefresh;
   protected readonly faDice = faDice;
+  protected readonly faB = faB;
+  protected readonly faBaby = faBaby;
+  protected readonly faEye = faEye;
+  protected readonly faGears = faGears;
+  protected readonly faGear = faGear;
+  protected readonly faTools = faTools;
+  protected readonly faEyeSlash = faEyeSlash;
+  protected readonly faMeteor = faMeteor;
 }
 
 

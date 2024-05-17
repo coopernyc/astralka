@@ -15,6 +15,11 @@
     height: 200px;
   }
 
+  &.transits {
+    width: 460px;
+    height: 250px;
+  }
+
   @include portal_base.box;
   line-height: 13px;
   font-size: 11px;

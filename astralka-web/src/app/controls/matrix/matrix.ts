@@ -26,6 +26,7 @@ import {RestService} from "../../services/rest.service";
       name="matrix-data"
       class="btn"
       (click)="toggle()"
+      [title]="title ?? ''"
     >
       <ng-content></ng-content>
     </button>
