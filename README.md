@@ -1,5 +1,5 @@
 # Astralka Project #
-![9cc0af38-16c9-4f72-b156-e3e6a650628d](https://github.com/coopernyc/astralka/assets/11201225/5fd9ffcb-453b-43eb-9b7f-729b2dc914a2)  
+<img width="800" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/aebd0900-8367-4387-8bbf-5b304b3c6d9f">
 
 Astralka creates "very professional" astrological natal/transit/progression chart of a person, gives flexible settings on turning on/off various thing in drawing, calculations, choose different settings, ability to create public and private collections of charts, and **the best of all** it creates aggregated prompt for AI that is based on all calculated information from the chart to apply analysis and to give overall prognosis on different areas/categories of live.
 
