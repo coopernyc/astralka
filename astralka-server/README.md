@@ -1,5 +1,8 @@
 # Astralka-Server
 The server is node express REST server
+
+![image](https://github.com/coopernyc/astralka/assets/11201225/427a5df0-c462-4353-bf47-4f203f019825)
+
 ## Installation
 1. Install Node.js. See [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs)
 2. Install mongoDb. See [here](https://www.mongodb.com/docs/manual/installation/)
