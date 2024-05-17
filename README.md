@@ -7,23 +7,17 @@ Astralka creates "very professional" astrological natal/transit/progression char
 Other than to apply in practice new Angular & Typescript methods and features in building web portals or pseudo commercial products, you can also learn tons of interesting but mostly useless information regarding Astrology, Planets, Signs, Houses, Aspects etc. 
 
 > [!WARNING] 
-> Please remember, Astrology is not a science, but a mental exercise people practice from ancient times. 
-
-> [!TIP] 
+> Please remember, Astrology is not a science, but a mental exercise people practice from ancient times.
 > Learn why girls so scared of "**Retrograde Mercury**"!!!
-
-> [!TIP] 
-> You can always re-roll you luck! You don't like prediction? Try again for a new one. There's no proof or credibility either way! 
-
-> [!TIP] 
-> No more guessing on what bucket of flowers or gift to present on birthday!
+> You can always re-roll you luck! You don't like prediction? Try again for a new one. There's no proof or credibility either way!
+> No more guessing on what bucket of flowers or gift to present on her birthday!
 
 ## Screenshot
 <img width="800" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/aebd0900-8367-4387-8bbf-5b304b3c6d9f">
 
 > [!TIP]
 > on Windows, if you run into some errors about msvc for node >= 18, search and run `Install Additional tools for Node.js` batch file.
-> 
+> on Linux, it fails sometimes to build swisseph or sharp dependencies. Try to use yarn instead of npm - worked for me. 
 > Also, you would need to downgrade from python 3.11+ to 3.10.x to compile `swisseph` package.
 > 
 > You can have several python versions, don't forget to check `Add Python to Path` option  when installing it.

@@ -3,13 +3,13 @@ import moment from "moment";
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 import {
   faBabyCarriage,
-  faBank,
+  faBank, faBook,
   faBookSkull,
   faBrain,
   faBriefcase,
   faBurger,
   faCar,
-  faChalkboardTeacher, faChessRook,
+  faChalkboardTeacher, faChessRook, faChurch,
   faClover,
   faCocktail, faCommentDollar,
   faComputer,
@@ -24,7 +24,7 @@ import {
   faHeart,
   faHeartPulse,
   faHouse,
-  faLuggageCart,
+  faLuggageCart, faMarsAndVenus,
   faMasksTheater,
   faMobile,
   faMoneyBill1,
@@ -911,9 +911,19 @@ export const perspectives = [
     prompt: "intellectual capabilities, list the areas of live with the most and least intellectual interest."
   },
   {
+    label: "Books",
+    icon:  faBook,
+    prompt: "preferences in literature, list the genres, styles of the most and least favorite books, list 5 must and never read books and authors."
+  },
+  {
     label: "Emotions",
     icon:  faSmile,
     prompt: "emotional capabilities, list the areas of live where calm and harmonious or tense and stressful emotions will show."
+  },
+  {
+    label: "Sexuality",
+    icon:  faMarsAndVenus,
+    prompt: "sexual attractiveness and sexual behavior, list the most and least preferable sexual genres and behaviors."
   },
   {
     label: "Family",
@@ -987,8 +997,13 @@ export const perspectives = [
   },
   {
     label: "Jewelries",
+    icon:  faCrown,
+    prompt: "the most and least suitable jewelries, list 5 brands and most favorite jewelry kinds and styles."
+  },
+  {
+    label: "Gemstones",
     icon:  faGem,
-    prompt: "the most suitable precious stones and metals, kind of jewelry to wear if any, brands and styles."
+    prompt: "the most and least suitable gem stones, list 5 of each."
   },
   {
     label: "Colors",
@@ -1009,6 +1024,11 @@ export const perspectives = [
     label: "Trees",
     icon:  faPagelines,
     prompt: "the most and the least preferable kinds of trees."
+  },
+  {
+    label: "Religiousness",
+    icon:  faChurch,
+    prompt: "the religiousness, most inclined to be atheist or believer, list 2 of the most and least suitable world religions."
   },
   {
     label: "Flowers",

@@ -501,6 +501,24 @@ export class AstralkaChartComponent implements OnInit {
         }
       },
       {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        display: ToolbarDisplay.Icon,
+        iconResolver: () => {
+          return this.show_natal_aspects
+            ? { icon: faMarsAndVenus, cssClass: ''  }
+            : { icon: faMarsAndVenus, cssClass: 'icon-on'  }
+        },
+        disabled: () => !this.data || !this.selectedPerson,
+        tooltip: 'Toggle between Natal and Transit Aspects',
+        action: () => {
+          this.show_natal_aspects = !this.show_natal_aspects;
+          this.draw();
+        }
+      },
+      {
         mask: ToolbarCmdMask.NavBar,
         type: 'menu',
         hidden: false,
@@ -527,24 +545,6 @@ export class AstralkaChartComponent implements OnInit {
             }
           };
         })
-      },
-      {
-        mask: ToolbarCmdMask.All,
-        type: 'item',
-        hidden: false,
-        align: ToolbarAlign.Left,
-        display: ToolbarDisplay.Icon,
-        iconResolver: () => {
-          return this.show_natal_aspects
-            ? { icon: faMarsAndVenus, cssClass: ''  }
-            : { icon: faMarsAndVenus, cssClass: 'icon-on'  }
-        },
-        disabled: () => !this.data || !this.selectedPerson,
-        tooltip: 'Toggle between Natal and Transit Aspects',
-        action: () => {
-          this.show_natal_aspects = !this.show_natal_aspects;
-          this.draw();
-        }
       },
       {
         type: 'separator', mask: ToolbarCmdMask.All
