@@ -65,10 +65,13 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
 import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {
-  faBaby, faDice,
+  faBaby,
+  faDice,
   faLocationDot,
   faLocationPin,
-  faMeteor, faRefresh,
+  faMarsAndVenus,
+  faMeteor,
+  faRefresh,
   faSave,
   faSignOut,
   faUserAstronaut,
@@ -482,6 +485,24 @@ export class AstralkaChartComponent implements OnInit {
             }
           };
         })
+      },
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        display: ToolbarDisplay.Icon,
+        iconResolver: () => {
+          return this.show_natal_aspects
+            ? { icon: faMarsAndVenus, cssClass: ''  }
+            : { icon: faMarsAndVenus, cssClass: 'icon-on'  }
+        },
+        disabled: () => !this.data || !this.selectedPerson,
+        tooltip: 'Toggle between Natal and Transit Aspects',
+        action: () => {
+          this.show_natal_aspects = !this.show_natal_aspects;
+          this.draw();
+        }
       },
       {
         type: 'separator', mask: ToolbarCmdMask.All
@@ -927,6 +948,8 @@ export class AstralkaChartComponent implements OnInit {
     });
   }
 
+  public show_natal_aspects: boolean = true;
+
   private handleChartData(data: any) {
     this.offset_angle = data.Houses[0].position;
 
@@ -1087,48 +1110,106 @@ export class AstralkaChartComponent implements OnInit {
       .filter(x => x.enabled)
       .map(x => x.name);
 
-    const aspects = this.data.Aspects.filter((x: any) =>
-      _.includes(aspect_names_enabled, x.aspect.name) &&
-      !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
-    );
-    _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name')
-      .forEach((x: any) => {
-        let p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
-        let p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius, x.position);
+    // Natal Aspects
+    if (this.show_natal_aspects) {
+      const aspects = this.data.Aspects.filter((x: any) =>
+        _.includes(aspect_names_enabled, x.aspect.name) &&
+        !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
+      );
+      _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name')
+        .forEach((x: any) => {
+          let p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
+          let p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius, x.position);
+          this.lines.push({
+            p1,
+            p2,
+            options: {stroke_color: "#000"}
+          });
+          p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 1, x.position);
+          p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.position);
+          this.lines.push({
+            p1,
+            p2,
+            options: {stroke_color: "#fff"}
+          });
+        });
+
+      aspects.forEach((x: any) => {
+        const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[0].position);
+        const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[1].position);
+        let options = aspect_color(x.aspect.angle);
         this.lines.push({
           p1,
           p2,
-          options: {stroke_color: "#000"}
-        });
-        p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 1, x.position);
-        p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.position);
-        this.lines.push({
-          p1,
-          p2,
-          options: {stroke_color: "#fff"}
-        });
-      });
-
-    aspects.forEach((x: any) => {
-      const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[0].position);
-      const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[1].position);
-      let options = aspect_color(x.aspect.angle);
-      this.lines.push({
-        p1,
-        p2,
-        options
-      });
-
-      if (x.aspect.name !== SYMBOL_ASPECT.Conjunction) {
-        const rnd_p = one_third_point_on_the_line(p1, p2); //random_point_on_the_line(p1, p2);
-        const p = rotate_point_around_center({x: this.cx, y: this.cy}, rnd_p, this.offset_angle);
-        this.aspect_labels.push({
-          ...p,
-          name: x.aspect.name,
           options
         });
-      }
-    });
+
+        if (x.aspect.name !== SYMBOL_ASPECT.Conjunction) {
+          const rnd_p = one_third_point_on_the_line(p1, p2); //random_point_on_the_line(p1, p2);
+          const p = rotate_point_around_center({x: this.cx, y: this.cy}, rnd_p, this.offset_angle);
+          this.aspect_labels.push({
+            ...p,
+            name: x.aspect.name,
+            options
+          });
+        }
+      });
+      this._aspects = aspects;
+    } else {
+      // Transit Aspects
+
+      const transit_names_enabled: string[] = Array
+        .from(this.settings.transit_settings_iter)
+        .filter(x => x.enabled)
+        .map(x => x.name);
+
+      const aspects = this.data.Transit.Aspects.filter((x: any) =>
+        _.includes(aspect_names_enabled, x.aspect.name) &&
+        _.includes(transit_names_enabled, x.parties[0].name) &&
+        !_.some(x.parties, p => {
+            return _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name);
+        })
+      );
+      _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name')
+        .forEach((x: any) => {
+          let p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
+          let p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius, x.position);
+          this.lines.push({
+            p1,
+            p2,
+            options: {stroke_color: "#000"}
+          });
+          p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 1, x.position);
+          p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.position);
+          this.lines.push({
+            p1,
+            p2,
+            options: {stroke_color: "#fff"}
+          });
+        });
+
+      aspects.forEach((x: any) => {
+        const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[0].position);
+        const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[1].position);
+        let options = aspect_color(x.aspect.angle);
+        this.lines.push({
+          p1,
+          p2,
+          options
+        });
+
+        if (x.aspect.name !== SYMBOL_ASPECT.Conjunction) {
+          const rnd_p = one_third_point_on_the_line(p1, p2); //random_point_on_the_line(p1, p2);
+          const p = rotate_point_around_center({x: this.cx, y: this.cy}, rnd_p, this.offset_angle);
+          this.aspect_labels.push({
+            ...p,
+            name: x.aspect.name,
+            options
+          });
+        }
+      });
+      this._aspects = aspects;
+    }
 
     // stat lines
     let cnt = 1;
@@ -1165,7 +1246,6 @@ export class AstralkaChartComponent implements OnInit {
       });
       cnt++;
     });
-    this._aspects = aspects;
   }
 
   public avg_score: number = -1;

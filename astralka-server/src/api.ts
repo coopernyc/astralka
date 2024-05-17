@@ -1,8 +1,8 @@
-import swisseph, { SEFLG_EQUATORIAL } from "swisseph";
-import { IAspect, IAspectDef, IHouse, ISkyObject } from "./interfaces";
-import { AstralkaConfig, HouseSystem, SkyObject } from "./constants";
-import { AspectDef, House, Planet } from "./common";
-import { calculate_house, find_aspect } from "./utils";
+import swisseph from "swisseph";
+import {IAspect, IAspectDef, IHouse, ISkyObject} from "./interfaces";
+import {AstralkaConfig, SkyObject} from "./constants";
+import {AspectDef, House, Planet} from "./common";
+import {calculate_house, find_aspect} from "./utils";
 import moment from "moment";
 import _ from "lodash";
 
@@ -174,6 +174,32 @@ export function chart_data(query: IQuery): any {
             x.house = calculate_house(x.position, houses1);        
         });
         result.Transit.SkyObjects = sky_objects1;
+
+        // Transit Aspects calculation
+        const aspects1: IAspect[] = [];
+        const only_asc_and_mc: IHouse[] = houses.filter((x:IHouse) => [0, 9].indexOf(x.index) !== -1);
+        for(let i= 0; i< sky_objects1.length; i++) {
+            for(let j = 0; j < sky_objects.length; j++ ) {
+                const a = sky_objects1[i];
+                const b = sky_objects[j];
+                const angle = swisseph.swe_difdegn(a.position, b.position).degreeDiff;
+                const found = find_aspect(a, b, angle, aspect_defs);
+                if (found) {
+                    aspects1.push(found);
+                }
+            }
+            for(let j = 0; j < only_asc_and_mc.length; j++) {
+                const a = sky_objects1[i];
+                const b = only_asc_and_mc[j];
+                const angle = swisseph.swe_difdegn(a.position, b.position).degreeDiff;
+                const found = find_aspect(a, b, angle, aspect_defs);
+                if (found) {
+                    aspects1.push(found);
+                }
+            }
+        }
+        result.Transit.Aspects = aspects1;
+
     }
     return result;
 }
