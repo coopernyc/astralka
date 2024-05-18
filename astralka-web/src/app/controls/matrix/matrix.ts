@@ -26,7 +26,7 @@ import {RestService} from "../../services/rest.service";
       name="matrix-data"
       class="btn"
       (click)="toggle()"
-      [title]="title ?? ''"
+      [title]="title"
     >
       <ng-content></ng-content>
     </button>
@@ -75,7 +75,7 @@ import {RestService} from "../../services/rest.service";
               }
               <g pointer-events="none" svgg-symbol [x]="m.x" [y]="m.y" [name]="m.name" [options]="options(m)"></g>
               <g pointer-events="none" class="angle" svgg-text [y]="m.x" [x]="m.y"
-                 [text]="m.aspect ? convert_DD_ro_D(m.aspect.angle) : ''"
+                 [text]="m.aspect ? convert_DD_to_D(m.aspect.angle) : ''"
                  [options]="{filtered: false, fill: '#49c1c1'}"></g>
               <g *ngIf="m.type===0 && m.retrograde" svgg-text [x]="m.x + 6" [y]="m.y + 3" [text]="'r'"
                  [options]="{stroke_color: 'none', fill: 'goldenrod', filtered: false}"></g>
@@ -92,7 +92,7 @@ export class AstralkaAspectMatrixComponent extends AstralkaBasePortalComponent i
 
   public readonly step: number = 22;
   public selected: any = null;
-  protected readonly convert_DD_ro_D = convert_DD_to_D;
+  protected readonly convert_DD_to_D = convert_DD_to_D;
   private pool: any[] = [];
   private loaded: boolean = false;
 

@@ -3,7 +3,7 @@ import {CommonModule} from "@angular/common";
 import {AstralkaBasePortalComponent} from "../base.portal";
 import {ConnectedPosition, Overlay, OverlayModule} from "@angular/cdk/overlay";
 import {RestService} from "../../services/rest.service";
-import {aspect_color, SYMBOL_CUSP, SYMBOL_PLANET, zodiac_sign} from "../../common";
+import {aspect_color, convert_DD_to_D, SYMBOL_CUSP, SYMBOL_PLANET, zodiac_sign} from "../../common";
 import _ from "lodash";
 import {PortalModule} from "@angular/cdk/portal";
 import {ChartSymbol} from "../graphics/chart-symbol";
@@ -26,7 +26,7 @@ import {ChartText} from "../graphics/chart-text";
       name="matrix-data"
       class="btn"
       (click)="toggle()"
-      [title]="title ?? ''"
+      [title]="title"
     >
       <ng-content></ng-content>
     </button>
@@ -49,7 +49,7 @@ import {ChartText} from "../graphics/chart-text";
                     (click)="get_explanation_from_ai(m)"
               >
                 @if (m.type === 1) {
-                  <title>{{ m.name }} {{ m.aspect_angle }}°</title>
+                  <title>{{ m.name }} {{ m.aspect_angle }}° {{m.aspect ? '('+convert_DD_to_D(m.aspect.angle)+')' : ''}}</title>
                 } @else if (m.type === 0|| m.type === 2) {
                     <title>{{ m.name }}</title>
                 }
@@ -92,8 +92,8 @@ export class AstralkaTransitMatrixComponent extends AstralkaBasePortalComponent 
     for (let t = 0; t < transit.length; t++) {
       for (let n = 0; n < natal.length; n++) {
         const found: any = _.find(this.aspects, x => {
-          const parties = x.parties.map(z => z.name).sort();
-          const matches = [transit[t], natal[n]].sort();
+          const parties = x.parties.map(z => z.name);
+          const matches = [transit[t], natal[n]];
           return _.isEqual(parties, matches);
         });
         this.pool.push({
@@ -201,4 +201,6 @@ export class AstralkaTransitMatrixComponent extends AstralkaBasePortalComponent 
     }
     return result;
   }
+
+  protected readonly convert_DD_to_D = convert_DD_to_D;
 }

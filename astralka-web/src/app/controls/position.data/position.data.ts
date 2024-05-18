@@ -1,7 +1,7 @@
 import {Component, Input} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {PortalModule} from "@angular/cdk/portal";
-import {ConnectedPosition, Overlay, OverlayConfig, OverlayModule} from "@angular/cdk/overlay";
+import {ConnectedPosition, Overlay, OverlayModule} from "@angular/cdk/overlay";
 import {AstralkaBasePortalComponent} from "../base.portal";
 import {ChartSymbol} from "../graphics/chart-symbol";
 import {SYMBOL_PLANET} from "../../common";
@@ -19,7 +19,7 @@ import {RestService} from "../../services/rest.service";
   ],
   template: `
         <button
-            [title]="title ?? ''"
+            [title]="title"
             #button
             type="button"
             name="position-data"
