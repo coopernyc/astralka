@@ -127,7 +127,7 @@ app.post("/chart-data", cors(corsOptions), async (req: Request, res: Response, n
 });
 app.post("/explain", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     const prompt = _.get(req.body, "prompt");
-    //console.log(prompt);
+    console.log(prompt);
     let result = "";
     try {
         result = await call_ai(prompt);

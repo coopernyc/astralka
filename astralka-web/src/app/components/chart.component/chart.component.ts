@@ -576,18 +576,28 @@ export class AstralkaChartComponent implements OnInit {
   private get natal_description_for_ai(): string {
 
     const planets: string[] = _.reduce(this.stat_lines, (acc: string[], line: any) => {
-      if (line.stats.kind === 'houses' || line.stats.kind === 'transits') {
+      if (line.kind === 'houses' || line.kind === 'transits') {
         return acc;
       }
       const stats = line.stats;
-      acc.push(`${stats.label} in ${stats.position.sign}/${stats.house}`);
+      const temp: string[] = [];
+      temp.push(`\n- ${stats.label} in ${stats.position.sign}/${stats.house}`);
+      const name = stats.name;
+
+      this.aspects
+        .filter(x => x.parties[0].name === name)
+        .reduce((acc: string[], asp: any) => {
+          const prompt = `and in ${asp.aspect.name} with ${asp.parties[1].name}`
+            .replace(/Cusp10/g, 'Medium Coeli')
+            .replace(/Cusp1/g, 'Ascendant');
+          acc.push(prompt);
+          return acc;
+        }, temp);
+      acc.push(temp.join(' '));
       return acc;
     }, []);
-    _.reduce(this.aspects, (acc: string[], asp: any) => {
-      acc.push(`${asp.parties[0].name} in ${asp.aspect.name} with ${asp.parties[1].name}`);
-      return acc;
-    }, planets);
-    return planets.join(", ");
+
+    return planets.join("; ");
   }
 
   ngOnInit(): void {
@@ -911,7 +921,10 @@ export class AstralkaChartComponent implements OnInit {
   public perspective(kind: string): void {
     this.show_explanation = true;
     //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
-    const prompt = `Given the following information for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a analysis summary for ${kind}`;
+    const prompt = `
+      For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following information:
+      ${this.natal_description_for_ai}.\n
+      Analyze and write a summary in a few paragraphs about ${kind}`;
     this.rest.do_explain({prompt});
   }
 

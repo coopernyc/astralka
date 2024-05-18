@@ -80,7 +80,8 @@ export class Aspect implements IAspect {
     }    
 }
 const generationConfig = {    
-    maxOutputTokens: 2000
+    maxOutputTokens: 2048 // 2048*4 = 8192 letters
+    // default temperature of 1. For gemini pro 1.5 range 0 - 2, where 1 is middle between deterministic and creative answer
 };
 const safetySettings = [
     {
@@ -104,10 +105,10 @@ const safetySettings = [
         threshold: HarmBlockThreshold.BLOCK_NONE,
     }
   ];
-const ai_model = genAI.getGenerativeModel({ model: "gemini-pro", safetySettings, generationConfig } );
+
 export async function call_ai(prompt: string): Promise<string> {
-    let response: any;    
+    const ai_model = genAI.getGenerativeModel({ model: "gemini-pro", safetySettings, generationConfig } );
     const result = await ai_model.generateContent(prompt);
-    response = await result.response;    
+    const response = result.response;
     return response.text();
 }

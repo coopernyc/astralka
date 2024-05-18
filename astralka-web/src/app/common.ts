@@ -932,12 +932,12 @@ export const perspectives = [
   {
     label: "Health",
     icon: faHeartPulse,
-    prompt: "prospects of health, mental stability and emotional balance, list 2 body organs to pay attention to."
+    prompt: "prospects of health, longivity, mental stability and emotional balance, list 2 body organs to pay attention to."
   },
   {
     label: "Money",
     icon: faMoneyBill1,
-    prompt: "prospects of being rich, best and worst potential sources of getting rich."
+    prompt: "liklyhood of being rich. List 5 the best potential sources and worst obstacles of getting rich."
   },
   {
     label: "Intellect",
@@ -947,42 +947,42 @@ export const perspectives = [
   {
     label: "Books",
     icon: faBook,
-    prompt: "preferences in literature, list the genres, styles of the most and least favorite books, list 5 must and never read books and authors."
+    prompt: "preferences in literature, list the genres, styles of the most and least favorite books. List 5 must and never read books: author."
   },
   {
     label: "Emotions",
     icon: faSmile,
-    prompt: "emotional capabilities, list the areas of live where calm and harmonious or tense and stressful emotions will show."
+    prompt: "emotional balance. List 3 the areas of live where calm and harmonious or tense and stressful emotions will prevail."
   },
   {
     label: "Sexuality",
     icon: faMarsAndVenus,
-    prompt: "sexual attractiveness and sexual behavior, list the most and least preferable sexual genres and behaviors."
+    prompt: "sexual attractiveness and sexual behavior. List 3 the most and least preferable sexual genres and behaviors."
   },
   {
     label: "Family",
     icon: faPeopleRoof,
-    prompt: "prospects and potentials of having family. List the areas where the family will help the most."
+    prompt: "potentials of having family, size and conditions. List 2 areas where the family will help the most."
   },
   {
     label: "Friends",
     icon: faPeopleGroup,
-    prompt: "prospects for friends, their qualities, the most compatible and incompatible signs."
+    prompt: "prospects for having friends, amout of friends and closiness. List 3 the most and least compatible signs to be friends with."
   },
   {
     label: "Cars",
     icon: faCar,
-    prompt: "the list of the most and least preferable cars styles, makers and models."
+    prompt: "preferences in cars styles, makers and models. List 3 the most and the least suitable cars : brand : maker."
   },
   {
     label: "Romance",
     icon: faHeart,
-    prompt: "possibilities of romantic relationships, guess the most and least preferable partner qualities such as age, height, hair color and style, curvy of skinny, experienced or not. Draw the overall picture."
+    prompt: "possibilities of romantic relationships. Guess and list the most and least preferable partner qualities such as: age, height, hair color and hair style, curvy of skinny, experienced or not. Draw the overall picture."
   },
   {
     label: "Jobs",
     icon: faBriefcase,
-    prompt: "the most suitable and not suitable professions and the best choice jobs. List 5 best and 5 worst jobs."
+    prompt: "the most and the least suitable professions. List 5 the best and the worst jobs to choose."
   },
   {
     label: "Kids",
@@ -992,7 +992,7 @@ export const perspectives = [
   {
     label: "Marriage",
     icon: faRing,
-    prompt: "prospects of getting married, the most compatible and incompatible signs. Guess number of marriages."
+    prompt: "liklyhood of getting married and in what period of live. List the most and the least compatible signs for spouse. Guess number of marriages."
   },
   {
     label: "Leadership",
@@ -1002,12 +1002,12 @@ export const perspectives = [
   {
     label: "Food",
     icon: faBurger,
-    prompt: "the most and least preferable world cuisines and their specific food. List 5 most and least preferable foods. Guess best fast food brand."
+    prompt: "preferable world cuisines. List 5 the most and least preferable foods : dishes. Guess the favorite fast food brand."
   },
   {
     label: "Travel",
     icon: faLuggageCart,
-    prompt: "the most and least preferable world destinations for travel. List 10 destinations in the order starting from the best to worst."
+    prompt: "desire to travel or stay home. If travel, then list the most and least preferable world destinations in the format country : city."
   },
   {
     label: "Sports",
@@ -1017,62 +1017,62 @@ export const perspectives = [
   {
     label: "Drinks",
     icon: faCocktail,
-    prompt: "the most and least preferable alcoholic drinks, list 5 the most and the least favorite labels."
+    prompt: "the most and least preferable alcoholic drinks, list 5 the most and the least favorite brand : label."
   },
   {
     label: "Clothes",
     icon: faShirt,
-    prompt: "the most  and least preferable clothes, brands and styles, list 5 the most and the least favorite styles and brands."
+    prompt: "the most and least preferable clothes, brands and styles, list 5 the most and the least favorite styles such as: classic, modern, excentric, cheap, expensive etc and brands."
   },
   {
     label: "Hobbies",
     icon: faCouch,
-    prompt: "the most and the least preferable hobbies and interest activities, list 5 the most and the least suitable of them."
+    prompt: "the most and the least favorite hobbies. List 5 the most and the least suitable hobbies for example: watching tv, gaming, cooking, drinking, collecting, gambling, sex, physical exersises, reading, hiking, gardering, far niente doing nothing and etc ..."
   },
   {
     label: "Jewelries",
     icon: faCrown,
-    prompt: "the most and least suitable jewelries, list 5 brands and most favorite jewelry kinds and styles."
+    prompt: "the most and least suitable jewelries and types such as: ring, tiara, bling, collar, earings, piercings, neckleses, beads, puzzle, bracelets, brosh, gold chains and etc. Given gender and age list 5 the most and the least favorite of them."
   },
   {
     label: "Gemstones",
     icon: faGem,
-    prompt: "the most and least suitable gem stones, list 5 of each."
+    prompt: "the most and least suitable gem stones. List 5 most suitable gem stones."
   },
   {
     label: "Colors",
     icon: faPalette,
-    prompt: "the most and the least preferable colors and their combination. "
+    prompt: "the most and the least preferable colors and their combination. List 5 the most and the least favorite colors."
   },
   {
     label: "Pets",
     icon: faDog,
-    prompt: "the most and the least preferable kinds, breeds and sizes of pets. List 3 most and least favorite pets."
+    prompt: "the most and the least preferable kinds, breeds and sizes of pets. List 3 the most and the least suitable pets."
   },
   {
     label: "Luck",
     icon: faClover,
-    prompt: "the chances in gambling, risky activities and lottery suggestions. Guess 6 lucky numbers."
+    prompt: "the chances in gambling, risky activities and lottery numbers suggestions. Guess 6 lucky numbers."
   },
   {
     label: "Trees",
     icon: faPagelines,
-    prompt: "the most and the least preferable kinds of trees."
+    prompt: "the most and the least preferable kinds of trees. List 3 the best and worst suitable in format kind : name "
   },
   {
     label: "Religiousness",
     icon: faChurch,
-    prompt: "the religiousness, most inclined to be atheist or believer, list 2 of the most and least suitable world religions."
+    prompt: "the religiousness, most inclined to be atheist or believer, list 3 of the most and least suitable world religions."
   },
   {
     label: "Flowers",
     icon: faFan,
-    prompt: "the most and the least preferable flowers, give recommendation for preferable combination in a bucket. What would be the best birthday bucket?"
+    prompt: `the most and the least likable flowers. List 5 the most and the least suitable flowers in a format: flower: what is symbolizes`
   },
   {
     label: "Music",
     icon: faMusic,
-    prompt: "the most and the least preferable genres, kinds, styles and bands in music, potential to play on music instrument and it's kind."
+    prompt: `the most and the least preferable genres, styles in music. Indicate 5 the most and the least favorite of genres: bands. List potential to play on a specific music instrument in an format: instrumet: genre`
   },
   {
     label: "Arts",
@@ -1082,12 +1082,12 @@ export const perspectives = [
   {
     label: "Inheritance",
     icon: faBookSkull,
-    prompt: "possibilities of getting any inheritance or how family ancestors might affect."
+    prompt: "possibilities of getting any inheritance and will it be smooth or with family litigation."
   },
   {
     label: "Investments",
     icon: faBank,
-    prompt: "the most and least preferable ways to invest and kinds of investments. Base on analysis guess 5 best Stocks."
+    prompt: "the most and least preferable ways to invest and kinds of investments. Guess and list 5 the most and the least favorite stocks to invest."
   },
   {
     label: "Technology",
@@ -1097,7 +1097,7 @@ export const perspectives = [
   {
     label: "Gadgets",
     icon: faMobile,
-    prompt: "the most and least preferable gadgets and devices, brands and styles. What would be the best present."
+    prompt: "the most and least preferable gadgets and devices, brands and styles. List 5 the most and the least suitable gadget : name."
   },
   {
     label: "Housing",
@@ -1107,7 +1107,7 @@ export const perspectives = [
   {
     label: "Country",
     icon: faGlobe,
-    prompt: "the most and least preferable country to live, name 5 from best to worst preferable places based on analysis."
+    prompt: "the most and the least suitable country to be living. List 5 the best and the worst suitable places to settle down."
   },
   {
     label: "Movies",
@@ -1117,7 +1117,7 @@ export const perspectives = [
   {
     label: "Social Media",
     icon: faFacebook,
-    prompt: "the most and least preferable social media, ability to monetize on content, list5 from best to worst preferable social media apps."
+    prompt: "the most and least preferable social media, ability to monetize on content, list 5 from best to worst preferable social media apps."
   },
   {
     label: "Vacation",
