@@ -57,7 +57,7 @@ import {SafeHtmlPipe} from "../safe.html.pipe";
                width="20"
                height="20"
                viewBox="0 0 20 20">
-            <g svgg-symbol [x]="10" [y]="12" [name]="rotator.description" [options]="{scale: 1, stroke_color: '#fff'}"></g>
+            <g svgg-symbol [x]="10" [y]="12" [name]="rotator.description" [options]="{scale: 0.9, stroke_color: '#fff'}"></g>
           </svg>
         </span>
         <span class="description">{{rotator.description}}</span>

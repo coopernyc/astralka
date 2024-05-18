@@ -1,4 +1,4 @@
-@use '../../../styles/fonts' as font;
+@use '../../../styles/mixins';
 :host {
   .toolbar-container {
     width: 100%;
@@ -26,7 +26,7 @@
       padding-top: 2px;
       justify-content: center;
       text-align: center;
-      @include font.gafata-regular;
+      @include mixins.gafata-regular;
     }
     .toolbar-right {
       flex: 1;

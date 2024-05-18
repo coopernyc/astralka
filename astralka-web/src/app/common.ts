@@ -57,111 +57,114 @@ export const SYMBOL_STROKE_WIDTH = "1";
 export const CHART_MARGIN = 10;
 
 export function nl360(a: number): number {
-    return (a + 360) % 360;
+  return (a + 360) % 360;
 }
+
 export function nl180(a: number): number {
-    return nl360(a) % 180;
+  return nl360(a) % 180;
 }
+
 export enum Gender {
   Female,
   Male
 }
+
 export enum PersonScope {
   Public,
   Private
 
 }
+
 export const SYMBOL_PLANET = {
-    Sun: "Sun",
-    Moon: "Moon",
-    Mercury: "Mercury",
-    Venus: "Venus",
-    Mars: "Mars",
-    Jupiter: "Jupiter",
-    Saturn: "Saturn",
-    Uranus: "Uranus",
-    Neptune: "Neptune",
-    Pluto: "Pluto",
-    Chiron: "Chiron",
-    Lilith: "Lilith",
-    NorthNode: "NorthNode",
-    SouthNode: "SouthNode",
-    ParsFortuna: "ParsFortuna"
+  Sun: "Sun",
+  Moon: "Moon",
+  Mercury: "Mercury",
+  Venus: "Venus",
+  Mars: "Mars",
+  Jupiter: "Jupiter",
+  Saturn: "Saturn",
+  Uranus: "Uranus",
+  Neptune: "Neptune",
+  Pluto: "Pluto",
+  Chiron: "Chiron",
+  Lilith: "Lilith",
+  NorthNode: "NorthNode",
+  SouthNode: "SouthNode",
+  ParsFortuna: "ParsFortuna"
 };
 export const SYMBOL_ZODIAC = {
-    Aries: "Aries",
-    Taurus: "Taurus",
-    Gemini: "Gemini",
-    Cancer: "Cancer",
-    Leo: "Leo",
-    Virgo: "Virgo",
-    Libra: "Libra",
-    Scorpio: "Scorpio",
-    Sagittarius: "Sagittarius",
-    Capricorn: "Capricorn",
-    Aquarius: "Aquarius",
-    Pisces: "Pisces"
+  Aries: "Aries",
+  Taurus: "Taurus",
+  Gemini: "Gemini",
+  Cancer: "Cancer",
+  Leo: "Leo",
+  Virgo: "Virgo",
+  Libra: "Libra",
+  Scorpio: "Scorpio",
+  Sagittarius: "Sagittarius",
+  Capricorn: "Capricorn",
+  Aquarius: "Aquarius",
+  Pisces: "Pisces"
 };
 export const SYMBOL_HOUSE = {
-    Ascendant: "Ascendant",
-    Descendant: "Descendant",
-    MediumCoeli: "MediumCoeli",
-    ImmumCoeli: "ImmumCoeli"
+  Ascendant: "Ascendant",
+  Descendant: "Descendant",
+  MediumCoeli: "MediumCoeli",
+  ImmumCoeli: "ImmumCoeli"
 }
 export const SYMBOL_CUSP = {
-    Cusp1: "Cusp1",
-    Cusp2: "Cusp2",
-    Cusp3: "Cusp3",
-    Cusp4: "Cusp4",
-    Cusp5: "Cusp5",
-    Cusp6: "Cusp6",
-    Cusp7: "Cusp7",
-    Cusp8: "Cusp8",
-    Cusp9: "Cusp9",
-    Cusp10: "Cusp10",
-    Cusp11: "Cusp11",
-    Cusp12: "Cusp12"
+  Cusp1: "Cusp1",
+  Cusp2: "Cusp2",
+  Cusp3: "Cusp3",
+  Cusp4: "Cusp4",
+  Cusp5: "Cusp5",
+  Cusp6: "Cusp6",
+  Cusp7: "Cusp7",
+  Cusp8: "Cusp8",
+  Cusp9: "Cusp9",
+  Cusp10: "Cusp10",
+  Cusp11: "Cusp11",
+  Cusp12: "Cusp12"
 }
 export const SYMBOL_ASPECT = {
-    Conjunction: "Conjunction",
-    Opposition: "Opposition",
-    Trine: "Trine",
-    Square: "Square",
-    Sextile: "Sextile",
-    Quincunx: "Quincunx",
-    Sesquisquare: "Sesquisquare",
-    Semisquare: "Semisquare",
-    Semisextile: "Semisextile",
-    Quintile: "Quintile",
-    Biquintile: "Biquintile",
-    Nonile: "Nonile",
-    Decile: "Decile",
-    Septile: "Septile",
-    Centile: "Centile",
-    Tridecile: "Tridecile",
-    Biseptile: "Biseptile",
-    Triseptile: "Triseptile",
-    Vigintile: "Vigintile",
-    Binonile: "Binonile",
+  Conjunction: "Conjunction",
+  Opposition: "Opposition",
+  Trine: "Trine",
+  Square: "Square",
+  Sextile: "Sextile",
+  Quincunx: "Quincunx",
+  Sesquisquare: "Sesquisquare",
+  Semisquare: "Semisquare",
+  Semisextile: "Semisextile",
+  Quintile: "Quintile",
+  Biquintile: "Biquintile",
+  Nonile: "Nonile",
+  Decile: "Decile",
+  Septile: "Septile",
+  Centile: "Centile",
+  Tridecile: "Tridecile",
+  Biseptile: "Biseptile",
+  Triseptile: "Triseptile",
+  Vigintile: "Vigintile",
+  Binonile: "Binonile",
 
-    // need symbols
-    //Semiquintile: "Semiquintile"
+  // need symbols
+  //Semiquintile: "Semiquintile"
 
 }
-//export const ZodiacSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
 export const ZodiacSigns: string[] = [
-    SYMBOL_ZODIAC.Aries,
-    SYMBOL_ZODIAC.Taurus,
-    SYMBOL_ZODIAC.Gemini,
-    SYMBOL_ZODIAC.Cancer,
-    SYMBOL_ZODIAC.Leo,
-    SYMBOL_ZODIAC.Virgo,
-    SYMBOL_ZODIAC.Libra,
-    SYMBOL_ZODIAC.Scorpio,
-    SYMBOL_ZODIAC.Sagittarius,
-    SYMBOL_ZODIAC.Capricorn,
-    SYMBOL_ZODIAC.Aquarius,
-    SYMBOL_ZODIAC.Pisces
+  SYMBOL_ZODIAC.Aries,
+  SYMBOL_ZODIAC.Taurus,
+  SYMBOL_ZODIAC.Gemini,
+  SYMBOL_ZODIAC.Cancer,
+  SYMBOL_ZODIAC.Leo,
+  SYMBOL_ZODIAC.Virgo,
+  SYMBOL_ZODIAC.Libra,
+  SYMBOL_ZODIAC.Scorpio,
+  SYMBOL_ZODIAC.Sagittarius,
+  SYMBOL_ZODIAC.Capricorn,
+  SYMBOL_ZODIAC.Aquarius,
+  SYMBOL_ZODIAC.Pisces
 ];
 export const ZodiacSignMode = {
   Cardinal: "Cardinal",
@@ -174,11 +177,13 @@ export const ZodiacSignElement = {
   Air: "Air",
   Water: "Water"
 }
+
 export enum StaticDataType {
   Sign,
   Planet,
   Aspect
 }
+
 export function contextStaticData(context: string): any {
   if (_.includes(ZodiacSigns, context)) {
     return {
@@ -188,6 +193,7 @@ export function contextStaticData(context: string): any {
   }
   return undefined;
 }
+
 export const SYMBOL_TAROT = {
   Emperor: "Emperor",
   Hierophant: "Hierophant",
@@ -524,8 +530,9 @@ export const SymbolStaticData = {
 }
 
 export function pad2(n: number | string): string {
-    return _.padStart(n + '', 2);
+  return _.padStart(n + '', 2);
 }
+
 export function convert_DD_to_DMS(degrees: number, sign = "°"): string {
   const deg = degrees | 0;
   const frac = Math.abs(degrees - deg);
@@ -539,6 +546,7 @@ export function convert_lat_to_DMS(lat: number): string {
   const l = Math.abs(lat);
   return `${convert_DD_to_DMS(l)}${suffix}`;
 }
+
 export function convert_long_to_DMS(long: number): string {
   const suffix = long >= 0 ? 'E' : 'W';
   const l = Math.abs(long);
@@ -546,38 +554,29 @@ export function convert_long_to_DMS(long: number): string {
 }
 
 export function convert_DD_to_D(degrees: number, sign = "°"): string {
-    var deg = degrees | 0;
-    var frac = Math.abs(degrees - deg);
-    var dec = (frac * 10)|0;
-    return `${deg}${dec!==0?'.'+dec:''}${sign}`;
+  var deg = degrees | 0;
+  var frac = Math.abs(degrees - deg);
+  var dec = (frac * 10) | 0;
+  return `${deg}${dec !== 0 ? '.' + dec : ''}${sign}`;
 }
-export function pos_in_zodiac_sign(longitude: number): number {
-    return longitude % 30;
-}
-export function zodiac_sign(longitude: number): string {
-    return ZodiacSigns[Math.floor(longitude / 30)];
-}
-// export function zodiac_symbol(longitude: number): string {
-//     return ZodiacSymbols[Math.floor(longitude / 30)];
-// }
-// export function format_pos_in_zodiac(position: number, sign_as_symbol: boolean = true): string {
-//     const sign = sign_as_symbol ? zodiac_symbol(position) : ' ' + zodiac_sign(position) + ' ';
-//     return convert_DD_to_DMS(pos_in_zodiac_sign(position), sign);
-// }
-// export function random_point_on_the_line(p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
-//     const a = (p2.y - p1.y) / (p2.x - p1.x);
-//     const b = p1.y - a * p1.x;
-//     const d = (p2.x - p1.x);
-//     const rnd_x = p1.x + d/5 + 3 * (p2.x - p1.x) / 5 * Math.random();
-//     return {x: rnd_x, y: a * rnd_x + b};
-// }
 
-export function point_on_the_line(n: number, p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
+export function pos_in_zodiac_sign(longitude: number): number {
+  return longitude % 30;
+}
+
+export function zodiac_sign(longitude: number): string {
+  return ZodiacSigns[Math.floor(longitude / 30)];
+}
+
+export function point_on_the_line(n: number, p1: { x: number, y: number }, p2: { x: number, y: number }): {
+  x: number,
+  y: number
+} {
   if (n == 0 || (p1.x == p2.x && p1.y == p2.y)) {
     return p1;
   }
   if (p2.x == p1.x) {
-    return { x: p1.x, y: (p2.x - p1.x) / n };
+    return {x: p1.x, y: (p2.x - p1.x) / n};
   } else {
     const a = (p2.y - p1.y) / (p2.x - p1.x);
     const b = p1.y - a * p1.x;
@@ -586,32 +585,51 @@ export function point_on_the_line(n: number, p1: {x: number, y: number}, p2: {x:
   }
 }
 
+export function format_party(party: any): string {
+  const r = _.isUndefined(party.speed) || party.speed >= 0 ? '' : 'retrograde ';
+  let result: string;
+  if (_.startsWith(party.name, 'Cusp')) {
+    result = `${party.symbol} House in ${zodiac_sign(party.position)}`;
+  } else {
+    result = `${r}${party.name} in ${zodiac_sign(party.position)} and in ${party.house.symbol} House in ${zodiac_sign(party.house.position)}`;
+  }
+  return result;
+}
+
 export interface IDraggableOptions {
   zones?: string[],
   data?: any
 }
+
 export interface IDroppableOptions {
   data?: any;
   zone?: string;
 }
+
 export interface IDroppableEventObject {
   data: any;
   zone: any;
 }
 
-export function one_third_point_on_the_line(p1: {x: number, y: number}, p2: {x: number, y: number}) : {x: number, y: number} {
+export function one_third_point_on_the_line(p1: { x: number, y: number }, p2: { x: number, y: number }): {
+  x: number,
+  y: number
+} {
   return point_on_the_line(3, p1, p2);
 }
 
-export function rotate_point_around_center(c: {x: number, y: number}, p: {x: number, y: number}, angle: number) : {x: number, y: number} {
-    const d = { x: p.x - c.x, y: p.y - c.y };
+export function rotate_point_around_center(c: { x: number, y: number }, p: { x: number, y: number }, angle: number): {
+  x: number,
+  y: number
+} {
+  const d = {x: p.x - c.x, y: p.y - c.y};
 
-    const n = { x: Math.cos(angle * Math.PI/180), y: Math.sin(angle* Math.PI/180) };
-    const r = { x: d.x * n.x - d.y * n.y, y: d.x * n.y + d.y * n.x };
-    return {
-        x: r.x + c.x,
-        y: r.y + c.y
-    }
+  const n = {x: Math.cos(angle * Math.PI / 180), y: Math.sin(angle * Math.PI / 180)};
+  const r = {x: d.x * n.x - d.y * n.y, y: d.x * n.y + d.y * n.x};
+  return {
+    x: r.x + c.x,
+    y: r.y + c.y
+  }
 }
 
 export function age(date: any): number {
@@ -619,108 +637,110 @@ export function age(date: any): number {
   return moment.utc().diff(bd, 'years');
 }
 
-export function pos_in_zodiac(position: number) : any {
-    const z_pos = pos_in_zodiac_sign(position);
-    const deg = z_pos | 0;
-    const frac = Math.abs(z_pos - deg);
-    const min = (frac * 60) | 0;
-    const sec = Math.round(frac * 3600 - min * 60);
-    return {
-        position: position,
-        deg,
-        min,
-        sec,
-        deg_fmt: deg + "°",
-        min_fmt: min + "'" ,
-        sec_fmt: sec + "\"",
-        sign: ZodiacSigns[Math.floor(position / 30)]
-    };
+export function pos_in_zodiac(position: number): any {
+  const z_pos = pos_in_zodiac_sign(position);
+  const deg = z_pos | 0;
+  const frac = Math.abs(z_pos - deg);
+  const min = (frac * 60) | 0;
+  const sec = Math.round(frac * 3600 - min * 60);
+  return {
+    position: position,
+    deg,
+    min,
+    sec,
+    deg_fmt: deg + "°",
+    min_fmt: min + "'",
+    sec_fmt: sec + "\"",
+    sign: ZodiacSigns[Math.floor(position / 30)]
+  };
 }
+
 export function aspect_color(angle: number): any {
-    let options = {};
-    switch (angle) {
-        case 0:
-            options = { stroke_color: "#49c1c1", stroke_width: 1 };
-            break;
+  let options = {};
+  switch (angle) {
+    case 0:
+      options = {stroke_color: "#49c1c1", stroke_width: 1};
+      break;
 
-        case 180:
-        case 90:
-            options = { stroke_color: "#fb5757" };
-            break;
-        case 45:
-        case 135:
-            options = { stroke_color: "#fb5757", stroke_dasharray: "1,2" };
-            break;
+    case 180:
+    case 90:
+      options = {stroke_color: "#fb5757"};
+      break;
+    case 45:
+    case 135:
+      options = {stroke_color: "#fb5757", stroke_dasharray: "1,2"};
+      break;
 
-        case 120:
-        case 60:
-            options = { stroke_color: "#7ffa7f" };
-            break;
-        case 150:
-        case 30:
-            options = { stroke_color: "#7ffa7f", stroke_dasharray: "1,2" };
-            break;
-
-
-        case 144:
-        case 72:
-            options = { stroke_color: "#9c9cfb" };
-            break;
-        case 36:
-        case 18:
-        case 108:
-            options = { stroke_color: "#9c9cfb", stroke_dasharray: "1,2" };
-            break;
-
-        case 80:
-        case 40:
-            options = { stroke_color: "#9c9cfb" };
-            break;
-        case 100:
-        case 20:
-            options = { stroke_color: "#9c9cfb", stroke_dasharray: "1,2" };
-            break;
+    case 120:
+    case 60:
+      options = {stroke_color: "#7ffa7f"};
+      break;
+    case 150:
+    case 30:
+      options = {stroke_color: "#7ffa7f", stroke_dasharray: "1,2"};
+      break;
 
 
-        case 102.8:
-        case 51.4:
-            options = { stroke_color: "#ffe100"};
-            break;
-        case 154.2:
-            options = { stroke_color: "#ffe100", stroke_dasharray: "1,1"};
-            break;
-    }
-    return options;
+    case 144:
+    case 72:
+      options = {stroke_color: "#9c9cfb"};
+      break;
+    case 36:
+    case 18:
+    case 108:
+      options = {stroke_color: "#9c9cfb", stroke_dasharray: "1,2"};
+      break;
+
+    case 80:
+    case 40:
+      options = {stroke_color: "#9c9cfb"};
+      break;
+    case 100:
+    case 20:
+      options = {stroke_color: "#9c9cfb", stroke_dasharray: "1,2"};
+      break;
+
+
+    case 102.8:
+    case 51.4:
+      options = {stroke_color: "#ffe100"};
+      break;
+    case 154.2:
+      options = {stroke_color: "#ffe100", stroke_dasharray: "1,1"};
+      break;
+  }
+  return options;
 }
 
 //stroke_dasharray: "5,3"
 
-export function calculate_arrow(L: number, W: number, p1: any, p2: any, options: any): any[]  {
-    const [dx, dy] = [p2.x - p1.x, p2.y - p1.y];
-    const Norm = Math.sqrt(dx*dx + dy*dy);
-    const [udx, udy] = [dx/Norm, dy/Norm];
-    const [upx, upy] = [-udy, udx];
-    return [
-        {
-            p1: { x:  p2.x - udx * L + W * upx, y: p2.y - udy * L + W * upy},
-            p2,
-            options,
-        },
-        {
-            p1: { x: p2.x - udx * L - W * upx, y: p2.y - udy * L - W * upy},
-            p2,
-            options
-        }
-    ];
+export function calculate_arrow(L: number, W: number, p1: any, p2: any, options: any): any[] {
+  const [dx, dy] = [p2.x - p1.x, p2.y - p1.y];
+  const Norm = Math.sqrt(dx * dx + dy * dy);
+  const [udx, udy] = [dx / Norm, dy / Norm];
+  const [upx, upy] = [-udy, udx];
+  return [
+    {
+      p1: {x: p2.x - udx * L + W * upx, y: p2.y - udy * L + W * upy},
+      p2,
+      options,
+    },
+    {
+      p1: {x: p2.x - udx * L - W * upx, y: p2.y - udy * L - W * upy},
+      p2,
+      options
+    }
+  ];
 }
 
 
-export function rnd_suffix() : string {
+export function rnd_suffix(): string {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
       .substring(1);
   }
+
   return s4() + s4() + '_' + s4() + s4();
 }
 
@@ -751,7 +771,7 @@ export enum ToolbarMenuSpan {
 export interface IToolbarCmdBase {
   mask: ToolbarCmdMask,
   hidden?: boolean,
-  align?: ToolbarAlign|number
+  align?: ToolbarAlign | number
 }
 
 export interface IToolbarItem {
@@ -759,43 +779,48 @@ export interface IToolbarItem {
   disabled: () => boolean;
   label?: string;
   icon?: IconDefinition;
-  iconResolver?: () => { icon: IconDefinition|string, cssClass: string };
+  iconResolver?: () => { icon: IconDefinition | string, cssClass: string };
   tooltip?: string;
   options?: any;
 }
+
 export interface IToolbarSeparator extends IToolbarCmdBase {
   type: 'separator';
 }
+
 export interface IToolbarMenu extends IToolbarCmdBase, IToolbarItem {
   type: 'menu';
   commands: IToolbarCmd[];
   menuSpan?: ToolbarMenuSpan;
 }
+
 export interface IToolbarNavCmd extends IToolbarCmdBase, IToolbarItem {
   type: 'item';
   action: () => void;
 }
+
 export type IToolbarCmd = IToolbarNavCmd | IToolbarSeparator | IToolbarMenu;
 
 export interface IPersonInfo {
-    _id?: string,
-    name: string,
-    date: string,
-    timezone: number,
-    dateUT: string,
-    location: {
-        latitude: number,
-        longitude: number,
-        elevation: number,
-        name: string
-    },
-    gender: number,
-    scope: number,
-    createdBy?: string,
-    createdDate?: Date,
-    updatedBy?: string,
-    updatedDate?: Date
+  _id?: string,
+  name: string,
+  date: string,
+  timezone: number,
+  dateUT: string,
+  location: {
+    latitude: number,
+    longitude: number,
+    elevation: number,
+    name: string
+  },
+  gender: number,
+  scope: number,
+  createdBy?: string,
+  createdDate?: Date,
+  updatedBy?: string,
+  updatedDate?: Date
 }
+
 export interface IPersonEntry {
   name: string,
   locationName: string,
@@ -807,6 +832,7 @@ export interface IPersonEntry {
   gender: Gender,
   scope: PersonScope
 }
+
 export const UserRole = {
   Admin: 'Administrator',
   User: 'User'
@@ -910,237 +936,237 @@ export const perspectives = [
   },
   {
     label: "Money",
-    icon:  faMoneyBill1,
+    icon: faMoneyBill1,
     prompt: "prospects of being rich, best and worst potential sources of getting rich."
   },
   {
     label: "Intellect",
-    icon:  faBrain,
+    icon: faBrain,
     prompt: "intellectual capabilities, list the areas of live with the most and least intellectual interest."
   },
   {
     label: "Books",
-    icon:  faBook,
+    icon: faBook,
     prompt: "preferences in literature, list the genres, styles of the most and least favorite books, list 5 must and never read books and authors."
   },
   {
     label: "Emotions",
-    icon:  faSmile,
+    icon: faSmile,
     prompt: "emotional capabilities, list the areas of live where calm and harmonious or tense and stressful emotions will show."
   },
   {
     label: "Sexuality",
-    icon:  faMarsAndVenus,
+    icon: faMarsAndVenus,
     prompt: "sexual attractiveness and sexual behavior, list the most and least preferable sexual genres and behaviors."
   },
   {
     label: "Family",
-    icon:  faPeopleRoof,
+    icon: faPeopleRoof,
     prompt: "prospects and potentials of having family. List the areas where the family will help the most."
   },
   {
     label: "Friends",
-    icon:  faPeopleGroup,
+    icon: faPeopleGroup,
     prompt: "prospects for friends, their qualities, the most compatible and incompatible signs."
   },
   {
     label: "Cars",
-    icon:  faCar,
+    icon: faCar,
     prompt: "the list of the most and least preferable cars styles, makers and models."
   },
   {
     label: "Romance",
-    icon:  faHeart,
+    icon: faHeart,
     prompt: "possibilities of romantic relationships, guess the most and least preferable partner qualities such as age, height, hair color and style, curvy of skinny, experienced or not. Draw the overall picture."
   },
   {
     label: "Jobs",
-    icon:  faBriefcase,
+    icon: faBriefcase,
     prompt: "the most suitable and not suitable professions and the best choice jobs. List 5 best and 5 worst jobs."
   },
   {
     label: "Kids",
-    icon:  faBabyCarriage,
+    icon: faBabyCarriage,
     prompt: "potential of having kids. Guess on a potential number of kids and their gender."
   },
   {
     label: "Marriage",
-    icon:  faRing,
+    icon: faRing,
     prompt: "prospects of getting married, the most compatible and incompatible signs. Guess number of marriages."
   },
   {
     label: "Leadership",
-    icon:  faPersonChalkboard,
+    icon: faPersonChalkboard,
     prompt: "potential of taking leadership and areas where can easily lead and areas conflicting with authorities."
   },
   {
     label: "Food",
-    icon:  faBurger,
+    icon: faBurger,
     prompt: "the most and least preferable world cuisines and their specific food. List 5 most and least preferable foods. Guess best fast food brand."
   },
   {
     label: "Travel",
-    icon:  faLuggageCart,
+    icon: faLuggageCart,
     prompt: "the most and least preferable world destinations for travel. List 10 destinations in the order starting from the best to worst."
   },
   {
     label: "Sports",
-    icon:  faVolleyballBall,
+    icon: faVolleyballBall,
     prompt: "the most and the least suitable sports and physical activities, list 5 the most and the least favorite sports."
   },
   {
     label: "Drinks",
-    icon:  faCocktail,
+    icon: faCocktail,
     prompt: "the most and least preferable alcoholic drinks, list 5 the most and the least favorite labels."
   },
   {
     label: "Clothes",
-    icon:  faShirt,
+    icon: faShirt,
     prompt: "the most  and least preferable clothes, brands and styles, list 5 the most and the least favorite styles and brands."
   },
   {
     label: "Hobbies",
-    icon:  faCouch,
+    icon: faCouch,
     prompt: "the most and the least preferable hobbies and interest activities, list 5 the most and the least suitable of them."
   },
   {
     label: "Jewelries",
-    icon:  faCrown,
+    icon: faCrown,
     prompt: "the most and least suitable jewelries, list 5 brands and most favorite jewelry kinds and styles."
   },
   {
     label: "Gemstones",
-    icon:  faGem,
+    icon: faGem,
     prompt: "the most and least suitable gem stones, list 5 of each."
   },
   {
     label: "Colors",
-    icon:  faPalette,
+    icon: faPalette,
     prompt: "the most and the least preferable colors and their combination. "
   },
   {
     label: "Pets",
-    icon:  faDog,
+    icon: faDog,
     prompt: "the most and the least preferable kinds, breeds and sizes of pets. List 3 most and least favorite pets."
   },
   {
     label: "Luck",
-    icon:  faClover,
+    icon: faClover,
     prompt: "the chances in gambling, risky activities and lottery suggestions. Guess 6 lucky numbers."
   },
   {
     label: "Trees",
-    icon:  faPagelines,
+    icon: faPagelines,
     prompt: "the most and the least preferable kinds of trees."
   },
   {
     label: "Religiousness",
-    icon:  faChurch,
+    icon: faChurch,
     prompt: "the religiousness, most inclined to be atheist or believer, list 2 of the most and least suitable world religions."
   },
   {
     label: "Flowers",
-    icon:  faFan,
+    icon: faFan,
     prompt: "the most and the least preferable flowers, give recommendation for preferable combination in a bucket. What would be the best birthday bucket?"
   },
   {
     label: "Music",
-    icon:  faMusic,
+    icon: faMusic,
     prompt: "the most and the least preferable genres, kinds, styles and bands in music, potential to play on music instrument and it's kind."
   },
   {
     label: "Arts",
-    icon:  faMasksTheater,
+    icon: faMasksTheater,
     prompt: "the most and the least favorite genres, kinds, styles of art, potentials to be an artist, musician, dancer, singer, writer or dancer, list 7 preferable titles/names/authors in those arts."
   },
   {
     label: "Inheritance",
-    icon:  faBookSkull,
+    icon: faBookSkull,
     prompt: "possibilities of getting any inheritance or how family ancestors might affect."
   },
   {
     label: "Investments",
-    icon:  faBank,
+    icon: faBank,
     prompt: "the most and least preferable ways to invest and kinds of investments. Base on analysis guess 5 best Stocks."
   },
   {
     label: "Technology",
-    icon:  faMicrochip,
+    icon: faMicrochip,
     prompt: "the most and least preferable areas of technology. For information technology, specify which area, role and favorite programming languages and programming style."
   },
   {
     label: "Gadgets",
-    icon:  faMobile,
+    icon: faMobile,
     prompt: "the most and least preferable gadgets and devices, brands and styles. What would be the best present."
   },
   {
     label: "Housing",
-    icon:  faHouse,
+    icon: faHouse,
     prompt: "the most and least preferable housing, living in the city or suburbs, in apartment or private house, renting or owning, draw the overall picture."
   },
   {
     label: "Country",
-    icon:  faGlobe,
+    icon: faGlobe,
     prompt: "the most and least preferable country to live, name 5 from best to worst preferable places based on analysis."
   },
   {
     label: "Movies",
-    icon:  faFilm,
+    icon: faFilm,
     prompt: "the most and least preferable genres of movies, name 5 from best to worst titles to watch based on age, gender and analysis."
   },
   {
     label: "Social Media",
-    icon:  faFacebook,
+    icon: faFacebook,
     prompt: "the most and least preferable social media, ability to monetize on content, list5 from best to worst preferable social media apps."
   },
   {
     label: "Vacation",
-    icon:  faPlaneDeparture,
+    icon: faPlaneDeparture,
     prompt: "the most and least preferable vacation destinations, guess 5 from best to worst preferable vacation styles between: beach, mountains, cold north, warm tropics, cruise, hotel, ocean, pool, hiking, staying one place, active, relaxing, museums and historical, all inclusive resort."
   },
   {
     label: "Perfumes",
-    icon:  faBottleDroplet,
+    icon: faBottleDroplet,
     prompt: "the most and least favorite perfumes and cosmetics, for woman indicate if heavy makeup or natural look more suitable, given age and gender list 3 of the best and worst perfume brand and label to gift."
   },
   {
     label: "Gifts",
-    icon:  faGifts,
+    icon: faGifts,
     prompt: "the most and least favorite gifts to receive, given age and gender what would be the best gift? List 5 best and worst gifts based on analysis."
   },
   {
     label: "Politics",
-    icon:  faSpeakerDeck,
+    icon: faSpeakerDeck,
     prompt: "the most and least political preferences. Based on age and analysis guess the most and least preferable party between: communist, ultra lefts, socialists, liberals, democrats, centrists, republicans, conservators, capitalists, ultra right, nationalists."
   },
   {
     label: "Habits",
-    icon:  faSmokingBan,
+    icon: faSmokingBan,
     prompt: "possibility of having the good and bad habits, traits and addictions. Based on analysis guess 3 of the worst and best of them."
   },
   {
     label: "Study",
-    icon:  faChalkboardTeacher,
+    icon: faChalkboardTeacher,
     prompt: "the best and the least suitable fields of study. Guess level of education achievable and list of best choice study subjects."
   },
   {
     label: "Diet",
-    icon:  faPlateWheat,
+    icon: faPlateWheat,
     prompt: "the best and the least suitable diet, guess the possibility of being overweight or underweight, list 5 most and least preferable dishes."
   },
   {
     label: "Spendings",
-    icon:  faCommentDollar,
+    icon: faCommentDollar,
     prompt: "the spending habits, such as frugal and saving or careless and incautious, financial security, long-term saving for retirement or short-term and living fully every single day."
   },
   {
     label: "Stability",
-    icon:  faChessRook,
+    icon: faChessRook,
     prompt: "the stability factor of live, guess on would it be easy going and calm verse bumpy road and stormy unrest, list periods of live with most and least stability."
   },
   {
     label: "Immigration",
-    icon:  faArrowDownUpAcrossLine,
+    icon: faArrowDownUpAcrossLine,
     prompt: "the possibility of immigration to another country, in what period of life and guess what countries are most and the least suitable for that."
   }
 ];

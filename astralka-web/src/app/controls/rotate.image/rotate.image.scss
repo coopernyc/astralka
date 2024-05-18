@@ -1,3 +1,5 @@
+@use '../../../styles/mixins';
+
 :host {
 
   ::ng-deep p {
@@ -16,7 +18,8 @@
       padding: 18px 8px 8px 8px;
       overflow: scroll;
 
-      font-family: "Lato", sans-serif;
+      @include mixins.gafata-regular;
+      //font-family: "Lato", sans-serif;
       h3 {
         margin: 18px 0 8px 0;
         font-weight: 800;

@@ -4,7 +4,7 @@ import {PortalModule} from "@angular/cdk/portal";
 import {Overlay, OverlayModule} from "@angular/cdk/overlay";
 import {ChartSymbol} from "../graphics/chart-symbol";
 import {AstralkaBasePortalComponent} from "../base.portal";
-import {aspect_color, convert_DD_to_D, SYMBOL_CUSP, SYMBOL_PLANET, zodiac_sign} from "../../common";
+import {aspect_color, convert_DD_to_D, format_party, SYMBOL_CUSP, SYMBOL_PLANET} from "../../common";
 import _ from "lodash";
 import {ChartText} from "../graphics/chart-text";
 import {RestService} from "../../services/rest.service";
@@ -180,21 +180,10 @@ export class AstralkaAspectMatrixComponent extends AstralkaBasePortalComponent i
     this.pool = _.flatten(_.partition(this.pool, x => x !== m));
     if (m && m.type === 1 && m.aspect) {
       this.selected = m;
-      const party0 = this.format_party(this.selected.aspect.parties[0]);
-      const party1 = this.format_party(this.selected.aspect.parties[1]);
+      const party0 = format_party(this.selected.aspect.parties[0]);
+      const party1 = format_party(this.selected.aspect.parties[1]);
       const prompt = `Write in 30-40 words interpretation of ${party0} is in ${this.selected.aspect.aspect.name} with ${party1}.`;
       this.rest.do_explain({prompt, params: m, context: this.selected.aspect.aspect.name});
     }
-  }
-
-  private format_party(party: any): string {
-    const r = _.isUndefined(party.speed) || party.speed >= 0 ? '' : 'retrograde ';
-    let result;
-    if (_.startsWith(party.name, 'Cusp')) {
-      result = `${party.symbol} House in ${zodiac_sign(party.position)}`;
-    } else {
-      result = `${r}${party.name} in ${zodiac_sign(party.position)} and in ${party.house.symbol} House in ${zodiac_sign(party.house.position)}`;
-    }
-    return result;
   }
 }

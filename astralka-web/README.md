@@ -1,7 +1,7 @@
 # Astralka-Web
 The project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.2.
 
-<img src="https://github.com/coopernyc/astralka/assets/11201225/9fc32844-c87c-429d-a6f6-43b1623c62d7" width="320" height="400" />
+<img alt="scorpio" src="https://github.com/coopernyc/astralka/assets/11201225/9fc32844-c87c-429d-a6f6-43b1623c62d7" width="320" height="400" />
 
 ## Installation
 

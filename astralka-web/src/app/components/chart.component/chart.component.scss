@@ -1,10 +1,6 @@
 @use "../../../styles/portal_base" as portal;
+@use "../../../styles/mixins";
 
-@mixin gafata-regular {
-  font-family: "Gafata", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
 @mixin germania-one-regular {
   font-family: "Germania One", system-ui;
   font-weight: 400;
@@ -214,7 +210,7 @@ form {
       background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAoCAQAAAClM0ndAAAAhklEQVR4AdXO0QrCMBBE0bttkk38/w8WRERpdyjzVOc+HxhIHqJGMQcFFkpYRQotLLSw0IJ5aBdovruMYDA/kT8plF9ZKLFQcgF18hDj1SbQOMlCA4kao0iiXmah7qBWPdxpohsgVZyj7e5I9KcID+EhiDI5gxBYKLBQYKHAQoGFAoEks/YEGHYKB7hFxf0AAAAASUVORK5CYII=') repeat-x scroll left top #baa973;
       border-radius: 10px 10px 0 0;
       text-align: center;
-      @include gafata-regular;
+      @include mixins.gafata-regular;
       font-size: 1rem;
       color: white;
       text-shadow: 1px 1px 1px #3333;

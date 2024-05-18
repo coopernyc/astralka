@@ -42,8 +42,6 @@ import {ChartLine} from '../../controls/graphics/chart-line';
 import {FormsModule} from '@angular/forms';
 import {BreakpointObserver, LayoutModule} from '@angular/cdk/layout';
 import {ChartText} from '../../controls/graphics/chart-text';
-import {StatsLine} from '../../controls/graphics/stats-line';
-import {StatsAspect} from '../../controls/graphics/stats-aspect';
 import {RestService} from '../../services/rest.service';
 import {Observable, shareReplay} from 'rxjs';
 import {AstralkaLookupControlComponent} from '../../controls/lookup/lookup';
@@ -65,25 +63,20 @@ import {AstralkaPersonComponent} from "../person.component/person.component";
 import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {
-  faB,
   faBaby,
   faDice,
   faEye,
   faEyeSlash,
-  faGear,
-  faGears,
-  faLocationDot,
   faLocationPin,
   faMarsAndVenus,
   faMeteor,
-  faRefresh,
   faSave,
   faSignOut,
   faTools,
   faUserAstronaut,
   faUserNinja
 } from "@fortawesome/free-solid-svg-icons";
-import config from "assets/config.json";
+import * as config from "assets/config.json";
 import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.image";
 import {LocalStorageService} from "../../services/local.storage.service";
 import {AstralkaQuickPickComponent} from "../quick.pick.component/quick.pick.component";
@@ -98,8 +91,6 @@ import {AstralkaTransitMatrixComponent} from "../../controls/matrix/transit.matr
     ChartCircle,
     ChartLine,
     ChartText,
-    StatsLine,
-    StatsAspect,
     CommonModule,
     FormsModule,
     LayoutModule,
@@ -309,34 +300,40 @@ import {AstralkaTransitMatrixComponent} from "../../controls/matrix/transit.matr
                     </textPath>
                   </text>
                 </g>
+                <!-- NATAL or TRANSIT words under the center of the chart -->
                 <g>
                   <text class="chart-label" [attr.x]="cx + 7"
                         [attr.y]="cy + inner_radius / 5">{{ show_natal_aspects ? "NATAL" : "TRANSIT" }}
                   </text>
                 </g>
-
                 <!-- natal planet symbols -->
                 <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name" [fillBackground]="true"
-                   [fillBackgroundColor]="'#f4eeeadd'"></g>
+                   [fillBackgroundColor]="'#f4EEEADD'"></g>
                 <!-- natal r for retrograde planet text -->
                 <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
                 <!-- natal planet angle in sign -->
                 <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
                    class="planets-angle"></g>
-
+                <!-- house symbols -->
                 <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+                <!-- house degrees -->
                 <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
                    class="planets-angle"></g>
+                <!-- As, Dc, Mc, Ic labels -->
                 <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name"
                    [options]="{scale: 0.8, stroke_color: '#333'}"></g>
+                <!-- aspect symbols on aspect lines -->
                 <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name"
                    [options]="p.options"></g>
+                <!-- person's Zodiac sign symbol in the middle of the chart background circle -->
                 <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20"
                    [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
+                <!-- person's Zodiac sign symbol in the middle of the chart -->
                 <g svgg-symbol [x]="cx" [y]="cy" [name]="sign"
                    [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
 
               }
+              <!-- this is debug area will be removed -- for practicing drawing symbols -->
               <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
               <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
               <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
@@ -446,15 +443,9 @@ export class AstralkaChartComponent implements OnInit {
   protected readonly Gender = Gender;
   protected readonly convert_lat_to_DMS = convert_lat_to_DMS;
   protected readonly convert_long_to_DMS = convert_long_to_DMS;
-  protected readonly faLocationPin = faLocationPin;
-  protected readonly faLocationDot = faLocationDot;
-  protected readonly faRefresh = faRefresh;
   protected readonly faDice = faDice;
-  protected readonly faB = faB;
   protected readonly faBaby = faBaby;
   protected readonly faEye = faEye;
-  protected readonly faGears = faGears;
-  protected readonly faGear = faGear;
   protected readonly faTools = faTools;
   protected readonly faEyeSlash = faEyeSlash;
   protected readonly faMeteor = faMeteor;
@@ -681,9 +672,6 @@ export class AstralkaChartComponent implements OnInit {
               }
             };
           })
-      },
-      {
-        type: 'separator', mask: ToolbarCmdMask.All
       },
       {
         mask: ToolbarCmdMask.All,
@@ -1196,12 +1184,7 @@ export class AstralkaChartComponent implements OnInit {
       .filter(x => x.enabled)
       .map(x => x.name);
 
-    // Natal Aspects
-    if (this.show_natal_aspects) {
-      const aspects = this.data.Aspects.filter((x: any) =>
-        _.includes(aspect_names_enabled, x.aspect.name) &&
-        !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
-      );
+    const calc_aspects = (aspects: any[]) => {
       _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name')
         .forEach((x: any) => {
           let p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
@@ -1240,7 +1223,16 @@ export class AstralkaChartComponent implements OnInit {
           });
         }
       });
-      this._aspects = aspects;
+      return aspects;
+    }
+
+    // Natal Aspects
+    if (this.show_natal_aspects) {
+      const aspects = this.data.Aspects.filter((x: any) =>
+        _.includes(aspect_names_enabled, x.aspect.name) &&
+        !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
+      );
+      this._aspects = calc_aspects(aspects);
     } else {
       // Transit Aspects
 
@@ -1256,45 +1248,7 @@ export class AstralkaChartComponent implements OnInit {
           return _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name);
         })
       );
-      _.uniqBy(aspects.flatMap((x: any) => x.parties), 'name')
-        .forEach((x: any) => {
-          let p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius + 2, x.position);
-          let p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius, x.position);
-          this.lines.push({
-            p1,
-            p2,
-            options: {stroke_color: "#000"}
-          });
-          p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 1, x.position);
-          p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.position);
-          this.lines.push({
-            p1,
-            p2,
-            options: {stroke_color: "#fff"}
-          });
-        });
-
-      aspects.forEach((x: any) => {
-        const p1 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[0].position);
-        const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius - 3, x.parties[1].position);
-        let options = aspect_color(x.aspect.angle);
-        this.lines.push({
-          p1,
-          p2,
-          options
-        });
-
-        if (x.aspect.name !== SYMBOL_ASPECT.Conjunction) {
-          const rnd_p = one_third_point_on_the_line(p1, p2); //random_point_on_the_line(p1, p2);
-          const p = rotate_point_around_center({x: this.cx, y: this.cy}, rnd_p, this.offset_angle);
-          this.aspect_labels.push({
-            ...p,
-            name: x.aspect.name,
-            options
-          });
-        }
-      });
-      this._aspects = aspects;
+      this._aspects = calc_aspects(aspects);
     }
 
     // stat lines
