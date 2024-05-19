@@ -165,258 +165,272 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
 
               <div id="container">
 
-                  @if (data && selectedPerson) {
-                    <article id="person-info">
-                      <section><b>Natal Data</b></section>
-                      <section>Name: {{ selectedPerson.name }}</section>
-                      <section>Loc: {{ selectedPerson.location.name }}</section>
-                      <section>Lat: {{ convert_lat_to_DMS(selectedPerson.location.latitude) }}
-                        , {{ selectedPerson.location.latitude }}°{{ selectedPerson.location.latitude >= 0 ? 'N' : 'S' }}
-                      </section>
-                      <section>Long: {{ convert_long_to_DMS(selectedPerson.location.longitude) }}
-                        , {{ selectedPerson.location.longitude }}°{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
-                      </section>
-                      <section>Offset from UTC: {{ selectedPerson.timezone }}hours,
-                        Elevation: {{ selectedPerson.location.elevation }}m
-                      </section>
-                      <section>DOB: {{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
-                      <section>Age: {{ age }}, Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
-                      <section>House System: {{ selectedHouseSystemName }}</section>
-                      <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}, Score: {{ avg_score.toFixed(3) }}</section>
-                      <section>{{ show_natal_aspects ? "Showing NATAL aspects" : "Showing TRANSIT aspects" }}</section>
-                      <section style="margin-top: 1em">
-                        <astralka-position-data [kind]="'planets'" [positions]="stat_lines" [title]="'Natal Planets Position'">
-                          <fa-icon [icon]="faBaby"/>
-                          Planets
-                        </astralka-position-data>
-                      </section>
-                      <section>
-                        <astralka-position-data [kind]="'houses'" [positions]="stat_lines" [title]="'Natal Houses Position'">
-                          <fa-icon [icon]="faBaby"/>
-                          Houses
-                        </astralka-position-data>
-                      </section>
-                      <section>
-                        <astralka-matrix [data]="data" [title]="'Natal Aspects Matrix'">
-                          <fa-icon [icon]="faBaby"/>
-                          Matrix
-                        </astralka-matrix>
-                      </section>
-                    </article>
-                  }
-                  @if (data && data.Transit) {
-                    <article id="transit-info" [style.left.px]="width - 220">
-                      <section><b>Transit/Progression Data</b></section>
-                      <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
-                      <section>Date Time: {{ moment($any(calculatedTransitDateStr)).format('MMMM Do YYYY, h:mm:ss a') }}
-                      </section>
-                      <section style="margin-top: 1em; text-align: right">
-                        <astralka-house-system>
-                          <fa-icon [icon]="faTools"/>
-                          House System
-                        </astralka-house-system>
-                      </section>
-                      <section>
-                        <astralka-transit-settings>
-                          <fa-icon [icon]="faEye"/>
-                          Transits
-                        </astralka-transit-settings>
-                      </section>
-                      <section>
-                        <astralka-aspect-settings>
-                          <fa-icon [icon]="faEye"/>
-                          Aspects
-                        </astralka-aspect-settings>
-                      </section>
-<!--                      <section>-->
-<!--                        <button (click)="show_explanation = !show_explanation">-->
-<!--                          <fa-icon [icon]="show_explanation ? faEyeSlash : faEye"/>-->
-<!--                          Explanation-->
-<!--                        </button>-->
-<!--                      </section>-->
-                      <section style="margin-top: 1em">
-                        <astralka-position-data [kind]="'transits'" [positions]="stat_lines"
-                                                [title]="'Transit Planets Position'">
-                          <fa-icon [icon]="faMeteor"/>
-                          Planets
-                        </astralka-position-data>
-                      </section>
-                      <section>
-                        <astralka-transit-matrix [data]="data" [title]="'Transit Aspects Matrix'">
-                          <fa-icon [icon]="faMeteor"/>
-                          Matrix
-                        </astralka-transit-matrix>
-                      </section>
-                    </article>
-                  }
+                @if (data && selectedPerson) {
+                  <article id="person-info">
+                    <section><b>Natal Data</b></section>
+                    <section>Name: {{ selectedPerson.name }}</section>
+                    <section>Loc: {{ selectedPerson.location.name }}</section>
+                    <section>Lat: {{ convert_lat_to_DMS(selectedPerson.location.latitude) }}
+                      , {{ selectedPerson.location.latitude }}°{{ selectedPerson.location.latitude >= 0 ? 'N' : 'S' }}
+                    </section>
+                    <section>Long: {{ convert_long_to_DMS(selectedPerson.location.longitude) }}
+                      , {{ selectedPerson.location.longitude }}°{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
+                    </section>
+                    <section>Offset from UTC: {{ selectedPerson.timezone }}hours,
+                      Elevation: {{ selectedPerson.location.elevation }}m
+                    </section>
+                    <section>DOB: {{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
+                    <section>Age: {{ age }}, Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}
+                    </section>
+                    <section>House System: {{ selectedHouseSystemName }}</section>
+                    <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}, Score: {{ avg_score.toFixed(3) }}
+                    </section>
+                    <section>{{ show_natal_aspects ? "Showing NATAL aspects" : "Showing TRANSIT aspects" }}</section>
+                    <section style="margin-top: 1em">
+                      <astralka-position-data [kind]="'planets'" [positions]="stat_lines"
+                                              [title]="'Natal Planets Position'">
+                        <fa-icon [icon]="faBaby"/>
+                        Planets
+                      </astralka-position-data>
+                    </section>
+                    <section>
+                      <astralka-position-data [kind]="'houses'" [positions]="stat_lines"
+                                              [title]="'Natal Houses Position'">
+                        <fa-icon [icon]="faBaby"/>
+                        Houses
+                      </astralka-position-data>
+                    </section>
+                    <section>
+                      <astralka-matrix [data]="data" [title]="'Natal Aspects Matrix'">
+                        <fa-icon [icon]="faBaby"/>
+                        Matrix
+                      </astralka-matrix>
+                    </section>
+                  </article>
+                }
+                @if (data && data.Transit) {
+                  <article id="transit-info" [style.left.px]="width - 220">
+                    <section><b>Transit/Progression Data</b></section>
+                    <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
+                    <section>Date Time: {{ moment($any(calculatedTransitDateStr)).format('MMMM Do YYYY, h:mm:ss a') }}
+                    </section>
+                    <section style="margin-top: 1em; text-align: right">
+                      <astralka-house-system>
+                        <fa-icon [icon]="faTools"/>
+                        House System
+                      </astralka-house-system>
+                    </section>
+                    <section>
+                      <astralka-transit-settings>
+                        <fa-icon [icon]="faEye"/>
+                        Transits
+                      </astralka-transit-settings>
+                    </section>
+                    <section>
+                      <astralka-aspect-settings>
+                        <fa-icon [icon]="faEye"/>
+                        Aspects
+                      </astralka-aspect-settings>
+                    </section>
+                    <!--                      <section>-->
+                    <!--                        <button (click)="show_explanation = !show_explanation">-->
+                    <!--                          <fa-icon [icon]="show_explanation ? faEyeSlash : faEye"/>-->
+                    <!--                          Explanation-->
+                    <!--                        </button>-->
+                    <!--                      </section>-->
+                    <section style="margin-top: 1em">
+                      <astralka-position-data [kind]="'transits'" [positions]="stat_lines"
+                                              [title]="'Transit Planets Position'">
+                        <fa-icon [icon]="faMeteor"/>
+                        Planets
+                      </astralka-position-data>
+                    </section>
+                    <section>
+                      <astralka-transit-matrix [data]="data" [title]="'Transit Aspects Matrix'">
+                        <fa-icon [icon]="faMeteor"/>
+                        Matrix
+                      </astralka-transit-matrix>
+                    </section>
+                  </article>
+                }
 
-                  <!-- <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
-                    <img src="assets/astralka-logo.svg">
-                  </div> -->
-                  <svg
-                       [style.flex]="'flex: 0 ' + width + 'px'" xmlns="http://www.w3.org/2000/svg"
-                       [attr.width]="width"
-                       [attr.height]="height"
-                       [attr.viewBox]="'0 0 ' + width + ' ' + height"
-                       #chart
-                  >
-                    <defs>
-                      <filter x="0" y="0" width="1" height="1" id="solid">
-                        <feFlood flood-color="white" result="floodFill"/>
-                        <feComposite in="SourceGraphic" in2="floodFill" operator="over"/>
-                      </filter>
-                      <radialGradient id="shadow">
-                        <stop offset="99%" stop-color="#fff" />
-                        <stop offset="100%" stop-color="#999" />
-                      </radialGradient>
-                    </defs>
-                    <g>
-                      <!-- outside rectangle -->
-                      <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="none"></rect>
-                      <!-- outer circle -->
-                      <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius" [options]="{stroke_width: 2, fill: 'white'}" ></g>
-                      <!-- colored segments for zodiacs -->
-                      <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'">
-                        <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#009900" stroke-width="5"
-                                    pathLength="360" stroke-dasharray="30 90 30 90 30 90" fill="none"/>
-                        <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#cc0000" stroke-width="5"
-                                    pathLength="360" stroke-dasharray="0 30 30 90 30 90 30 60" fill="none"/>
-                        <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#336699" stroke-width="5"
-                                    pathLength="360" stroke-dasharray="0 60 30 90 30 90 30 30" fill="none"/>
-                        <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#ffd900" stroke-width="5"
-                                    pathLength="360" stroke-dasharray="0 90 30 90 30 90 30" fill="none"/>
-                      </g>
-                      <!-- inner 2 circles and 1 and 10 deg scale ruler -->
-                      <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
-                      <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius + 5" [options]="{stroke_color: '#777'}"></g>
-
-                      @if (this.data && this.selectedPerson) {
-                        <!-- inner house circle -->
-                        <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"
-                           [options]="{fill: data.dayChart ? '#420' : '#024'}"></g>
-                      }
-
-                      <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'" svgg-line
-                         *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y"
-                         [options]="l.options"></g>
-                      <!-- zodiac symbols -->
-                      <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name"
-                         [options]="zodiac_options(p)"></g>
-
-                      <!-- only when personal data is ready to be displayed and person selected -->
-                      @if (this.data && this.selectedPerson) {
-
-                        <!-- latin phrase for the sign drawn along a circular path -->
-                        <g>
-                          <path
-                            id="sector_path_0"
-                            [attr.d]="'M '+ cx +' ' + cy + 'm 0 ' + house_radius/2 + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0,-' + house_radius + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0 ' + house_radius + ' z'"
-                            fill="none"
-                          ></path>
-                          <text class="segment-label" x="0" y="0" dy="-2">
-                            <textPath xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sector_path_0" startOffset="50%"
-                                      text-anchor="middle">
-                              {{ latin_phrase?.phrase }}
-                            </textPath>
-                          </text>
-                        </g>
-                        <!-- NATAL or TRANSIT words under the center of the chart -->
-                        <g>
-                          <text class="chart-label" [attr.x]="cx + 7"
-                                [attr.y]="cy + inner_radius / 5">{{ show_natal_aspects ? "NATAL" : "TRANSIT" }}
-                          </text>
-                        </g>
-                        <!-- natal planet symbols -->
-                        <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name" [fillBackground]="true"
-                           [fillBackgroundColor]="p.kind==='natal'?'white':'#f4eeea'"></g>
-                        <!-- natal r for retrograde planet text -->
-                        <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
-                        <!-- natal planet angle in sign -->
-                        <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
-                           class="planets-angle"></g>
-                        <!-- house symbols -->
-                        <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
-                        <!-- house degrees -->
-                        <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y" [text]="p.label.angle"
-                           class="planets-angle"></g>
-                        <!-- As, Dc, Mc, Ic labels -->
-                        <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name"
-                           [options]="{scale: 0.8, stroke_color: '#333'}"></g>
-                        <!-- aspect symbols on aspect lines -->
-                        <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name"
-                           [options]="p.options"></g>
-                        <!-- person's Zodiac sign symbol in the middle of the chart background circle -->
-                        <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20"
-                           [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
-                        <!-- person's Zodiac sign symbol in the middle of the chart -->
-                        <g svgg-symbol [x]="cx" [y]="cy" [name]="sign"
-                           [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
-
-                      }
-                      <!-- this is debug area will be removed -- for practicing drawing symbols -->
-                      <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
-                      <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
-                      <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
-
-                      <g svgg-symbol [x]="60" [y]="30" [options]="{ scale: 2 }"></g>
-                      <g svgg-line [x1]="50" [y1]="30" [x2]="70" [y2]="30"></g>
-                      <g svgg-line [x1]="60" [y1]="20" [x2]="60" [y2]="40"></g>
-
-                      <g svgg-symbol [x]="90" [y]="30" [options]="{ scale: 0.5 }"></g>
-                      <g svgg-line [x1]="80" [y1]="30" [x2]="100" [y2]="30"></g>
-                      <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
-
-                      <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
-                      <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
+                <!-- <div style="position: absolute; display: block; top: 0px; left: 0; width: 50px; height: 50px;">
+                  <img src="assets/astralka-logo.svg">
+                </div> -->
+                <svg
+                  [style.flex]="'flex: 0 ' + width + 'px'" xmlns="http://www.w3.org/2000/svg"
+                  [attr.width]="width"
+                  [attr.height]="height"
+                  [attr.viewBox]="'0 0 ' + width + ' ' + height"
+                  #chart
+                >
+                  <defs>
+                    <filter x="0" y="0" width="1" height="1" id="solid">
+                      <feFlood flood-color="white" result="floodFill"/>
+                      <feComposite in="SourceGraphic" in2="floodFill" operator="over"/>
+                    </filter>
+                    <radialGradient id="shadow">
+                      <stop offset="99%" stop-color="#fff"/>
+                      <stop offset="100%" stop-color="#999"/>
+                    </radialGradient>
+                  </defs>
+                  <g>
+                    <!-- outside rectangle -->
+                    <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="none"></rect>
+                    <!-- outer circle -->
+                    <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius"
+                       [options]="{stroke_width: 2, fill: 'white'}"></g>
+                    <!-- colored segments for zodiacs -->
+                    <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'">
+                      <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#009900"
+                                  stroke-width="5"
+                                  pathLength="360" stroke-dasharray="30 90 30 90 30 90" fill="none"/>
+                      <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#cc0000"
+                                  stroke-width="5"
+                                  pathLength="360" stroke-dasharray="0 30 30 90 30 90 30 60" fill="none"/>
+                      <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#336699"
+                                  stroke-width="5"
+                                  pathLength="360" stroke-dasharray="0 60 30 90 30 90 30 30" fill="none"/>
+                      <svg:circle [attr.cx]="cx" [attr.cy]="cy" [attr.r]="outer_radius-3" stroke="#ffd900"
+                                  stroke-width="5"
+                                  pathLength="360" stroke-dasharray="0 90 30 90 30 90 30" fill="none"/>
                     </g>
+                    <!-- inner 2 circles and 1 and 10 deg scale ruler -->
+                    <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius"></g>
+                    <g svgg-circle [cx]="cx" [cy]="cy" [radius]="inner_radius + 5"
+                       [options]="{stroke_color: '#777'}"></g>
 
-                  </svg>
+                    @if (this.data && this.selectedPerson) {
+                      <!-- inner house circle -->
+                      <g svgg-circle [cx]="cx" [cy]="cy" [radius]="house_radius"
+                         [options]="{fill: data.dayChart ? '#420' : '#024'}"></g>
+                    }
+
+                    <g [attr.transform-origin]="cx + ' ' + cy" [attr.transform]="'rotate(' + offset_angle + ')'"
+                       svgg-line
+                       *ngFor="let l of lines" [x1]="l.p1.x" [y1]="l.p1.y" [x2]="l.p2.x" [y2]="l.p2.y"
+                       [options]="l.options"></g>
+                    <!-- zodiac symbols -->
+                    <g svgg-symbol *ngFor="let p of zodiac" [x]="p.x" [y]="p.y" [name]="p.name"
+                       [options]="zodiac_options(p)"></g>
+
+                    <!-- only when personal data is ready to be displayed and person selected -->
+                    @if (this.data && this.selectedPerson) {
+
+                      <!-- latin phrase for the sign drawn along a circular path -->
+                      <g>
+                        <path
+                          id="sector_path_0"
+                          [attr.d]="'M '+ cx +' ' + cy + 'm 0 ' + house_radius/2 + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0,-' + house_radius + ' a ' + house_radius/2 + ',' + house_radius/2 + ' 0 1,1 0 ' + house_radius + ' z'"
+                          fill="none"
+                        ></path>
+                        <text class="segment-label" x="0" y="0" dy="-2">
+                          <textPath xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sector_path_0"
+                                    startOffset="50%"
+                                    text-anchor="middle">
+                            {{ latin_phrase?.phrase }}
+                          </textPath>
+                        </text>
+                      </g>
+                      <!-- NATAL or TRANSIT words under the center of the chart -->
+                      <g>
+                        <text class="chart-label" [attr.x]="cx + 7"
+                              [attr.y]="cy + inner_radius / 5">{{ show_natal_aspects ? "NATAL" : "TRANSIT" }}
+                        </text>
+                      </g>
+                      <!-- natal planet symbols -->
+                      <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"
+                         [fillBackground]="true"
+                         [fillBackgroundColor]="p.kind==='natal'?'white':'#f4eeea'"></g>
+                      <!-- natal r for retrograde planet text -->
+                      <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
+                      <!-- natal planet angle in sign -->
+                      <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y"
+                         [text]="p.label.angle"
+                         class="planets-angle"></g>
+                      <!-- house symbols -->
+                      <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+                      <!-- house degrees -->
+                      <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y"
+                         [text]="p.label.angle"
+                         class="planets-angle"></g>
+                      <!-- As, Dc, Mc, Ic labels -->
+                      <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name"
+                         [options]="{scale: 0.8, stroke_color: '#333'}"></g>
+                      <!-- aspect symbols on aspect lines -->
+                      <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name"
+                         [options]="p.options"></g>
+                      <!-- person's Zodiac sign symbol in the middle of the chart background circle -->
+                      <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20"
+                         [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
+                      <!-- person's Zodiac sign symbol in the middle of the chart -->
+                      <g svgg-symbol [x]="cx" [y]="cy" [name]="sign"
+                         [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
+
+                    }
+                    <!-- this is debug area will be removed -- for practicing drawing symbols -->
+                    <!-- <g svgg-symbol [x]="30" [y]="30" [options]="{ scale: 1 }"></g>
+                    <g svgg-line [x1]="20" [y1]="30" [x2]="40" [y2]="30"></g>
+                    <g svgg-line [x1]="30" [y1]="20" [x2]="30" [y2]="40"></g>
+
+                    <g svgg-symbol [x]="60" [y]="30" [options]="{ scale: 2 }"></g>
+                    <g svgg-line [x1]="50" [y1]="30" [x2]="70" [y2]="30"></g>
+                    <g svgg-line [x1]="60" [y1]="20" [x2]="60" [y2]="40"></g>
+
+                    <g svgg-symbol [x]="90" [y]="30" [options]="{ scale: 0.5 }"></g>
+                    <g svgg-line [x1]="80" [y1]="30" [x2]="100" [y2]="30"></g>
+                    <g svgg-line [x1]="90" [y1]="20" [x2]="90" [y2]="40"></g>
+
+                    <g svgg-symbol *ngFor="let p of aspects; let i = index;" [x]="30 + i * 30" [y]="60" [name]="p.name"></g>
+                    <g svgg-line [x1]="20" [y1]="60" [x2]="550" [y2]="60"></g> -->
+                  </g>
+
+                </svg>
               </div>
             </as-split-area>
             <as-split-area [size]="'*'" style="display: flex;">
               @if (show_explanation) {
-                <div class="explanation-container" id="explanation" [style.height]="'calc(100vh - ' + split_height + 'px)'">
-                <div
-                  [overlayLoader]="sharedExplain$"
-                  class="bot-panel"
-                >
-                  <div class="bot-panel-handler">
-                    {{ latin_phrase?.eng }}
-                  </div>
-                  <div style="flex: 1; display: flex; flex-direction: row; overflow: hidden">
-                    <div class="bot-panel-content" id="explanation">
-                      @for (e of explanation; track e; let idx = $index) {
-                        @if (idx !== 0) {
-                          <hr class="una"/>
-                        }
-                        <p class="explanation-wrap" [innerHTML]="e.text | safeHtml"></p>
-                        <div class="foot-print">
-                          <div class="retry">
+                <div class="explanation-container" id="explanation"
+                     [style.height]="'calc(100vh - ' + split_height + 'px)'">
+                  <div
+                    [overlayLoader]="sharedExplain$"
+                    class="bot-panel"
+                  >
+                    <div class="bot-panel-handler">
+                      {{ latin_phrase?.eng }}
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: row; overflow: hidden">
+                      <div class="bot-panel-content" id="explanation">
+                        @for (e of explanation; track e; let idx = $index) {
+                          @if (idx !== 0) {
+                            <hr class="una"/>
+                          }
+                          <p class="explanation-wrap" [innerHTML]="e.text | safeHtml"></p>
+                          <div class="foot-print">
+                            <div class="retry">
                         <span (click)="retryExplanation(e)">
                           re-try for better answer <fa-icon [icon]="faDice"/>
                         </span>
+                            </div>
+                            <div class="timestamp">{{ e.timestamp }}</div>
                           </div>
-                          <div class="timestamp">{{ e.timestamp }}</div>
-                        </div>
 
+                        }
+                      </div>
+                      <!-- placeholder for a rotating image component -->
+                      @if (config.rotate_images && rotate_image) {
+                        <div style="flex: 0 320px; display: flex;">
+                          <astralka-rotate-image [rotator]="rotate_image" [width]="320"
+                                                 [height]="400"></astralka-rotate-image>
+                        </div>
                       }
                     </div>
-                    <!-- placeholder for a rotating image component -->
-                    @if (config.rotate_images && rotate_image) {
-                      <div style="flex: 0 320px; display: flex;">
-                        <astralka-rotate-image [rotator]="rotate_image" [width]="320"
-                                               [height]="400"></astralka-rotate-image>
-                      </div>
-                    }
                   </div>
-                </div>
                 </div>
               }
             </as-split-area>
 
           </as-split>
-
-
 
 
         </div>
@@ -646,8 +660,13 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   }
 
   private recalculate_explanation_height() {
-    const height = window.scrollY + document.getElementById('explanation')!.getBoundingClientRect().top;
-    this.split_height = height;
+    try {
+      const ex = document.getElementById('explanation');
+      if (ex) {
+        const height = window.scrollY + document.getElementById('explanation')!.getBoundingClientRect().top;
+        this.split_height = height;
+      }
+    } catch(err) {}
   }
 
   ngOnInit(): void {
