@@ -80,11 +80,11 @@ export class AstralkaPositionDataComponent extends AstralkaBasePortalComponent {
   }
 
   public get_explanation_from_ai(stats: any) {
-    const prompt: string = stats.kind === "houses"
-      ? `In maximum 30 words interpret ${stats.name} in ${stats.position.sign}`
-      : stats.kind === 'planets'
-        ? `In maximum 30 words interpret ${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in ${stats.house}`
-        : `In maximum 30 words interpret ${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in transit over ${stats.house}`;
+    const prompt: string = this.kind === "houses"
+      ? `In a couple of paragraphs describe meaning of ${stats.name} in ${stats.position.sign}`
+      : this.kind === 'planets'
+        ? `In a couple of paragraphs describe meaning of ${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in ${stats.house}`
+        : `In a couple of paragraphs describe meaning of ${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in transit over ${stats.house}`;
     let context: string;
     if (this.kind === 'planets' || this.kind === 'transits') {
       const names = [stats.name, stats.position.sign];
