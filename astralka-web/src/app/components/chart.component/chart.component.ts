@@ -408,9 +408,9 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                           <p class="explanation-wrap" [innerHTML]="e.text | safeHtml"></p>
                           <div class="foot-print">
                             <div class="retry">
-                        <span (click)="retryExplanation(e)">
-                          re-try for better answer <fa-icon [icon]="faDice"/>
-                        </span>
+                              <span (click)="retryExplanation(e)">
+                                re-try for better answer <fa-icon [icon]="faDice"/>
+                              </span>
                             </div>
                             <div class="timestamp">{{ e.timestamp }}</div>
                           </div>
@@ -657,16 +657,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
   public onSplitterDragEnd(data: any) {
     this.recalculate_explanation_height();
-  }
-
-  private recalculate_explanation_height() {
-    try {
-      const ex = document.getElementById('explanation');
-      if (ex) {
-        const height = window.scrollY + document.getElementById('explanation')!.getBoundingClientRect().top;
-        this.split_height = height;
-      }
-    } catch(err) {}
   }
 
   ngOnInit(): void {
@@ -1069,6 +1059,19 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
+  private recalculate_explanation_height() {
+    _.delay(() => {
+      try {
+        const ex = document.getElementById('explanation');
+        if (ex) {
+          const height = window.scrollY + document.getElementById('explanation')!.getBoundingClientRect().top;
+          this.split_height = height;
+        }
+      } catch (err) {
+      }
+    }, 100);
+  }
+
   private init(): void {
     this._planets = [];
     this._zodiac = [];
@@ -1111,7 +1114,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   }
 
   private handleChartData(data: any) {
-    this.offset_angle = data.Houses[0].position;
+    this.offset_angle = data.Houses.find((z: any) => z.name === 'Cusp1').position;
 
     this.init();
 

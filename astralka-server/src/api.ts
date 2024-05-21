@@ -171,7 +171,7 @@ export function chart_data(query: IQuery): any {
                     : swisseph.swe_degnorm(asc + moon - sun).x360;
                 x.speed = 0;
             }
-            x.house = calculate_house(x.position, houses); // position in Natal houses
+            x.house = calculate_house(x.position, _.cloneDeep(houses)); // position in Natal houses
             // calculate_house(x.position, houses1);
         });
         result.Transit.SkyObjects = sky_objects1;
