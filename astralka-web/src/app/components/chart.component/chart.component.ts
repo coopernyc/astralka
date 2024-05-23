@@ -75,7 +75,6 @@ import {
   faBaby,
   faDice,
   faEye,
-  faEyeSlash,
   faLocationPin,
   faMarsAndVenus,
   faMeteor,
@@ -159,7 +158,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
 
         <div style="flex: 1; display: flex; justify-content: center; align-content: center;">
 
-          <as-split direction="vertical" (dragEnd)="onSplitterDragEnd($event)" unit="pixel" #split>
+          <as-split direction="vertical" (dragEnd)="onSplitterDragEnd()" unit="pixel" #split>
 
             <as-split-area [size]="680" [minSize]="300" [maxSize]="800" style="display: flex;">
 
@@ -496,7 +495,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   protected readonly faBaby = faBaby;
   protected readonly faEye = faEye;
   protected readonly faTools = faTools;
-  protected readonly faEyeSlash = faEyeSlash;
   protected readonly faMeteor = faMeteor;
   private _destroyRef = inject(DestroyRef);
 
@@ -630,13 +628,15 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       }
       const stats = line.stats;
       const temp: string[] = [];
-      temp.push(`\n- ${stats.label} in ${stats.position.sign}/${stats.house}`);
+      const retrograde = stats.speed < 0 ? 'Retrograde ': '';
+      temp.push(`\n- ${retrograde}${stats.label} in ${stats.position.sign}/${stats.house}`);
       const name = stats.name;
 
       this.aspects
         .filter(x => x.parties[0].name === name)
         .reduce((acc: string[], asp: any) => {
-          const prompt = `and in ${asp.aspect.name} with ${asp.parties[1].name}`
+          const retrograde = asp.parties[1].speed < 0 ? 'retrograde ' : '';
+          const prompt = `and in ${asp.aspect.name} with ${retrograde}${asp.parties[1].name}`
             .replace(/Cusp10/g, 'Medium Coeli')
             .replace(/Cusp1/g, 'Ascendant');
           acc.push(prompt);
@@ -655,7 +655,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     }, 100);
   }
 
-  public onSplitterDragEnd(data: any) {
+  public onSplitterDragEnd() {
     this.recalculate_explanation_height();
   }
 
@@ -1064,8 +1064,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       try {
         const ex = document.getElementById('explanation');
         if (ex) {
-          const height = window.scrollY + document.getElementById('explanation')!.getBoundingClientRect().top;
-          this.split_height = height;
+          this.split_height = window.scrollY + document.getElementById('explanation')!.getBoundingClientRect().top;
         }
       } catch (err) {
       }

@@ -1027,7 +1027,7 @@ export const perspectives = [
   {
     label: "Hobbies",
     icon: faCouch,
-    prompt: "the most and the least favorite hobbies. List 5 the most and the least suitable hobbies for example: watching tv, gaming, cooking, drinking, collecting, gambling, sex, physical exersises, reading, hiking, gardering, far niente doing nothing and etc ..."
+    prompt: "the most and the least favorite hobbies. List 5 the most and the least suitable hobbies for example: watching tv, gaming, cooking, drinking, collecting, gambling, sex, physical exersises, reading, hiking, gardering, sports, pets, yachting, sleeping, martial arts, traveling, creative arts, speding money, racing, programming, far niente (doing nothing) and similar hobbies"
   },
   {
     label: "Jewelries",
