@@ -82,6 +82,10 @@
 
           .explanation-wrap {
             ::ng-deep p:first-child:not(:only-child) {
+              //min-height: 200px;
+              //@media (max-width: 430px) {
+              //  min-height: 100px;
+              //}
               margin: 0.5em 0;
               //font-size: 14px;
               color: #376a57;

@@ -1,7 +1,7 @@
 import {
-  AfterViewInit,
+  AfterViewInit, ApplicationRef,
   ChangeDetectorRef,
-  Component,
+  Component, ComponentRef, createComponent,
   DestroyRef,
   inject,
   NgZone,
@@ -90,6 +90,7 @@ import {AstralkaQuickPickComponent} from "../quick.pick.component/quick.pick.com
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {AstralkaTransitMatrixComponent} from "../../controls/matrix/transit.matrix";
 import {AngularSplitModule, SplitComponent} from "angular-split";
+import {AstroPipe} from "../../controls/astro.pipe";
 
 @Component({
   selector: 'astralka-chart',
@@ -118,7 +119,8 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
     AstralkaQuickPickComponent,
     FaIconComponent,
     AstralkaTransitMatrixComponent,
-    AngularSplitModule
+    AngularSplitModule,
+    AstroPipe
   ],
   template: `
     <div class="astralka-container">
@@ -229,12 +231,6 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                         Aspects
                       </astralka-aspect-settings>
                     </section>
-                    <!--                      <section>-->
-                    <!--                        <button (click)="show_explanation = !show_explanation">-->
-                    <!--                          <fa-icon [icon]="show_explanation ? faEyeSlash : faEye"/>-->
-                    <!--                          Explanation-->
-                    <!--                        </button>-->
-                    <!--                      </section>-->
                     <section>
                       <astralka-position-data [kind]="'transits'" [positions]="stat_lines"
                                               [title]="'Transit Planets Position'">
@@ -325,7 +321,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                           <textPath xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sector_path_0"
                                     startOffset="50%"
                                     text-anchor="middle">
-                            {{ phrase_selected.latin }}
+                            {{ phrase_selected?.latin }}
                           </textPath>
                         </text>
                       </g>
@@ -397,7 +393,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
               </div>
             </as-split-area>
             <as-split-area [size]="'*'" style="display: flex;">
-              @if (show_explanation) {
+
                 <div class="explanation-container" id="explanation"
                      [style.height]="'calc(100vh - ' + split_height + 'px)'">
                   <div
@@ -405,7 +401,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                     class="bot-panel"
                   >
                     <div class="bot-panel-handler">
-                      {{ phrase_selected.english }}
+                      {{ phrase_selected?.english }}
                     </div>
                     <div style="flex: 1; display: flex; flex-direction: row; overflow: hidden">
                       <div class="bot-panel-content" id="explanation">
@@ -413,29 +409,30 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                           @if (idx !== 0) {
                             <hr class="una"/>
                           }
-                          <p class="explanation-wrap" [innerHTML]="e.text | safeHtml"></p>
+                          @if (config.rotate_images && e.rotator) {
+                            <div [style.min-height.px]="220 * this.responsive_breakpoint.scale">
+                              <div style="float: right; margin: 0.5em;" [style.width.px]="160 * this.responsive_breakpoint.scale">
+                                <astralka-rotate-image [rotator]="e.rotator" [width]="160 * this.responsive_breakpoint.scale" [height]="200 * this.responsive_breakpoint.scale"></astralka-rotate-image>
+                              </div>
+                              <p class="explanation-wrap" [innerHTML]="e.text | astro | safeHtml"></p>
+                            </div>
+                          } @else {
+                            <p class="explanation-wrap" [innerHTML]="e.text | astro | safeHtml"></p>
+                          }
                           <div class="foot-print">
                             <div class="retry">
-                              <span (click)="retryExplanation(e)">
-                                re-try for better answer <fa-icon [icon]="faDice"/>
-                              </span>
+                                <span (click)="retryExplanation(e)">
+                                  re-try for better answer <fa-icon [icon]="faDice"/>
+                                </span>
                             </div>
                             <div class="timestamp">{{ e.timestamp }}</div>
                           </div>
-
                         }
                       </div>
-                      <!-- placeholder for a rotating image component -->
-                      @if (responsive_breakpoint.mode === AppMode.Full && config.rotate_images && rotate_image) {
-                        <div style="flex: 0 320px; display: flex;">
-                          <astralka-rotate-image [rotator]="rotate_image" [width]="320"
-                                                 [height]="400"></astralka-rotate-image>
-                        </div>
-                      }
                     </div>
                   </div>
                 </div>
-              }
+
             </as-split-area>
 
           </as-split>
@@ -492,7 +489,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   public inner_radius: number = 0;
   public house_radius: number = 0;
   public offset_angle: number = 90;
-  public show_explanation: boolean = true;
 
   public entry: IPersonEntry = {
     name: '',
@@ -534,6 +530,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   private _destroyRef = inject(DestroyRef);
 
   constructor(
+    private applicationRef: ApplicationRef,
     private responsive: BreakpointObserver,
     private rest: RestService,
     private settings: SettingsService,
@@ -884,7 +881,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     this.sharedExplain$.pipe(
       takeUntilDestroyed(this._destroyRef)
     ).subscribe((data: any) => {
-      this.show_explanation = true;
       if (data.result === 'LOADING!') {
         const name: string = getContext(data);
         this.rotate_image = {
@@ -897,9 +893,46 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       const md = markdownit('commonmark');
       const result = md.render(data.result);
       this._phrase = this.latin_phrase(this.sign);
-      this._explanation.push({text: result, info: data.params, timestamp: moment().format("MMMM Do YYYY, h:mm:ss a")});
+
+      this._explanation.push({
+        text: result,
+        info: data.params,
+        rotator: _.cloneDeep(this.rotate_image),
+        timestamp: moment().format("MMMM Do YYYY, h:mm:ss a")
+      });
       _.delay(() => {
         this.zone.run(() => {
+          const compRefs: ComponentRef<ChartSymbol>[] = [];
+          document.querySelectorAll(".gen-planet").forEach(node => {
+            const componentRef = createComponent(ChartSymbol, {
+              environmentInjector: this.applicationRef.injector,
+              hostElement: node
+            });
+            const instance = componentRef.instance;
+            instance.x = 7;
+            instance.y = 9;
+            instance.name = node.id.replace('planet-', '');
+            instance.options = {scale: 0.5, stroke_width: 2, stroke_color: '#000'};
+            compRefs.push(componentRef);
+          });
+          document.querySelectorAll(".gen-zodiac").forEach(node => {
+            const componentRef = createComponent(ChartSymbol, {
+              environmentInjector: this.applicationRef.injector,
+              hostElement: node
+            });
+            const instance = componentRef.instance;
+            instance.x = 7;
+            instance.y = 9;
+            instance.name = node.id.replace('zodiac-', '');
+            instance.options = {scale: 0.45, stroke_width: 1, stroke_color: '#000'};
+            compRefs.push(componentRef);
+          });
+
+          compRefs.forEach(cr => {
+            this.applicationRef.attachView(cr.hostView);
+            cr.changeDetectorRef.detectChanges();
+          });
+
           const div = document.getElementById("explanation") as HTMLDivElement;
           if (div) {
             this.scrollToBottom(div);
@@ -999,7 +1032,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   }
 
   public perspective(kind: string): void {
-    this.show_explanation = true;
     //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
     const prompt = `
       For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following information:
@@ -1097,8 +1129,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     this._houses = [];
     this._aspects = [];
     this.data = {};
-
-    //this._explanation = [];
 
     this.cx = Math.trunc(this.width / 2);
     this.cy = Math.trunc(this.width / 2) - (this.responsive_breakpoint.mode === AppMode.Full ? this.margin / 2 : 0 ) ;
@@ -1379,7 +1409,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           label: so.name,
           position: pos_in_zodiac(so.position),
           speed: so.speed,
-          house: so.house.symbol + ' House',
+          house: so.house.symbol + 'Hse',
           dignities: this.format_dignities(so)
         }
       });
@@ -1397,7 +1427,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           label: so.name,
           position: pos_in_zodiac(so.position),
           speed: so.speed,
-          house: so.house.symbol + ' House',
+          house: so.house.symbol + 'Hse',
           dignities: this.format_dignities(so)
         }
       });
@@ -1430,29 +1460,29 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     let result: string[] = [];
     let score: number = 6;
     if (_.some(_.get(so, "dignities.domicile", []), x => x === sign)) {
-      result.push("Domicile");
+      result.push("SDom");
       score += 3;
     } else if (_.some(_.get(so, "dignities.exaltation", []), x => x === sign)) {
-      result.push("Exaltation");
+      result.push("SExa");
       score += 2;
     } else if (_.some(_.get(so, "dignities.detriment", []), x => x === sign)) {
-      result.push("Detriment");
+      result.push("SDet");
       score -= 3;
     } else if (_.some(_.get(so, "dignities.fall", []), x => x === sign)) {
-      result.push("Fall");
+      result.push("SFal");
       score -= 2;
     } else if (_.some(_.get(so, "dignities.friend", []), x => x === sign)) {
-      result.push("Friend");
+      result.push("SFri");
       score += 1;
     } else if (_.some(_.get(so, "dignities.enemy", []), x => x === sign)) {
-      result.push("Enemy");
+      result.push("SEne");
       score -= 1;
     }
     if (so.oriental) {
-      result.push("Oriental");
+      result.push("Ori");
       score += 1;
     } else {
-      result.push("Occidental");
+      result.push("Occ");
       score -= 1;
     }
     if (so.speed >= 0) {

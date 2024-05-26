@@ -36,11 +36,11 @@ export async function imagesRoute(req: any, res: any): Promise<void> {
 
         const original_filename = tarot_filename
             ? tarot_filename.toLowerCase()+".png"
-            : files[_.random(files.length - 1)].replace('-x640', '');
+            : files[_.random(files.length - 1)];
 
-        const original_filepath = path.join(path.join(images_dir, folder),original_filename);
+        const original_filepath = path.join(path.join(images_dir, folder), original_filename);
 
-        const resolution_filename = _.replace(original_filename, '.png', `-x${width}.png`);
+        const resolution_filename = _.replace(original_filename.replace('-x640', ''), '.png', `-x${width}.png`);
         const resolution_filepath = path.join(path.join(images_dir, folder), resolution_filename);
 
         try {

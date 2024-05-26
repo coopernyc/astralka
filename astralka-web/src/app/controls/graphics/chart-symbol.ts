@@ -488,5 +488,7 @@ export class ChartSymbol {
     return _.get(this.options, "scale", SYMBOL_SCALE);
   }
 
+
+
   protected readonly COLLISION_RADIUS = COLLISION_RADIUS;
 }
