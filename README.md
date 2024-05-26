@@ -13,8 +13,8 @@ Other than to apply in practice new Angular & Typescript methods and features in
 > No more guessing on what bucket of flowers or gift to present on her birthday!
 
 ## Screenshot
-<img width="803" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/ec91109c-adda-4c5f-8ffb-025a73c409e1">
-
+<img width="403" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/5cfe90d8-31a9-411b-a0ff-511e446ea544">
+<img width="210" src="https://github.com/coopernyc/astralka/assets/11201225/a72b8253-9402-4a5a-96b8-7dd10ccb8293">
 
 > [!TIP]
 > on Windows, if you run into some errors about msvc for node >= 18, search and run `Install Additional tools for Node.js` batch file. 
