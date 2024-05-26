@@ -20,6 +20,14 @@
         outline: none;
         font-size: 11px;
         height: 21px;
+        @media (max-width: 430px) {
+          font-size: 6px;
+          height: 12px;
+          &:not(.close-button) {
+            padding: 0 2px 0 4px;
+          }
+        }
+
         cursor: pointer;
         &:not(.close-button) {
           padding: 0 2px 0 8px;

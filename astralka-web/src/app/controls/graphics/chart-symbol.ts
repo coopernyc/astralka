@@ -1,5 +1,6 @@
 import {Component, Input} from "@angular/core";
 import {
+  COLLISION_RADIUS,
   SYMBOL_ASPECT,
   SYMBOL_CUSP,
   SYMBOL_HOUSE,
@@ -19,7 +20,7 @@ import _ from "lodash";
   imports: [CommonModule],
   template: `
     @if (fillBackground) {
-        <svg:circle [attr.cx]="x" [attr.cy]="y" [attr.r]="10" [attr.fill]="fillBackgroundColor" ></svg:circle>
+        <svg:circle [attr.cx]="x" [attr.cy]="y" [attr.r]="COLLISION_RADIUS * this.scale" [attr.fill]="fillBackgroundColor" ></svg:circle>
     }
     <svg:g xmlns:svg="http://www.w3.org/2000/svg" [attr.transform]="transform">
       <svg:path
@@ -39,7 +40,6 @@ import _ from "lodash";
   `
 })
 export class ChartSymbol {
-
   @Input() x: number = 0;
   @Input() y: number = 0;
   @Input() options: any = {};
@@ -488,4 +488,5 @@ export class ChartSymbol {
     return _.get(this.options, "scale", SYMBOL_SCALE);
   }
 
+  protected readonly COLLISION_RADIUS = COLLISION_RADIUS;
 }

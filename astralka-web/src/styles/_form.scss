@@ -57,9 +57,9 @@ form {
   width: 100%;
 
   form {
-    border: 1px solid #777;
+    border-bottom: 1px solid #333;
     padding: 1em;
-    background: #fdedc8 url(/assets/noise.png);
+    background-color: white;
 
     &.entry-form {
       display: flex;

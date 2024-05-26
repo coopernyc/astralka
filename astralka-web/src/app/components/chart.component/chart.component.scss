@@ -10,15 +10,20 @@
   position: absolute;
   z-index: 2;
   top: 6px;
+  font-size: 11px;
   section {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    @media (width <= 430px) {
+    @media (max-width: 430px) {
       font-size: 6px;
     }
-    @media (width > 430px) {
-      font-size: 10px;
-    }
   }
+}
+
+::ng-deep .as-split-gutter-icon {
+  border-top: 1px solid #555;
+  border-bottom: 1px solid #555;
+  color: #eee;
+  background-color: #333;
 }
 
 :host {
@@ -56,17 +61,16 @@
         color: #333;
         display: flex;
         flex-direction: column;
-        background-color: #fdf4e0;
+        background-color: white;
 
         .bot-panel-handler {
           width: 100%;
           height: 21px;
-          background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAoCAQAAAClM0ndAAAAhklEQVR4AdXO0QrCMBBE0bttkk38/w8WRERpdyjzVOc+HxhIHqJGMQcFFkpYRQotLLSw0IJ5aBdovruMYDA/kT8plF9ZKLFQcgF18hDj1SbQOMlCA4kao0iiXmah7qBWPdxpohsgVZyj7e5I9KcID+EhiDI5gxBYKLBQYKHAQoGFAoEks/YEGHYKB7hFxf0AAAAASUVORK5CYII=') repeat-x scroll left top #baa973;
+          background-color: #333;
           text-align: center;
           @include mixins.gafata-regular;
           font-size: 1rem;
           color: white;
-          text-shadow: 1px 1px 1px #3333;
         }
 
         .bot-panel-content {
@@ -88,7 +92,7 @@
             margin-top: 8px;
             padding: 2px 6px;
             font-family: "Ubuntu Mono", monospace;
-            color: #b6b595;
+            color: #999;
             font-size: 9px;
             display: flex;
             .retry {
@@ -111,7 +115,7 @@
             display: block;
             line-height: 1px;
             height: 1px;
-            background: #d3d07a;
+            background-color: #999;
             margin: 0;
             padding: 0;
             border: 0 none;
@@ -152,6 +156,7 @@
   }
   button {
     @include portal.btn;
+    font-size: 11px;
     margin-right: 0;
   }
 }
@@ -198,7 +203,10 @@ svg {
 
   .chart-label,
   .segment-label {
-    font-size: 32px;
+    font-size: 22px;
+    @media (max-width: 430px) {
+      font-size: 11px;
+    }
     @include germania-one-regular;
     fill: #dca72233;
     stroke: none;
@@ -207,8 +215,13 @@ svg {
   .chart-label {
     text-anchor: middle;
     font-size: 22px;
-    fill: #dca72244;
     letter-spacing: 7px;
+    @media (max-width: 430px) {
+      font-size: 11px;
+      letter-spacing: 3px;
+    }
+    fill: #dca72244;
+
   }
 }
 
@@ -223,6 +236,9 @@ svg {
   text {
     font-size: 7px !important;
     text-anchor: middle;
+    @media (max-width: 430px) {
+      font-size: 5px !important;
+    }
   }
 }
 
@@ -231,6 +247,9 @@ svg {
     font-size: 7px !important;
     text-anchor: middle;
     fill: #225588;
+    @media (max-width: 430px) {
+      font-size: 5px !important;
+    }
   }
 }
 

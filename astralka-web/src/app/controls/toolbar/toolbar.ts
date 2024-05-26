@@ -192,8 +192,10 @@ export class AstralkaToolbarSetComponent {
   imports: [CommonModule, AstralkaToolbarSetComponent],
   template: `
     <div class="toolbar-container">
-      <astralka-toolbar-set class="toolbar-left" [commands]="leftCommands"></astralka-toolbar-set>
-      <div class="toolbar-center"><ng-content></ng-content></div>
+      <div class="toolbar-left">
+        <astralka-toolbar-set [commands]="leftCommands"></astralka-toolbar-set>
+        <div class="toolbar-center"><ng-content></ng-content></div>
+      </div>
       <astralka-toolbar-set class="toolbar-right" [commands]="rightCommands"></astralka-toolbar-set>
     </div>
   `,

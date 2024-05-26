@@ -18,10 +18,18 @@
   }
 }
 @mixin btn {
-  height: 16px;
+  height: 18px;
   padding: 1px 6px;
   font-family: "Roboto", sans-serif;
-  font-size: 10px;
+  font-size: 11px;
+  @media (max-width: 430px) {
+    height: 12px;
+    padding: 1px 3px;
+    font-size: 6px;
+  }
+  @media print {
+    display: none;
+  }
   color: #333;
   background-color: #eee;
   border: 1px solid #777;

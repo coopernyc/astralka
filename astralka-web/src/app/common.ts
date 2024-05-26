@@ -56,6 +56,11 @@ export const SYMBOL_STROKE_COLOR = "#000";
 export const SYMBOL_STROKE_WIDTH = "1";
 export const CHART_MARGIN = 10;
 
+export enum AppMode {
+  Compact,
+  Full
+}
+
 export function nl360(a: number): number {
   return (a + 360) % 360;
 }
@@ -837,6 +842,192 @@ export const UserRole = {
   Admin: 'Administrator',
   User: 'User'
 };
+
+// AI Generated static content
+// provide 10 latin phrases with english translation for each Zodiac signs in sequence starting from Aries in a json format: [ { sign: "Aries", phrases: [ { latin: "Dulce", english: "War" } ]
+export const latinPhrases = [
+  {
+    "sign": "Aries",
+    "phrases": [
+      { "latin": "Dulce et decorum est pro patria mori", "english": "It is sweet and fitting to die for one's country" },
+      { "latin": "Audentes fortuna iuvat", "english": "Fortune favors the bold" },
+      { "latin": "Perfer et obdura; dolor hic tibi proderit olim", "english": "Endure and harden yourself; this pain will be of use to you someday" },
+      { "latin": "Fléctere si néqueo súperos, Acheronta movebo", "english": "If I cannot move Heaven, I will raise hell" },
+      { "latin": "Veni, vidi, vici", "english": "I came, I saw, I conquered" },
+      { "latin": "Ad astra per aspera", "english": "Through hardship to the stars" },
+      { "latin": "Nil desperandum", "english": "Never despair" },
+      { "latin": "Omnia vincit labor", "english": "Labor conquers all" },
+      { "latin": "Mens sana in corpore sano", "english": "A healthy mind in a healthy body" },
+      { "latin": "Festina lente", "english": "Hasten slowly" }
+    ]
+  },
+  {
+    "sign": "Taurus",
+    "phrases": [
+      { "latin": "Ad astra per aspera", "english": "Through hardship to the stars" },
+      { "latin": "Carpe diem", "english": "Seize the day" },
+      { "latin": "Fide et amore", "english": "By faith and love" },
+      { "latin": "In hoc signo vinces", "english": "In this sign you will conquer" },
+      { "latin": "Amor vincit omnia", "english": "Love conquers all" },
+      { "latin": "Semper fidelis", "english": "Always faithful" },
+      { "latin": "Dum spiro spero", "english": "While I breathe, I hope" },
+      { "latin": "De gustibus non est disputandum", "english": "There is no disputing about tastes" },
+      { "latin": "Pax et concordia", "english": "Peace and harmony" },
+      { "latin": "Festina lente", "english": "Hasten slowly" }
+    ]
+  },
+  {
+    "sign": "Gemini",
+    "phrases": [
+      { "latin": "De gustibus non est disputandum", "english": "There is no disputing about tastes" },
+      { "latin": "Mens sana in corpore sano", "english": "A healthy mind in a healthy body" },
+      { "latin": "Veni, vidi, vici", "english": "I came, I saw, I conquered" },
+      { "latin": "In vino veritas", "english": "In wine, there is truth" },
+      { "latin": "Audentes fortuna iuvat", "english": "Fortune favors the bold" },
+      { "latin": "Fléctere si néqueo súperos, Acheronta movebo", "english": "If I cannot move Heaven, I will raise hell" },
+      { "latin": "Perfer et obdura; dolor hic tibi proderit olim", "english": "Endure and harden yourself; this pain will be of use to you someday" },
+      { "latin": "Nil desperandum", "english": "Never despair" },
+      { "latin": "Omnia vincit labor", "english": "Labor conquers all" },
+      { "latin": "Ad majorem Dei gloriam", "english": "For the greater glory of God" }
+    ]
+  },
+  {
+    "sign": "Cancer",
+    "phrases": [
+      { "latin": "Amor vincit omnia", "english": "Love conquers all" },
+      { "latin": "Semper fidelis", "english": "Always faithful" },
+      { "latin": "Dum spiro spero", "english": "While I breathe, I hope" },
+      { "latin": "Festina lente", "english": "Hasten slowly" },
+      { "latin": "Carpe diem", "english": "Seize the day" },
+      { "latin": "Fide et amore", "english": "By faith and love" },
+      { "latin": "In hoc signo vinces", "english": "In this sign you will conquer" },
+      { "latin": "Ad astra per aspera", "english": "Through hardship to the stars" },
+      { "latin": "Pax et concordia", "english": "Peace and harmony" },
+      { "latin": "In vino veritas", "english": "In wine, there is truth" }
+    ]
+  },
+  {
+    "sign": "Leo",
+    "phrases": [
+      { "latin": "Ad majorem Dei gloriam", "english": "For the greater glory of God" },
+      { "latin": "Nil desperandum", "english": "Never despair" },
+      { "latin": "Perfer et obdura; dolor hic tibi proderit olim", "english": "Endure and harden yourself; this pain will be of use to you someday" },
+      { "latin": "Veni, vidi, vici", "english": "I came, I saw, I conquered" },
+      { "latin": "De gustibus non est disputandum", "english": "There is no disputing about tastes" },
+      { "latin": "Mens sana in corpore sano", "english": "A healthy mind in a healthy body" },
+      { "latin": "Omnia vincit labor", "english": "Labor conquers all" },
+      { "latin": "Festina lente", "english": "Hasten slowly" },
+      { "latin": "Audentes fortuna iuvat", "english": "Fortune favors the bold" },
+      { "latin": "Fléctere si néqueo súperos, Acheronta movebo", "english": "If I cannot move Heaven, I will raise hell" }
+    ]
+  },
+  {
+    "sign": "Virgo",
+    "phrases": [
+      { "latin": "Mens sana in corpore sano", "english": "A healthy mind in a healthy body" },
+      { "latin": "Omnia vincit labor", "english": "Labor conquers all" },
+      { "latin": "Festina lente", "english": "Hasten slowly" },
+      { "latin": "De gustibus non est disputandum", "english": "There is no disputing about tastes" },
+      { "latin": "Amor vincit omnia", "english": "Love conquers all" },
+      { "latin": "Semper fidelis", "english": "Always faithful" },
+      { "latin": "Dum spiro spero", "english": "While I breathe, I hope" },
+      { "latin": "Carpe diem", "english": "Seize the day" },
+      { "latin": "Fide et amore", "english": "By faith and love" },
+      { "latin": "In hoc signo vinces", "english": "In this sign you will conquer" }
+    ]
+  },
+  {
+    "sign": "Libra",
+    "phrases": [
+      { "latin": "Amor vincit omnia", "english": "Love conquers all" },
+      { "latin": "Fide et amore", "english": "By faith and love" },
+      { "latin": "Pax et concordia", "english": "Peace and harmony" },
+      { "latin": "In hoc signo vinces", "english": "In this sign you will conquer" },
+      { "latin": "Ad astra per aspera", "english": "Through hardship to the stars" },
+      { "latin": "Carpe diem", "english": "Seize the day" },
+      { "latin": "Ad majorem Dei gloriam", "english": "For the greater glory of God" },
+      { "latin": "Nil desperandum", "english": "Never despair" },
+      { "latin": "Perfer et obdura; dolor hic tibi proderit olim", "english": "Endure and harden yourself; this pain will be of use to you someday" },
+      { "latin": "Veni, vidi, vici", "english": "I came, I saw, I conquered" }
+    ]
+  },
+  {
+    "sign": "Scorpio",
+    "phrases": [
+      { "latin": "Audentes fortuna iuvat", "english": "Fortune favors the bold" },
+      { "latin": "Fléctere si néqueo súperos, Acheronta movebo", "english": "If I cannot move Heaven, I will raise hell" },
+      { "latin": "Perfer et obdura; dolor hic tibi proderit olim", "english": "Endure and harden yourself; this pain will be of use to you someday" },
+      { "latin": "Veni, vidi, vici", "english": "I came, I saw, I conquered" },
+      { "latin": "Mens sana in corpore sano", "english": "A healthy mind in a healthy body" },
+      { "latin": "Omnia vincit labor", "english": "Labor conquers all" },
+      { "latin": "Festina lente", "english": "Hasten slowly" },
+      { "latin": "De gustibus non est disputandum", "english": "There is no disputing about tastes" },
+      { "latin": "Amor vincit omnia", "english": "Love conquers all" },
+      { "latin": "Semper fidelis", "english": "Always faithful" }
+    ]
+  },
+  {
+    "sign": "Sagittarius",
+    "phrases": [
+      { "latin": "Ad astra per aspera", "english": "Through hardship to the stars" },
+      { "latin": "Carpe diem", "english": "Seize the day" },
+      { "latin": "Nil desperandum", "english": "Never despair" },
+      { "latin": "In vino veritas", "english": "In wine, there is truth" },
+      { "latin": "Ad majorem Dei gloriam", "english": "For the greater glory of God" },
+      { "latin": "Audentes fortuna iuvat", "english": "Fortune favors the bold" },
+      { "latin": "Fléctere si néqueo súperos, Acheronta movebo", "english": "If I cannot move Heaven, I will raise hell" },
+      { "latin": "Perfer et obdura; dolor hic tibi proderit olim", "english": "Endure and harden yourself; this pain will be of use to you someday" },
+      { "latin": "Veni, vidi, vici", "english": "I came, I saw, I conquered" },
+      { "latin": "Dum spiro spero", "english": "While I breathe, I hope" }
+    ]
+  },
+  {
+    "sign": "Capricorn",
+    "phrases": [
+      { "latin": "Dum spiro spero", "english": "While I breathe, I hope" },
+      { "latin": "Semper fidelis", "english": "Always faithful" },
+      { "latin": "Festina lente", "english": "Hasten slowly" },
+      { "latin": "De gustibus non est disputandum", "english": "There is no disputing about tastes" },
+      { "latin": "Mens sana in corpore sano", "english": "A healthy mind in a healthy body" },
+      { "latin": "Omnia vincit labor", "english": "Labor conquers all" },
+      { "latin": "Amor vincit omnia", "english": "Love conquers all" },
+      { "latin": "Fide et amore", "english": "By faith and love" },
+      { "latin": "In hoc signo vinces", "english": "In this sign you will conquer" },
+      { "latin": "Ad astra per aspera", "english": "Through hardship to the stars" }
+    ]
+  },
+  {
+    "sign": "Aquarius",
+    "phrases": [
+      { "latin": "Ad astra per aspera", "english": "Through hardship to the stars" },
+      { "latin": "Carpe diem", "english": "Seize the day" },
+      { "latin": "Nil desperandum", "english": "Never despair" },
+      { "latin": "In vino veritas", "english": "In wine, there is truth" },
+      { "latin": "Ad majorem Dei gloriam", "english": "For the greater glory of God" },
+      { "latin": "Audentes fortuna iuvat", "english": "Fortune favors the bold" },
+      { "latin": "Fléctere si néqueo súperos, Acheronta movebo", "english": "If I cannot move Heaven, I will raise hell" },
+      { "latin": "Perfer et obdura; dolor hic tibi proderit olim", "english": "Endure and harden yourself; this pain will be of use to you someday" },
+      { "latin": "Veni, vidi, vici", "english": "I came, I saw, I conquered" },
+      { "latin": "Dum spiro spero", "english": "While I breathe, I hope" }
+    ]
+  },
+  {
+    "sign": "Pisces",
+    "phrases": [
+      { "latin": "Dum spiro spero", "english": "While I breathe, I hope" },
+      { "latin": "Semper fidelis", "english": "Always faithful" },
+      { "latin": "Festina lente", "english": "Hasten slowly" },
+      { "latin": "De gustibus non est disputandum", "english": "There is no disputing about tastes" },
+      { "latin": "Mens sana in corpore sano", "english": "A healthy mind in a healthy body" },
+      { "latin": "Omnia vincit labor", "english": "Labor conquers all" },
+      { "latin": "Amor vincit omnia", "english": "Love conquers all" },
+      { "latin": "Fide et amore", "english": "By faith and love" },
+      { "latin": "In hoc signo vinces", "english": "In this sign you will conquer" },
+      { "latin": "Ad astra per aspera", "english": "Through hardship to the stars" }
+    ]
+  }
+];
+
 export const latinAboutSign = [
   {
     sign: SYMBOL_ZODIAC.Aries,

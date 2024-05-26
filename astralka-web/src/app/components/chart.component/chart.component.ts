@@ -12,6 +12,7 @@ import {ChartSymbol} from '../../controls/graphics/chart-symbol';
 import _ from "lodash";
 import moment from "moment";
 import {
+  AppMode,
   aspect_color,
   calculate_arrow,
   COLLISION_RADIUS,
@@ -23,7 +24,7 @@ import {
   IPersonEntry,
   IPersonInfo,
   IToolbarCmd,
-  latinAboutSign,
+  latinPhrases,
   nl180,
   nl360,
   one_third_point_on_the_line,
@@ -37,7 +38,6 @@ import {
   SYMBOL_ASPECT,
   SYMBOL_HOUSE,
   SYMBOL_PLANET,
-  SYMBOL_SCALE,
   SYMBOL_ZODIAC,
   ToolbarAlign,
   ToolbarCmdMask,
@@ -81,8 +81,7 @@ import {
   faSave,
   faSignOut,
   faTools,
-  faUserAstronaut,
-  faUserNinja
+  faUserAstronaut
 } from "@fortawesome/free-solid-svg-icons";
 import * as config from "assets/config.json";
 import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.image";
@@ -125,9 +124,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
     <div class="astralka-container">
       <div style="height: 100vh; display: flex; flex-direction: column; width: 800px;" [style.width.px]="width">
         <astralka-toolbar [commands]="commands">
-          Name
           <lookup
-            style="margin-right: 2px;"
             [query]="selectedPerson? selectedPerson.name : ''"
             (selected)="onPersonSelected($event)">
           </lookup>
@@ -160,31 +157,31 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
 
           <as-split direction="vertical" (dragEnd)="onSplitterDragEnd()" unit="pixel" #split>
 
-            <as-split-area [size]="680" [minSize]="300" [maxSize]="800" style="display: flex;">
+            <as-split-area [size]="height" [minSize]="height/5" [maxSize]="height" style="display: flex;">
 
               <div id="container">
 
                 @if (data && selectedPerson) {
                   <article id="person-info">
                     <section><b>Natal Data</b></section>
-                    <section>Name: {{ selectedPerson.name }}</section>
+                    <section>{{ selectedPerson.name }} <button (click)="savePersonToQuickPick()">
+                      <fa-icon [icon]="faLocationPin"></fa-icon>
+                    </button></section>
+                    <section>{{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
                     <section>Loc: {{ selectedPerson.location.name }}</section>
                     <section>Lat: {{ convert_lat_to_DMS(selectedPerson.location.latitude) }}
-                      , {{ selectedPerson.location.latitude }}°{{ selectedPerson.location.latitude >= 0 ? 'N' : 'S' }}
+                      , {{ selectedPerson.location.latitude.toFixed(4) }}°{{ selectedPerson.location.latitude >= 0 ? 'N' : 'S' }}
                     </section>
                     <section>Long: {{ convert_long_to_DMS(selectedPerson.location.longitude) }}
-                      , {{ selectedPerson.location.longitude }}°{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
+                      , {{ selectedPerson.location.longitude.toFixed(4) }}°{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
                     </section>
-                    <section>Offset from UTC: {{ selectedPerson.timezone }}hours,
-                      Elevation: {{ selectedPerson.location.elevation }}m
-                    </section>
-                    <section>DOB: {{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
-                    <section>Age: {{ age }}, Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}
-                    </section>
-                    <section>House System: {{ selectedHouseSystemName }}</section>
-                    <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}, Score: {{ avg_score.toFixed(3) }}
-                    </section>
-                    <section>{{ show_natal_aspects ? "Showing NATAL aspects" : "Showing TRANSIT aspects" }}</section>
+                    <section>Offset UTC: {{ selectedPerson.timezone }} hours</section>
+                    <section>Elevation: {{ selectedPerson.location.elevation }}m</section>
+                    <section>Age: {{ age }} yo</section>
+                    <section>Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
+                    <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}</section>
+                    <section>Score: {{ avg_score.toFixed(3) }}</section>
+                    <section>{{ show_natal_aspects ? "Natal" : "Transit" }} Aspects</section>
                     <section style="margin-top: 1em">
                       <astralka-position-data [kind]="'planets'" [positions]="stat_lines"
                                               [title]="'Natal Planets Position'">
@@ -213,6 +210,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                     <!-- <section>Lat/Long: {{transit.latitude}} : {{transit.longitude}}</section> -->
                     <section>Date Time: {{ moment($any(calculatedTransitDateStr)).format('MMMM Do YYYY, h:mm:ss a') }}
                     </section>
+                    <section>House System: {{ selectedHouseSystemName }}</section>
                     <section style="margin-top: 1em; text-align: right">
                       <astralka-house-system>
                         <fa-icon [icon]="faTools"/>
@@ -237,7 +235,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                     <!--                          Explanation-->
                     <!--                        </button>-->
                     <!--                      </section>-->
-                    <section style="margin-top: 1em">
+                    <section>
                       <astralka-position-data [kind]="'transits'" [positions]="stat_lines"
                                               [title]="'Transit Planets Position'">
                         <fa-icon [icon]="faMeteor"/>
@@ -275,7 +273,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                   </defs>
                   <g>
                     <!-- outside rectangle -->
-                    <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="#f4eeea" stroke="none"></rect>
+                    <rect x="0" y="0" [attr.width]="width" [attr.height]="height" fill="white" stroke="none"></rect>
                     <!-- outer circle -->
                     <g svgg-circle [cx]="cx" [cy]="cy" [radius]="outer_radius"
                        [options]="{stroke_width: 2, fill: 'white'}"></g>
@@ -327,44 +325,55 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                           <textPath xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sector_path_0"
                                     startOffset="50%"
                                     text-anchor="middle">
-                            {{ latin_phrase?.phrase }}
+                            {{ phrase_selected.latin }}
                           </textPath>
                         </text>
                       </g>
                       <!-- NATAL or TRANSIT words under the center of the chart -->
                       <g>
-                        <text class="chart-label" [attr.x]="cx + 7"
+                        <text class="chart-label" [attr.x]="cx + 7 * this.responsive_breakpoint.scale"
                               [attr.y]="cy + inner_radius / 5">{{ show_natal_aspects ? "NATAL" : "TRANSIT" }}
                         </text>
                       </g>
                       <!-- natal planet symbols -->
                       <g svgg-symbol *ngFor="let p of planets" [x]="p.x" [y]="p.y" [name]="p.name"
                          [fillBackground]="true"
-                         [fillBackgroundColor]="p.kind==='natal'?'white':'#f4eeea'"></g>
+                         [fillBackgroundColor]="'white'"
+                         [options]="{scale: this.responsive_breakpoint.scale}"
+                      ></g>
                       <!-- natal r for retrograde planet text -->
-                      <g svgg-text *ngFor="let p of planets" [x]="p.x + 8" [y]="p.y + 5" [text]="p.text"></g>
+                      <g svgg-text *ngFor="let p of planets"
+                         [x]="p.x + 8* this.responsive_breakpoint.scale"
+                         [y]="p.y + 5*this.responsive_breakpoint.scale"
+                         [text]="p.text"
+                         [options]="{font_size: 10 * this.responsive_breakpoint.scale}"
+                      ></g>
                       <!-- natal planet angle in sign -->
                       <g svgg-text *ngFor="let p of planets" [x]="p.label.pos.x" [y]="p.label.pos.y"
                          [text]="p.label.angle"
                          class="planets-angle"></g>
                       <!-- house symbols -->
-                      <g svgg-symbol *ngFor="let p of cusps" [x]="p.x" [y]="p.y" [name]="p.name"></g>
+                      <g svgg-symbol *ngFor="let p of cusps"
+                         [x]="p.x" [y]="p.y"
+                         [name]="p.name"
+                         [options]="{scale: this.responsive_breakpoint.scale}"
+                      ></g>
                       <!-- house degrees -->
                       <g svgg-text *ngFor="let p of cusps" [x]="p.label.pos.x" [y]="p.label.pos.y"
                          [text]="p.label.angle"
                          class="planets-angle"></g>
                       <!-- As, Dc, Mc, Ic labels -->
                       <g svgg-symbol *ngFor="let p of houses" class="angle" [x]="p.x" [y]="p.y" [name]="p.name"
-                         [options]="{scale: 0.8, stroke_color: '#333'}"></g>
+                         [options]="{scale: 0.8 * this.responsive_breakpoint.scale, stroke_color: '#333'}"></g>
                       <!-- aspect symbols on aspect lines -->
                       <g svgg-symbol *ngFor="let p of aspect_labels" [x]="p.x" [y]="p.y" [name]="p.name"
                          [options]="p.options"></g>
                       <!-- person's Zodiac sign symbol in the middle of the chart background circle -->
-                      <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20"
+                      <g svgg-circle [cx]="cx" [cy]="cy" [radius]="20 * this.responsive_breakpoint.scale"
                          [options]="{stroke_width: 2, stroke_color: data.dayChart?'black':'goldenrod', fill: data.dayChart?'goldenrod':'black'}"></g>
                       <!-- person's Zodiac sign symbol in the middle of the chart -->
                       <g svgg-symbol [x]="cx" [y]="cy" [name]="sign"
-                         [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: 1}"></g>
+                         [options]="{stroke_color: data.dayChart?'black':'goldenrod', scale: this.responsive_breakpoint.scale}"></g>
 
                     }
                     <!-- this is debug area will be removed -- for practicing drawing symbols -->
@@ -396,7 +405,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                     class="bot-panel"
                   >
                     <div class="bot-panel-handler">
-                      {{ latin_phrase?.eng }}
+                      {{ phrase_selected.english }}
                     </div>
                     <div style="flex: 1; display: flex; flex-direction: row; overflow: hidden">
                       <div class="bot-panel-content" id="explanation">
@@ -417,7 +426,7 @@ import {AngularSplitModule, SplitComponent} from "angular-split";
                         }
                       </div>
                       <!-- placeholder for a rotating image component -->
-                      @if (config.rotate_images && rotate_image) {
+                      @if (responsive_breakpoint.mode === AppMode.Full && config.rotate_images && rotate_image) {
                         <div style="flex: 0 320px; display: flex;">
                           <astralka-rotate-image [rotator]="rotate_image" [width]="320"
                                                  [height]="400"></astralka-rotate-image>
@@ -444,6 +453,32 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
   @ViewChild('split') split!: SplitComponent;
   public split_height!: number;
+
+  private responsive_matrix = [
+    {
+      breakpoint: '(min-width: 375px)',
+      width: 430,
+      height: 430,
+      margin: 50,
+      scale: 0.5,
+      mode: AppMode.Compact
+    },
+    {
+      breakpoint: '(min-width: 800px)',
+      width: 800,
+      height: 800,
+      margin: 120,
+      scale: 1.0,
+      mode: AppMode.Full
+    }
+  ];
+  public _responsive_breakpoint!: any;
+  public set responsive_breakpoint(value: any) {
+    this._responsive_breakpoint = value;
+  }
+  public get responsive_breakpoint(): any {
+    return _.get(this, "_responsive_breakpoint", this.responsive_matrix[0]);
+  }
 
   public width: number = 800;
   public height: number = 800;
@@ -584,11 +619,11 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return '';
   }
 
-  private _latin_phrase!: any;
+  private _phrase!: any;
 
-  public get latin_phrase(): any {
+  public get phrase_selected(): any {
     if (this.sign) {
-      return this._latin_phrase;
+      return this._phrase;
     }
     return null;
   }
@@ -663,6 +698,34 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
     this.commands = [
       {
+        mask: ToolbarCmdMask.NavBar,
+        type: 'menu',
+        hidden: false,
+        display: ToolbarDisplay.Icon,
+        menuSpan: ToolbarMenuSpan.Triple,
+        icon: faBaby,
+        //label: "Perspectives",
+        disabled: () => !(this.data && this.selectedPerson),
+        tooltip: 'Perspectives',
+        commands: perspectives
+          .sort((a: any, b: any) => a.label.localeCompare(b.label, 'standard', {sensitivity: 'case'}))
+          .map((perspective: any) => {
+            return {
+              mask: ToolbarCmdMask.NavBar,
+              type: 'item',
+              hidden: false,
+              display: ToolbarDisplay.IconAndText,
+              icon: perspective.icon,
+              label: perspective.label,
+              disabled: () => false,
+              tooltip: perspective.tooltip ?? perspective.label,
+              action: () => {
+                this.perspective(perspective.prompt);
+              }
+            };
+          })
+      },
+      {
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: false,
@@ -717,34 +780,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         }
       },
       {
-        mask: ToolbarCmdMask.NavBar,
-        type: 'menu',
-        hidden: false,
-        display: ToolbarDisplay.Icon,
-        menuSpan: ToolbarMenuSpan.Triple,
-        icon: faBaby,
-        //label: "Perspectives",
-        disabled: () => !(this.data && this.selectedPerson),
-        tooltip: 'Perspectives',
-        commands: perspectives
-          .sort((a: any, b: any) => a.label.localeCompare(b.label, 'standard', {sensitivity: 'case'}))
-          .map((perspective: any) => {
-            return {
-              mask: ToolbarCmdMask.NavBar,
-              type: 'item',
-              hidden: false,
-              display: ToolbarDisplay.IconAndText,
-              icon: perspective.icon,
-              label: perspective.label,
-              disabled: () => false,
-              tooltip: perspective.tooltip ?? perspective.label,
-              action: () => {
-                this.perspective(perspective.prompt);
-              }
-            };
-          })
-      },
-      {
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: false,
@@ -762,32 +797,32 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           this.recalculate_explanation_height();
         }
       },
-      {
-        mask: ToolbarCmdMask.All,
-        type: 'item',
-        hidden: false,
-        align: ToolbarAlign.Left,
-        display: ToolbarDisplay.Icon,
-        icon: faSave,
-        disabled: () => !this.selectedPerson,
-        tooltip: 'Save Selected Person to Quick Pick',
-        action: () => {
-          this.savePersonToQuickPick();
-        }
-      },
-      {
-        mask: ToolbarCmdMask.All,
-        type: 'item',
-        hidden: false,
-        align: ToolbarAlign.Right,
-        display: ToolbarDisplay.IconAndText,
-        icon: faUserNinja,
-        label: this.username,
-        disabled: () => false,
-        tooltip: 'Profile',
-        action: () => {
-        }
-      },
+      // {
+      //   mask: ToolbarCmdMask.All,
+      //   type: 'item',
+      //   hidden: false,
+      //   align: ToolbarAlign.Left,
+      //   display: ToolbarDisplay.Icon,
+      //   icon: faSave,
+      //   disabled: () => !this.selectedPerson,
+      //   tooltip: 'Save Selected Person to Quick Pick',
+      //   action: () => {
+      //     this.savePersonToQuickPick();
+      //   }
+      // },
+      // {
+      //   mask: ToolbarCmdMask.All,
+      //   type: 'item',
+      //   hidden: false,
+      //   align: ToolbarAlign.Right,
+      //   display: ToolbarDisplay.IconAndText,
+      //   icon: faUserNinja,
+      //   label: this.username,
+      //   disabled: () => false,
+      //   tooltip: 'Profile',
+      //   action: () => {
+      //   }
+      // },
       {
         mask: ToolbarCmdMask.All,
         type: 'item',
@@ -803,25 +838,11 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       }
     ];
 
-    const responsive_matrix = [
-      {
-        breakpoint: '(min-width: 428px)',
-        width: 600,
-        height: 600,
-        margin: 50
-      },
-      {
-        breakpoint: '(min-width: 805px)',
-        width: 800,
-        height: 800,
-        margin: 120
-      }
-    ];
-
-    this.responsive.observe(responsive_matrix.map(x => x.breakpoint)).subscribe(result => {
+    this.responsive.observe(this.responsive_matrix.map(x => x.breakpoint)).subscribe(result => {
       if (result.matches) {
-        responsive_matrix.forEach((r: any) => {
+        this.responsive_matrix.forEach((r: any) => {
           if (result.breakpoints[r.breakpoint]) {
+            this.responsive_breakpoint = r;
             this.width = r.width;
             this.height = r.height;
             this.margin = r.margin;
@@ -844,7 +865,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     this.rest.getQuickPickList(this.username).subscribe((data: any) => {
       this._picks = data ?? [];
       if (this._picks.length) {
-        this.show_quick_pick = true;
+        //this.show_quick_pick = true;
         this.cdr.detectChanges();
       }
     });
@@ -875,11 +896,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       }
       const md = markdownit('commonmark');
       const result = md.render(data.result);
-      this._latin_phrase = _.chain(latinAboutSign)
-        .filter((x: any) => x.sign === this.sign)
-        .shuffle()
-        .first()
-        .value();
+      this._phrase = this.latin_phrase(this.sign);
       this._explanation.push({text: result, info: data.params, timestamp: moment().format("MMMM Do YYYY, h:mm:ss a")});
       _.delay(() => {
         this.zone.run(() => {
@@ -925,7 +942,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         color = "#006";
         break;
     }
-    return {stroke_color: color};
+    return {stroke_color: color, scale: this.responsive_breakpoint.scale};
   }
 
   public draw() {
@@ -970,7 +987,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       this.draw();
       this.storage.store("astralka-person", this.selectedPerson);
     } else {
-      this._latin_phrase = undefined;
+      this._phrase = undefined;
       this.selectedPerson = undefined;
       this.init();
     }
@@ -1084,7 +1101,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     //this._explanation = [];
 
     this.cx = Math.trunc(this.width / 2);
-    this.cy = Math.trunc(this.width / 2) - this.margin / 2;
+    this.cy = Math.trunc(this.width / 2) - (this.responsive_breakpoint.mode === AppMode.Full ? this.margin / 2 : 0 ) ;
     this.outer_radius = Math.min(this.width / 2, this.width / 2) - this.margin;
     this.inner_radius = this.outer_radius - this.outer_radius / 6;
     this.house_radius = this.inner_radius * 5 / 7;
@@ -1112,6 +1129,15 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
+  public latin_phrase(sign: string): {latin: string, english: string} {
+    const takeOne = _.chain(latinPhrases.find(x => x.sign === sign)!.phrases)
+      .shuffle()
+      .first()
+      .value();
+    console.log(takeOne);
+    return takeOne;
+  }
+
   private handleChartData(data: any) {
     this.offset_angle = data.Houses.find((z: any) => z.name === 'Cusp1').position;
 
@@ -1121,11 +1147,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     //debug
     console.log(data);
 
-    this._latin_phrase = _.chain(latinAboutSign)
-      .filter((x: any) => x.sign === this.sign)
-      .shuffle()
-      .first()
-      .value();
+    this._phrase = this.latin_phrase(this.sign);
 
     for (let i = 0; i < 12; i++) {
       // assemble houses
@@ -1138,18 +1160,18 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         p2,
         options: _.includes([0, 3, 6, 9], house.index)
           ? house.index == 0 || house.index == 6
-            ? {stroke_color: "#090", stroke_width: 4}
-            : {stroke_color: "#900", stroke_width: 4}
+            ? {stroke_color: "#090", stroke_width: 4 * this.responsive_breakpoint.scale}
+            : {stroke_color: "#900", stroke_width: 4 * this.responsive_breakpoint.scale}
           : {stroke_color: "#000", stroke_width: 1}
       });
 
       if (_.includes([0, 3, 6, 9], i)) {
         const p1 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius, a);
-        const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 25, a);
+        const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 25 * this.responsive_breakpoint.scale, a);
         const options = _.includes([0, 3, 6, 9], house.index)
           ? house.index == 0 || house.index == 6
-            ? {stroke_color: "#090", stroke_width: 2}
-            : {stroke_color: "#900", stroke_width: 2}
+            ? {stroke_color: "#090", stroke_width: 4 * this.responsive_breakpoint.scale}
+            : {stroke_color: "#900", stroke_width: 4 * this.responsive_breakpoint.scale}
           : {stroke_color: "#000", stroke_width: 1};
         this._lines.push({
           p1,
@@ -1158,7 +1180,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         });
         if (i == 0 || i == 9) {
           this._lines.push(
-            ...calculate_arrow(9, 4, p1, p2, options)
+            ...calculate_arrow(9 * this.responsive_breakpoint.scale, 4 * this.responsive_breakpoint.scale, p1, p2, options)
           );
         }
       }
@@ -1184,7 +1206,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       );
       if (_.includes([0, 3, 6, 9], i)) {
         const c = house.position - this.offset_angle;
-        let p = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 35, c);
+        let p = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 40 * this.responsive_breakpoint.scale, c);
         this._houses.push({
           name: i == 0
             ? SYMBOL_HOUSE.Ascendant
@@ -1203,13 +1225,13 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     skyObjectsAdjusted.forEach((so: any) => {
       // assemble sky objects
       const x = _.find(data.SkyObjects, x => x.name === so.name);
-      const p_adjusted = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15, so.angle - this.offset_angle);
-      const p_adjusted_label = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 32.5, so.angle - this.offset_angle);
+      const p_adjusted = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15 * this.responsive_breakpoint.scale, so.angle - this.offset_angle);
+      const p_adjusted_label = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 36 * this.responsive_breakpoint.scale, so.angle - this.offset_angle);
 
       const p1 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius, x.position);
-      const p2 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 5, x.position);
+      const p2 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 5 * this.responsive_breakpoint.scale, x.position);
 
-      const p_adjusted_ = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15, so.angle);
+      const p_adjusted_ = this.get_point_on_circle(this.cx, this.cy, this.inner_radius - 15 * this.responsive_breakpoint.scale, so.angle);
       const p3 = point_on_the_line(3, p2, p_adjusted_);
 
       this._lines.push({p1, p2}, {p1: p2, p2: p3});
@@ -1239,12 +1261,12 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       skyObjectsTransitAdjusted.forEach((so: any) => {
         // assemble sky objects
         const x = _.find(data.Transit.SkyObjects, x => x.name === so.name);
-        const p = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15, so.angle - this.offset_angle);
+        const p = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15 * this.responsive_breakpoint.scale, so.angle - this.offset_angle);
         const p1 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius, x.position);
-        const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 5, x.position);
-        const p_label = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 36, so.angle - this.offset_angle);
+        const p2 = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 5 * this.responsive_breakpoint.scale, x.position);
+        const p_label = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 35 * this.responsive_breakpoint.scale, so.angle - this.offset_angle);
 
-        const p_ = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15, so.angle);
+        const p_ = this.get_point_on_circle(this.cx, this.cy, this.outer_radius + 15 * this.responsive_breakpoint.scale, so.angle);
         const p3 = point_on_the_line(3, p2, p_);
 
         this._lines.push({p1, p2}, {p1: p2, p2: p3});
@@ -1309,7 +1331,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           this.aspect_labels.push({
             ...p,
             name: x.aspect.name,
-            options
+            options: _.assign({}, options, { scale: this.responsive_breakpoint.scale })
           });
         }
       });
@@ -1517,7 +1539,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       const position = this.get_point_on_circle(this.cx, this.cy, so_radius, so.position);
       const point = {
         name: so.name, ...position,
-        r: COLLISION_RADIUS * SYMBOL_SCALE,
+        r: COLLISION_RADIUS * this.responsive_breakpoint.scale,
         angle: so.position,
         pointer: so.position
       };
@@ -1535,8 +1557,8 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   private adjust_collision(p1: any, p2: any) {
     const step = 1;
     if (
-      (p1.pointer <= p2.pointer && Math.abs(p1.pointer - p2.pointer) <= COLLISION_RADIUS) ||
-      (p1.pointer >= p2.pointer && Math.abs(p1.pointer - p2.pointer) >= COLLISION_RADIUS)
+      (p1.pointer <= p2.pointer && Math.abs(p1.pointer - p2.pointer) <= COLLISION_RADIUS * this.responsive_breakpoint.scale) ||
+      (p1.pointer >= p2.pointer && Math.abs(p1.pointer - p2.pointer) >= COLLISION_RADIUS * this.responsive_breakpoint.scale)
     ) {
       p1.angle = nl360(p1.angle - step);
       p2.angle = nl360(p2.angle + step);
@@ -1551,7 +1573,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       points.push(point);
       return points;
     }
-    if ((2 * Math.PI * radius) - (2 * COLLISION_RADIUS * SYMBOL_SCALE * (points.length + 1)) <= 0) {
+    if ((2 * Math.PI * radius) - (2 * COLLISION_RADIUS * this.responsive_breakpoint.scale * (points.length + 1)) <= 0) {
       throw new Error("Cannot resolve collision");
     }
     let is_collision = false;
@@ -1594,6 +1616,10 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       element.scroll({top: element.scrollHeight, behavior: 'smooth'});
     }
   }
+
+  protected readonly faSave = faSave;
+  protected readonly faLocationPin = faLocationPin;
+  protected readonly AppMode = AppMode;
 }
 
 

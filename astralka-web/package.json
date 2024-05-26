@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "maria": "ng serve --port 4201",
+    "start": "ng serve --host 0.0.0.0",
+    "maria": "ng serve --port 4201 --host 0.0.0.0",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

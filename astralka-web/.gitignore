@@ -3,6 +3,7 @@
 /tmp
 /out-tsc
 /bazel-out
+/src/assets/config.json
 
 # Node
 /node_modules

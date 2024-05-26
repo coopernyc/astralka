@@ -18,6 +18,9 @@ svg text {
   font-weight: 400;
   font-style: normal;
   font-size: 11px;
+  @media (max-width: 430px) {
+    font-size: 6px;
+  }
 }
 
 .dd {

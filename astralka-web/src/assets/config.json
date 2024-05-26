@@ -1,6 +1,6 @@
 {
-    "server": "http://localhost:3010",
+    "server": "http://192.168.1.68:3010",
     "rotate_images": {
-      "imageLoaderUrl": "http://localhost:3010/images"
+      "imageLoaderUrl": "http://192.168.1.68:3010/images"
     }
 }
