@@ -49,7 +49,7 @@ import {Overlay, OverlayConfig, OverlayModule, OverlayRef} from "@angular/cdk/ov
             [title]="(cmd | as : IToolbarNavCmd).tooltip"
             [disabled]="(cmd | as: IToolbarNavCmd).disabled()"
             #ref
-            (click)="show(ref)"
+            (click)="show(ref, cmd)"
           >
             @if (display(cmd, ToolbarDisplay.Icon)) {
               <fa-icon [icon]="icon(cmd)"></fa-icon>
@@ -61,26 +61,27 @@ import {Overlay, OverlayConfig, OverlayModule, OverlayRef} from "@angular/cdk/ov
           <ng-template cdkPortal #overlayTemplate="cdkPortal">
             <div
               class="toolbar-menu"
-              [class.double]="(cmd | as : IToolbarMenu).menuSpan === ToolbarMenuSpan.Double"
-              [class.triple]="(cmd | as : IToolbarMenu).menuSpan === ToolbarMenuSpan.Triple"
+              [class.single]="(portal_cmd | as : IToolbarMenu).menuSpan === ToolbarMenuSpan.Single"
+              [class.double]="(portal_cmd | as : IToolbarMenu).menuSpan === ToolbarMenuSpan.Double"
+              [class.triple]="(portal_cmd | as : IToolbarMenu).menuSpan === ToolbarMenuSpan.Triple"
             >
-              @for(m_cmd of menu_commands(cmd); track m_cmd) {
-                @switch(m_cmd.type) {
+              @for(m_portal_cmd of menu_commands(portal_cmd); track m_portal_cmd) {
+                @switch(m_portal_cmd.type) {
                   @case('item') {
                     <button
                       type="button"
-                      [class]="'toolbar-menu-button ' + iconClass(m_cmd)"
-                      [title]="(m_cmd | as : IToolbarNavCmd).tooltip"
-                      [disabled]="(m_cmd | as: IToolbarNavCmd).disabled()"
-                      (click)="action(m_cmd)"
+                      [class]="'toolbar-menu-button ' + iconClass(m_portal_cmd)"
+                      [title]="(m_portal_cmd | as : IToolbarNavCmd).tooltip"
+                      [disabled]="(m_portal_cmd | as: IToolbarNavCmd).disabled()"
+                      (click)="action(m_portal_cmd)"
                     >
-                      @if (display(m_cmd, ToolbarDisplay.Icon)) {
-                        <fa-icon [icon]="icon(m_cmd)" [fixedWidth]="true"></fa-icon>
+                      @if (display(m_portal_cmd, ToolbarDisplay.Icon)) {
+                        <fa-icon [icon]="icon(m_portal_cmd)" [fixedWidth]="true"></fa-icon>
                       } @else {
                         <div style="width: 32px"></div>
                       }
-                      @if (display(m_cmd, ToolbarDisplay.Text)) {
-                        {{(m_cmd | as: IToolbarNavCmd).label}}
+                      @if (display(m_portal_cmd, ToolbarDisplay.Text)) {
+                        {{(m_portal_cmd | as: IToolbarNavCmd).label}}
                       }
                     </button>
                   }
@@ -105,6 +106,11 @@ export class AstralkaToolbarSetComponent {
 
   constructor(protected overlay: Overlay) {
   }
+
+  public get portal_cmd(): IToolbarCmd {
+    return this.contentTemplate.context;
+  }
+
   public display(cmd: IToolbarCmd, mask: ToolbarDisplay): boolean {
     let c = cmd as IToolbarItem;
     return c && !!(c.display & mask);
@@ -136,8 +142,9 @@ export class AstralkaToolbarSetComponent {
     let c = cmd as IToolbarMenu;
     return c.commands;
   }
-  public show(el: HTMLButtonElement): void {
+  public show(el: HTMLButtonElement, cmd: IToolbarCmd): void {
     if (!this.showing) {
+      this.contentTemplate.context = cmd;
       this.overlayRef = this.overlay.create(this.getOverlayConfig(el));
       this.overlayRef.attach(this.contentTemplate);
       this.overlayRef.backdropClick().subscribe(() => this.hide());

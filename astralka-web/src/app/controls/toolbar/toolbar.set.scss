@@ -53,8 +53,8 @@
     background-color: #eee;
     padding: 4px 3px 3px 3px;
     min-width: 120px;
-    max-width: 120px;
-    width: 120px;
+    max-width: 180px;
+    //width: 120px;
     cursor: pointer;
     color: #333;
     text-align: left;
@@ -69,6 +69,11 @@
     &:hover {
       color: #eee;
       background-color: #336699;
+    }
+  }
+  &.single {
+    button.toolbar-menu-button {
+      display: block;
     }
   }
   &.double,

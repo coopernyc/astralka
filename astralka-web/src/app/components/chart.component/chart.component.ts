@@ -1,7 +1,10 @@
 import {
-  AfterViewInit, ApplicationRef,
+  AfterViewInit,
+  ApplicationRef,
   ChangeDetectorRef,
-  Component, ComponentRef, createComponent,
+  Component,
+  ComponentRef,
+  createComponent,
   DestroyRef,
   inject,
   NgZone,
@@ -73,6 +76,8 @@ import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {
   faBaby,
+  faBars,
+  faCalendarDay,
   faDice,
   faEye,
   faLocationPin,
@@ -81,7 +86,8 @@ import {
   faSave,
   faSignOut,
   faTools,
-  faUserAstronaut
+  faUserAstronaut,
+  faWandMagicSparkles
 } from "@fortawesome/free-solid-svg-icons";
 import * as config from "assets/config.json";
 import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.image";
@@ -166,16 +172,20 @@ import {AstroPipe} from "../../controls/astro.pipe";
                 @if (data && selectedPerson) {
                   <article id="person-info">
                     <section><b>Natal Data</b></section>
-                    <section>{{ selectedPerson.name }} <button (click)="savePersonToQuickPick()">
-                      <fa-icon [icon]="faLocationPin"></fa-icon>
-                    </button></section>
+                    <section>{{ selectedPerson.name }}
+                      <button (click)="savePersonToQuickPick()">
+                        <fa-icon [icon]="faLocationPin"></fa-icon>
+                      </button>
+                    </section>
                     <section>{{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
                     <section>Loc: {{ selectedPerson.location.name }}</section>
                     <section>Lat: {{ convert_lat_to_DMS(selectedPerson.location.latitude) }}
-                      , {{ selectedPerson.location.latitude.toFixed(4) }}°{{ selectedPerson.location.latitude >= 0 ? 'N' : 'S' }}
+                      , {{ selectedPerson.location.latitude.toFixed(4) }}
+                      °{{ selectedPerson.location.latitude >= 0 ? 'N' : 'S' }}
                     </section>
                     <section>Long: {{ convert_long_to_DMS(selectedPerson.location.longitude) }}
-                      , {{ selectedPerson.location.longitude.toFixed(4) }}°{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
+                      , {{ selectedPerson.location.longitude.toFixed(4) }}
+                      °{{ selectedPerson.location.longitude >= 0 ? 'E' : 'W' }}
                     </section>
                     <section>Offset UTC: {{ selectedPerson.timezone }} hours</section>
                     <section>Elevation: {{ selectedPerson.location.elevation }}m</section>
@@ -394,44 +404,47 @@ import {AstroPipe} from "../../controls/astro.pipe";
             </as-split-area>
             <as-split-area [size]="'*'" style="display: flex;">
 
-                <div class="explanation-container" id="explanation"
-                     [style.height]="'calc(100vh - ' + split_height + 'px)'">
-                  <div
-                    [overlayLoader]="sharedExplain$"
-                    class="bot-panel"
-                  >
-                    <div class="bot-panel-handler">
-                      {{ phrase_selected?.english }}
-                    </div>
-                    <div style="flex: 1; display: flex; flex-direction: row; overflow: hidden">
-                      <div class="bot-panel-content" id="explanation">
-                        @for (e of explanation; track e; let idx = $index) {
-                          @if (idx !== 0) {
-                            <hr class="una"/>
-                          }
-                          @if (config.rotate_images && e.rotator) {
-                            <div [style.min-height.px]="220 * this.responsive_breakpoint.scale">
-                              <div style="float: right; margin: 0.5em;" [style.width.px]="160 * this.responsive_breakpoint.scale">
-                                <astralka-rotate-image [rotator]="e.rotator" [width]="160 * this.responsive_breakpoint.scale" [height]="200 * this.responsive_breakpoint.scale"></astralka-rotate-image>
-                              </div>
-                              <p class="explanation-wrap" [innerHTML]="e.text | astro | safeHtml"></p>
+              <div class="explanation-container" id="explanation"
+                   [style.height]="'calc(100vh - ' + split_height + 'px)'">
+                <div
+                  [overlayLoader]="sharedExplain$"
+                  class="bot-panel"
+                >
+                  <div class="bot-panel-handler">
+                    {{ phrase_selected?.english }}
+                  </div>
+                  <div style="flex: 1; display: flex; flex-direction: row; overflow: hidden">
+                    <div class="bot-panel-content" id="explanation">
+                      @for (e of explanation; track e; let idx = $index) {
+                        @if (idx !== 0) {
+                          <hr class="una"/>
+                        }
+                        @if (config.rotate_images && e.rotator) {
+                          <div [style.min-height.px]="220 * this.responsive_breakpoint.scale">
+                            <div style="float: right; margin: 0.5em;"
+                                 [style.width.px]="160 * this.responsive_breakpoint.scale">
+                              <astralka-rotate-image [rotator]="e.rotator"
+                                                     [width]="160 * this.responsive_breakpoint.scale"
+                                                     [height]="200 * this.responsive_breakpoint.scale"></astralka-rotate-image>
                             </div>
-                          } @else {
                             <p class="explanation-wrap" [innerHTML]="e.text | astro | safeHtml"></p>
-                          }
-                          <div class="foot-print">
-                            <div class="retry">
+                          </div>
+                        } @else {
+                          <p class="explanation-wrap" [innerHTML]="e.text | astro | safeHtml"></p>
+                        }
+                        <div class="foot-print">
+                          <div class="retry">
                                 <span (click)="retryExplanation(e)">
                                   re-try for better answer <fa-icon [icon]="faDice"/>
                                 </span>
-                            </div>
-                            <div class="timestamp">{{ e.timestamp }}</div>
                           </div>
-                        }
-                      </div>
+                          <div class="timestamp">{{ e.timestamp }}</div>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>
+              </div>
 
             </as-split-area>
 
@@ -473,6 +486,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   public set responsive_breakpoint(value: any) {
     this._responsive_breakpoint = value;
   }
+
   public get responsive_breakpoint(): any {
     return _.get(this, "_responsive_breakpoint", this.responsive_matrix[0]);
   }
@@ -660,7 +674,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       }
       const stats = line.stats;
       const temp: string[] = [];
-      const retrograde = stats.speed < 0 ? 'Retrograde ': '';
+      const retrograde = stats.speed < 0 ? 'Retrograde ' : '';
       temp.push(`\n- ${retrograde}${stats.label} in ${stats.position.sign}/${stats.house}`);
       const name = stats.name;
 
@@ -691,7 +705,101 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     this.recalculate_explanation_height();
   }
 
-  ngOnInit(): void {
+  public update_commpands(): void {
+
+    const cmds: IToolbarCmd[] = [
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        display: this.responsive_breakpoint.mode === AppMode.Full ? ToolbarDisplay.Icon : ToolbarDisplay.IconAndText,
+        iconResolver: () => {
+          return this.show_entry_form
+            ? {icon: faUserAstronaut, cssClass: 'icon-on'}
+            : {icon: faUserAstronaut, cssClass: ''}
+        },
+        disabled: () => false,
+        label: 'Natal Form',
+        tooltip: 'Person Natal Data Entry',
+        action: () => {
+          this.show_entry_form = !this.show_entry_form;
+          this.recalculate_explanation_height();
+        }
+      },
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        display: this.responsive_breakpoint.mode === AppMode.Full ? ToolbarDisplay.Icon : ToolbarDisplay.IconAndText,
+        iconResolver: () => {
+          return this.show_transit_form
+            ? {icon: faMeteor, cssClass: 'icon-on'}
+            : {icon: faMeteor, cssClass: ''}
+        },
+        disabled: () => false,
+        tooltip: 'Transits or Progression Date',
+        label: 'Transit Form',
+        action: () => {
+          this.show_transit_form = !this.show_transit_form;
+          this.recalculate_explanation_height();
+        }
+      },
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        display: this.responsive_breakpoint.mode === AppMode.Full ? ToolbarDisplay.Icon : ToolbarDisplay.IconAndText,
+        iconResolver: () => {
+          return this.show_natal_aspects
+            ? {icon: faMarsAndVenus, cssClass: ''}
+            : {icon: faMarsAndVenus, cssClass: 'icon-on'}
+        },
+        disabled: () => !this.data || !this.selectedPerson,
+        tooltip: 'Toggle between Natal and Transit Aspects',
+        label: 'Nata/Transit Apects',
+        action: () => {
+          this.show_natal_aspects = !this.show_natal_aspects;
+          this.draw();
+        }
+      },
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: false,
+        align: ToolbarAlign.Left,
+        display: this.responsive_breakpoint.mode === AppMode.Full ? ToolbarDisplay.Icon : ToolbarDisplay.IconAndText,
+        iconResolver: () => {
+          return this.show_quick_pick
+            ? {icon: faLocationPin, cssClass: 'icon-on'}
+            : {icon: faLocationPin, cssClass: ''}
+        },
+        disabled: () => !this.picks.length,
+        tooltip: 'Toggle Quick Picks',
+        label: 'Show/Hide Quick Picks',
+        action: () => {
+          this.show_quick_pick = !this.show_quick_pick;
+          this.recalculate_explanation_height();
+        }
+      }
+    ];
+    const responsive_commands: IToolbarCmd[] = this.responsive_breakpoint.mode === AppMode.Full
+      ? cmds
+      : [
+        {
+          mask: ToolbarCmdMask.NavBar,
+          type: 'menu',
+          hidden: false,
+          display: ToolbarDisplay.Icon,
+          menuSpan: ToolbarMenuSpan.Single,
+          icon: faBars,
+          disabled: () => false,
+          tooltip: 'Actions',
+          commands: cmds
+        }
+      ];
 
     this.commands = [
       {
@@ -723,103 +831,31 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           })
       },
       {
-        mask: ToolbarCmdMask.All,
-        type: 'item',
+        mask: ToolbarCmdMask.NavBar,
+        type: 'menu',
         hidden: false,
-        align: ToolbarAlign.Left,
         display: ToolbarDisplay.Icon,
-        iconResolver: () => {
-          return this.show_entry_form
-            ? {icon: faUserAstronaut, cssClass: 'icon-on'}
-            : {icon: faUserAstronaut, cssClass: ''}
-        },
-        disabled: () => false,
-        tooltip: 'Person Natal Data Entry',
-        action: () => {
-          this.show_entry_form = !this.show_entry_form;
-          this.recalculate_explanation_height();
-        }
+        menuSpan: ToolbarMenuSpan.Single,
+        icon: faWandMagicSparkles,
+        disabled: () => !(this.data && this.selectedPerson),
+        tooltip: 'Forecast',
+        commands: [
+          {
+            mask: ToolbarCmdMask.NavBar,
+            type: 'item',
+            hidden: false,
+            display: ToolbarDisplay.IconAndText,
+            icon: faCalendarDay,
+            label: "Dayly Cast",
+            disabled: () => false,
+            tooltip: "Everyday Prediction",
+            action: () => {
+
+            }
+          }
+        ]
       },
-      {
-        mask: ToolbarCmdMask.All,
-        type: 'item',
-        hidden: false,
-        align: ToolbarAlign.Left,
-        display: ToolbarDisplay.Icon,
-        iconResolver: () => {
-          return this.show_transit_form
-            ? {icon: faMeteor, cssClass: 'icon-on'}
-            : {icon: faMeteor, cssClass: ''}
-        },
-        disabled: () => false,
-        tooltip: 'Transits or Progression Date',
-        action: () => {
-          this.show_transit_form = !this.show_transit_form;
-          this.recalculate_explanation_height();
-        }
-      },
-      {
-        mask: ToolbarCmdMask.All,
-        type: 'item',
-        hidden: false,
-        align: ToolbarAlign.Left,
-        display: ToolbarDisplay.Icon,
-        iconResolver: () => {
-          return this.show_natal_aspects
-            ? {icon: faMarsAndVenus, cssClass: ''}
-            : {icon: faMarsAndVenus, cssClass: 'icon-on'}
-        },
-        disabled: () => !this.data || !this.selectedPerson,
-        tooltip: 'Toggle between Natal and Transit Aspects',
-        action: () => {
-          this.show_natal_aspects = !this.show_natal_aspects;
-          this.draw();
-        }
-      },
-      {
-        mask: ToolbarCmdMask.All,
-        type: 'item',
-        hidden: false,
-        align: ToolbarAlign.Left,
-        display: ToolbarDisplay.Icon,
-        iconResolver: () => {
-          return this.show_quick_pick
-            ? {icon: faLocationPin, cssClass: 'icon-on'}
-            : {icon: faLocationPin, cssClass: ''}
-        },
-        disabled: () => !this.picks.length,
-        tooltip: 'Toggle Quick Pick',
-        action: () => {
-          this.show_quick_pick = !this.show_quick_pick;
-          this.recalculate_explanation_height();
-        }
-      },
-      // {
-      //   mask: ToolbarCmdMask.All,
-      //   type: 'item',
-      //   hidden: false,
-      //   align: ToolbarAlign.Left,
-      //   display: ToolbarDisplay.Icon,
-      //   icon: faSave,
-      //   disabled: () => !this.selectedPerson,
-      //   tooltip: 'Save Selected Person to Quick Pick',
-      //   action: () => {
-      //     this.savePersonToQuickPick();
-      //   }
-      // },
-      // {
-      //   mask: ToolbarCmdMask.All,
-      //   type: 'item',
-      //   hidden: false,
-      //   align: ToolbarAlign.Right,
-      //   display: ToolbarDisplay.IconAndText,
-      //   icon: faUserNinja,
-      //   label: this.username,
-      //   disabled: () => false,
-      //   tooltip: 'Profile',
-      //   action: () => {
-      //   }
-      // },
+      ...responsive_commands,
       {
         mask: ToolbarCmdMask.All,
         type: 'item',
@@ -834,6 +870,11 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         }
       }
     ];
+  }
+
+  ngOnInit(): void {
+
+    this.update_commpands();
 
     this.responsive.observe(this.responsive_matrix.map(x => x.breakpoint)).subscribe(result => {
       if (result.matches) {
@@ -848,6 +889,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         });
       }
       this.init();
+      this.update_commpands();
       if (this.selectedPerson) {
         this.draw();
       }
@@ -900,6 +942,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         rotator: _.cloneDeep(this.rotate_image),
         timestamp: moment().format("MMMM Do YYYY, h:mm:ss a")
       });
+
       _.delay(() => {
         this.zone.run(() => {
           const compRefs: ComponentRef<ChartSymbol>[] = [];
@@ -912,7 +955,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             instance.x = 7;
             instance.y = 9;
             instance.name = node.id.replace('planet-', '');
-            instance.options = {scale: 0.5, stroke_width: 2, stroke_color: '#000'};
+            instance.options = {scale: 0.5, stroke_width: 1, stroke_color: '#295344'};
             compRefs.push(componentRef);
           });
           document.querySelectorAll(".gen-zodiac").forEach(node => {
@@ -924,7 +967,19 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             instance.x = 7;
             instance.y = 9;
             instance.name = node.id.replace('zodiac-', '');
-            instance.options = {scale: 0.45, stroke_width: 1, stroke_color: '#000'};
+            instance.options = {scale: 0.45, stroke_width: 1, stroke_color: '#295344'};
+            compRefs.push(componentRef);
+          });
+          document.querySelectorAll(".gen-aspect").forEach(node => {
+            const componentRef = createComponent(ChartSymbol, {
+              environmentInjector: this.applicationRef.injector,
+              hostElement: node
+            });
+            const instance = componentRef.instance;
+            instance.x = 7.5;
+            instance.y = 9.5;
+            instance.name = node.id.replace('aspect-', '');
+            instance.options = {scale: 0.6, stroke_width: 1, stroke_color: '#295344'};
             compRefs.push(componentRef);
           });
 
@@ -1131,7 +1186,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     this.data = {};
 
     this.cx = Math.trunc(this.width / 2);
-    this.cy = Math.trunc(this.width / 2) - (this.responsive_breakpoint.mode === AppMode.Full ? this.margin / 2 : 0 ) ;
+    this.cy = Math.trunc(this.width / 2) - (this.responsive_breakpoint.mode === AppMode.Full ? this.margin / 2 : 0);
     this.outer_radius = Math.min(this.width / 2, this.width / 2) - this.margin;
     this.inner_radius = this.outer_radius - this.outer_radius / 6;
     this.house_radius = this.inner_radius * 5 / 7;
@@ -1159,7 +1214,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
-  public latin_phrase(sign: string): {latin: string, english: string} {
+  public latin_phrase(sign: string): { latin: string, english: string } {
     const takeOne = _.chain(latinPhrases.find(x => x.sign === sign)!.phrases)
       .shuffle()
       .first()
@@ -1361,7 +1416,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           this.aspect_labels.push({
             ...p,
             name: x.aspect.name,
-            options: _.assign({}, options, { scale: this.responsive_breakpoint.scale })
+            options: _.assign({}, options, {scale: this.responsive_breakpoint.scale})
           });
         }
       });

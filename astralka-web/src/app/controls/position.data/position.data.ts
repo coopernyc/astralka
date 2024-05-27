@@ -53,7 +53,7 @@ import {RestService} from "../../services/rest.service";
                 </div>
                 <div style="text-align: left; flex: 0 40px; margin-left: 2px">{{stat.position.min_fmt}}{{stat.position.sec_fmt}}</div>
                 @if (kind === 'planets' || kind === 'transits') {
-                  @if (kind === 'transits') { transiting }
+                  @if (kind === 'transits') { trans. }
                   <div style="text-align: right; flex: 0 40px; padding-right: 8px;">{{stat.house}}</div>
                   <div style="text-align: left; flex: 1">{{stat.dignities}}</div>
                 }
