@@ -82,6 +82,9 @@
           overflow-y: scroll;
 
           .explanation-wrap {
+            ::ng-deep p {
+              text-align: justify;
+            }
             ::ng-deep ol {
               li {
                 margin: 0.33em;
@@ -94,7 +97,7 @@
               //}
               margin: 0.5em 0;
               //font-size: 14px;
-              color: #777;
+              color: #444;
             }
           }
 

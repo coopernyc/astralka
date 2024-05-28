@@ -182,7 +182,7 @@ export class AstralkaAspectMatrixComponent extends AstralkaBasePortalComponent i
       this.selected = m;
       const party0 = format_party(this.selected.aspect.parties[0]);
       const party1 = format_party(this.selected.aspect.parties[1]);
-      const prompt = `Write in 30-40 words interpretation of ${party0} is in ${this.selected.aspect.aspect.name} with ${party1}.`;
+      const prompt = `Write in 2 or 3 paragraphs describing the meaning of ${party0} is in ${this.selected.aspect.aspect.name} with ${party1}.`;
       this.rest.do_explain({prompt, params: m, context: this.selected.aspect.aspect.name});
     }
   }
