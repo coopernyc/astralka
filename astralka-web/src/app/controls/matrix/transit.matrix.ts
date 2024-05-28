@@ -33,25 +33,30 @@ import {ChartText} from "../graphics/chart-text";
     <ng-template cdkPortal #overlayTemplate="cdkPortal">
       <div class="portal-content transit">
         <svg style="position: absolute; left: 0"
-             [style.flex]="'flex: 0 390px'" xmlns="http://www.w3.org/2000/svg"
-             [attr.width]="410"
-             [attr.height]="370"
+             [style.flex]="'flex: 0 396px'" xmlns="http://www.w3.org/2000/svg"
+             [attr.width]="396"
+             [attr.height]="354"
              [attr.viewBox]="'0 0 410 370'"
              #chart
         >
           @for (m of matrix; track m) {
-            <g transform="translate(18, 14)">
+            <g transform="translate(12, 11.5)">
+              <rect [attr.x]="-step/2" [attr.y]="-step/2" [attr.width]="step" [attr.height]="step" fill="#030" stroke="none"></rect>
+              <line [attr.x1]="-step/2" [attr.y1]="-step/2" [attr.x2]="step/2" [attr.y2]="step/2" stroke-width="1" stroke="#960" />
+              <text [attr.x]="step/4" [attr.y]="0" style="text-anchor: middle; stroke: goldenrod; font-size: 8px;">N</text>
+              <text [attr.x]="-step/4" [attr.y]="step/4 + 2" style="text-anchor: middle; stroke: goldenrod; font-size: 8px;">T</text>
               <rect [attr.x]="m.x - step/2" [attr.y]="m.y - step/2" [attr.width]="step" [attr.height]="step"
                     cursor="pointer"
                     class="rect"
-                    [class.planet]="m && m.type === 0 || m.type === 2"
+                    [class.planet]="m && m.type === 0"
+                    [class.transit]="m && m.type === 2"
                     [class.selected]="selected === m"
                     (click)="get_explanation_from_ai(m)"
               >
                 @if (m.type === 1) {
                   <title>{{ m.name }} {{ m.aspect_angle }}° {{m.aspect ? '('+convert_DD_to_D(m.aspect.angle)+')' : ''}}</title>
                 } @else if (m.type === 0|| m.type === 2) {
-                    <title>{{ m.name }}</title>
+                    <title>{{ m.type === 2 ? 'Transit ':'Natal ' + m.name }}</title>
                 }
               </rect>
 

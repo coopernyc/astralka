@@ -67,6 +67,17 @@ export class RestService implements OnDestroy {
     ) : of(null);
   }
 
+  public populate_db(username: string): Observable<any> {
+    const obs = this.http.post(`${this.serverUrl}/populate`, { username });
+    return obs ? obs.pipe(
+      map((x: any) => x.result),
+      catchError(err => {
+        console.log(err);
+        return of(`ERROR! ${err.message}`);
+      })
+    ) : of(null);
+  }
+
   public save(entry: any, username: string): Observable<any> {
     const load = _.assign({}, entry, {username});
     const obs = this.http.post(`${this.serverUrl}/save`, load);

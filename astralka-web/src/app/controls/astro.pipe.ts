@@ -8,7 +8,7 @@ import _ from "lodash";
 })
 export class AstroPipe implements PipeTransform {
 
-  private readonly planets = _.values(SYMBOL_PLANET).join('|');
+  private readonly planets = _.union(_.values(SYMBOL_PLANET), ["Pars Foruna", "North Node", "South Node"]).join('|');
   private readonly aspects: string = _.values(SYMBOL_ASPECT).join('|');
   private readonly zodiacs = _.values(SYMBOL_ZODIAC).join('|');
   private readonly r_planets: RegExp = new RegExp(`\\b(${this.planets})\\b`, "ig");
@@ -16,6 +16,16 @@ export class AstroPipe implements PipeTransform {
   private readonly r_aspects: RegExp = new RegExp(`\\b(${this.aspects})\\b`, "ig");
 
   private capitalizeFirstLetter(str: string): string {
+    if (_.includes(["parsfortuna", "pars fortuna"], str.toLowerCase())) {
+      return "ParsFortuna";
+    }
+    if (_.includes(["south node", "southnode"], str.toLowerCase())) {
+      return "SouthNode";
+    }
+    if (_.includes(["north node", "northnode"], str.toLowerCase())) {
+      return "NorthNode";
+    }
+
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
 

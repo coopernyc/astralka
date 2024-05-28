@@ -45,7 +45,7 @@ import {
   ToolbarAlign,
   ToolbarCmdMask,
   ToolbarDisplay,
-  ToolbarMenuSpan,
+  ToolbarMenuSpan, UserRole,
   zodiac_sign
 } from '../../common';
 import {CommonModule} from '@angular/common';
@@ -77,12 +77,12 @@ import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {
   faBaby,
   faBars,
-  faCalendarDay,
+  faDatabase,
   faDice,
-  faEye,
+  faEye, faHatWizard,
   faLocationPin,
   faMarsAndVenus,
-  faMeteor,
+  faMeteor, faPlus, faPlusSquare,
   faSave,
   faSignOut,
   faTools,
@@ -173,8 +173,8 @@ import {AstroPipe} from "../../controls/astro.pipe";
                   <article id="person-info">
                     <section><b>Natal Data</b></section>
                     <section>{{ selectedPerson.name }}
-                      <button (click)="savePersonToQuickPick()">
-                        <fa-icon [icon]="faLocationPin"></fa-icon>
+                      <button (click)="savePersonToQuickPick()" class="xs">
+                        <fa-icon [icon]="faPlus"></fa-icon>
                       </button>
                     </section>
                     <section>{{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
@@ -668,6 +668,10 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
   private get natal_description_for_ai(): string {
 
+    const aspects = this.data.Aspects.filter((x: any) =>
+      !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
+    );
+
     const planets: string[] = _.reduce(this.stat_lines, (acc: string[], line: any) => {
       if (line.kind === 'houses' || line.kind === 'transits') {
         return acc;
@@ -676,13 +680,52 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       const temp: string[] = [];
       const retrograde = stats.speed < 0 ? 'Retrograde ' : '';
       temp.push(`\n- ${retrograde}${stats.label} in ${stats.position.sign}/${stats.house}`);
-      const name = stats.name;
 
-      this.aspects
+      const name = stats.name;
+      aspects
         .filter(x => x.parties[0].name === name)
         .reduce((acc: string[], asp: any) => {
           const retrograde = asp.parties[1].speed < 0 ? 'retrograde ' : '';
           const prompt = `and in ${asp.aspect.name} with ${retrograde}${asp.parties[1].name}`
+            .replace(/Cusp10/g, 'Medium Coeli')
+            .replace(/Cusp1/g, 'Ascendant');
+          acc.push(prompt);
+          return acc;
+        }, temp);
+      acc.push(temp.join(' '));
+      return acc;
+    }, []);
+
+    return planets.join("; ");
+  }
+
+  private get transit_description_for_ai(): string {
+
+    const aspects = this.data.Transit.Aspects.filter((x: any) =>
+      !_.includes([SYMBOL_PLANET.Moon, SYMBOL_PLANET.Mercury, SYMBOL_PLANET.Venus, SYMBOL_PLANET.NorthNode, SYMBOL_PLANET.SouthNode], x.parties[0].name) &&
+      !_.some(x.parties, p => {
+        return _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name);
+      })
+    );
+
+    const planets: string[] = _.reduce(this.stat_lines, (acc: string[], line: any) => {
+      if (line.kind === 'houses' || line.kind === 'planets') {
+        return acc;
+      }
+      const stats = line.stats;
+      if (_.includes([SYMBOL_PLANET.Moon, SYMBOL_PLANET.Mercury, SYMBOL_PLANET.Venus, SYMBOL_PLANET.NorthNode, SYMBOL_PLANET.SouthNode], stats.name)) {
+        return acc;
+      }
+      const temp: string[] = [];
+      const retrograde = stats.speed < 0 ? 'Retrograde ' : '';
+      temp.push(`\n- Transit ${retrograde}${stats.label} in ${stats.position.sign} transiting over natal ${stats.house}`);
+      const name = stats.name;
+
+      aspects
+        .filter(x => x.parties[0].name === name)
+        .reduce((acc: string[], asp: any) => {
+          const retrograde = asp.parties[1].speed < 0 ? 'retrograde ' : '';
+          const prompt = `and in ${asp.aspect.name} with natal ${retrograde}${asp.parties[1].name}`
             .replace(/Cusp10/g, 'Medium Coeli')
             .replace(/Cusp1/g, 'Ascendant');
           acc.push(prompt);
@@ -825,7 +868,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
               disabled: () => false,
               tooltip: perspective.tooltip ?? perspective.label,
               action: () => {
-                this.perspective(perspective.prompt);
+                this.natal_category(perspective.prompt);
               }
             };
           })
@@ -845,17 +888,44 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             type: 'item',
             hidden: false,
             display: ToolbarDisplay.IconAndText,
-            icon: faCalendarDay,
-            label: "Dayly Cast",
+            icon: faBaby,
+            label: "Natal Summary",
             disabled: () => false,
+            tooltip: "Natal Summary",
+            action: () => {
+              this.natal_category(`overall potential. Make 5 guess on who he/she might be and present the list in markdown format, with example
+                  1. **Pharmasist** - Highest potential to be great at sorting medicine. Moon in Aquarius makes it so;`);
+            }
+          },
+          {
+            mask: ToolbarCmdMask.NavBar,
+            type: 'item',
+            hidden: false,
+            display: ToolbarDisplay.IconAndText,
+            icon: faHatWizard,
+            label: "Daily Cast",
+            disabled: () => !this.selectedPerson || this.selectedPerson.scope === PersonScope.Public,
             tooltip: "Everyday Prediction",
             action: () => {
-
+              this.transit_category("today's focus areas, health points, energy shifts and short overall today's summary");
             }
           }
         ]
       },
       ...responsive_commands,
+      {
+        mask: ToolbarCmdMask.All,
+        type: 'item',
+        hidden: !this.hasUserRole(UserRole.Admin),
+        align: ToolbarAlign.Right,
+        display: ToolbarDisplay.Icon,
+        icon: faDatabase,
+        disabled: () => false,
+        tooltip: 'Populate DB',
+        action: () => {
+          this.rest.populate_db(this.username).subscribe(console.log);
+        }
+      },
       {
         mask: ToolbarCmdMask.All,
         type: 'item',
@@ -870,6 +940,11 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         }
       }
     ];
+  }
+
+  public hasUserRole(role: string): boolean {
+    const user = this.session.restoreUser();
+    return user && _.includes(user.roles, role);
   }
 
   ngOnInit(): void {
@@ -1086,12 +1161,21 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return {x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a)};
   }
 
-  public perspective(kind: string): void {
+  public natal_category(kind: string): void {
     //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
     const prompt = `
       For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following information:
       ${this.natal_description_for_ai}.\n
       Analyze and write a summary in a few paragraphs about ${kind}`;
+    this.rest.do_explain({prompt});
+  }
+
+  public transit_category(kind: string): void {
+    //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
+    const prompt = `
+      For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following today's information:
+      ${this.transit_description_for_ai}.\n
+      Write a summary about ${kind}`;
     this.rest.do_explain({prompt});
   }
 
@@ -1705,6 +1789,8 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   protected readonly faSave = faSave;
   protected readonly faLocationPin = faLocationPin;
   protected readonly AppMode = AppMode;
+  protected readonly faPlusSquare = faPlusSquare;
+  protected readonly faPlus = faPlus;
 }
 
 

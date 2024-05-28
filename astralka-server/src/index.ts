@@ -9,6 +9,7 @@ import {MongoClient, ObjectId} from "mongodb";
 import {loginRoute} from "./login.route";
 import {signupRoute} from "./signup.route";
 import {imagesRoute} from "./images.route";
+import {populateRoute} from "./populate.route";
 
 const logger = winston.createLogger({
     level: "info",
@@ -124,6 +125,13 @@ app.post("/chart-data", cors(corsOptions), async (req: Request, res: Response, n
     const query = req.body;
     const data = chart_data(query);
     res.json(data);
+});
+app.post("/populate", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await populateRoute(req, res);
+    } catch (err) {
+        res.status(500).end();
+    }
 });
 app.post("/explain", cors(corsOptions), async (req: Request, res: Response, next: NextFunction) => {
     const prompt = _.get(req.body, "prompt");

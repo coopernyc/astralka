@@ -33,15 +33,15 @@ import {RestService} from "../../services/rest.service";
     <ng-template cdkPortal #overlayTemplate="cdkPortal">
       <div class="portal-content">
         <svg style="position: absolute; left: 0"
-             [style.flex]="'flex: 0 390px'" xmlns="http://www.w3.org/2000/svg"
-             [attr.width]="390"
-             [attr.height]="390"
+             [style.flex]="'flex: 0 374px'" xmlns="http://www.w3.org/2000/svg"
+             [attr.width]="374"
+             [attr.height]="374"
              [attr.viewBox]="'0 0 390 390'"
              #chart
         >
           <g>
             <!--<rect x="0" y="0" [attr.width]="440" [attr.height]="440" fill="none" stroke="#0004"></rect>-->
-            <g *ngFor="let m of matrix" transform="translate(18, 14)">
+            <g *ngFor="let m of matrix" transform="translate(13.5, 11.5)">
               @if (m.type === 1 && m.name) {
                 <rect [attr.x]="m.x - step/2" [attr.y]="m.y - step/2" [attr.width]="step" [attr.height]="step"
                       cursor="pointer"

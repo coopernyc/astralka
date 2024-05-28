@@ -7,15 +7,17 @@
 }
 
 .portal-content {
-  width: 396px;
-  height: 396px;
+  width: 364px;
+  height: 364px;
+  @include portal_base.box;
+  padding: 1px;
+  border-radius: 0;
 
   &.transit {
-    width: 410px;
-    height: 370px;
+    width: 384px;
+    height: 342px;
   }
 
-  @include portal_base.box;
   line-height: 13px;
   font-size: 11px;
 
@@ -36,6 +38,13 @@
       stroke: goldenrod;
       &:hover {
         fill: lighten(#420, 20%);
+      }
+    }
+    &.transit {
+      fill: #500;
+      stroke: #b00;
+      &:hover {
+        fill: lighten(#500, 20%);
       }
     }
   }

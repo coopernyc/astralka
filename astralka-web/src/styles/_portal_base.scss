@@ -27,6 +27,9 @@
     padding: 1px 3px;
     font-size: 6px;
   }
+
+
+
   @media print {
     display: none;
   }
@@ -43,5 +46,13 @@
     color: #555;
     background-color: #ccc;
     border-color: #bbb;
+  }
+
+  &.xs {
+    height: 10px;
+    padding: 0 2px;
+    font-size: 6px;
+    border-radius: 0;
+    vertical-align: middle;
   }
 }
