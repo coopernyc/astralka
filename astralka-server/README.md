@@ -23,7 +23,8 @@ The server is node express REST server
     EPHE_DIR=[PATH_TO_epche (see comment below), if omited the ./node_modeules/swisseph/ephe will be used] 
     IMAGES_DIR=[PATH_TO_astralka-images]
     ````
-You can download full swisseph ephemerides (ephe folder) from [here](https://github.com/aloistr/swisseph/tree/master)
+You can download full swisseph ephemeris (ephe folder) from [here](https://github.com/aloistr/swisseph/tree/master).
+
 You can download astralka-images from [https://github.com/coopernyc/astralka-images](https://github.com/coopernyc/astralka-images), or
 you can generate your own images based on the same folder structure.
 
