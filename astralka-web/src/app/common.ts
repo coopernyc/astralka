@@ -995,7 +995,7 @@ export const perspectives = [
   {
     label: "Intellect",
     icon: faBrain,
-    prompt: "intellectual capabilities, list the areas of live with the most and least intellectual interest."
+    prompt: "intellectual capabilities. Make a list of 5 specific areas with the most intellectual interest."
   },
   {
     label: "Books",
@@ -1010,17 +1010,17 @@ export const perspectives = [
   {
     label: "Sexuality",
     icon: faMarsAndVenus,
-    prompt: "sexual attractiveness and sexual behavior. List 3 the most and least preferable sexual genres and behaviors."
+    prompt: "potential clues into this individual's personality and relationship dynamics, which could indirectly relate to their romantic and sexual tendencies. Make a guess list of 3 the most and least suitable sexual genres and behaviors."
   },
   {
     label: "Family",
     icon: faPeopleRoof,
-    prompt: "potentials of having family, size and conditions. List 2 areas where the family will help the most."
+    prompt: "family relations. List 3 areas where the family will be helpful the most."
   },
   {
     label: "Friends",
     icon: faPeopleGroup,
-    prompt: "prospects for having friends, amout of friends and closiness. List 3 the most and least compatible signs to be friends with."
+    prompt: "frendship, amout of friends and closiness to them. List 3 the most and least compatible signs to be friends with."
   },
   {
     label: "Cars",
@@ -1030,7 +1030,7 @@ export const perspectives = [
   {
     label: "Romance",
     icon: faHeart,
-    prompt: "possibilities of romantic relationships. Guess and list the most and least preferable partner qualities such as: age, height, hair color and hair style, curvy of skinny, experienced or not. Draw the overall picture."
+    prompt: "romantic relationships. Make a list of the most and least preferable partner qualities such as: age, height, hair color and hair style, curvy of skinny, experienced or not. Draw the overall picture."
   },
   {
     label: "Jobs",
@@ -1070,7 +1070,7 @@ export const perspectives = [
   {
     label: "Drinks",
     icon: faCocktail,
-    prompt: "the most and least preferable alcoholic drinks, list 5 the most and the least favorite brand : label."
+    prompt: "the preferences in drinks, make a list 5 of the most and the least suitable brand : label."
   },
   {
     label: "Clothes",

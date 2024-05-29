@@ -76,7 +76,7 @@ import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {
   faBaby,
-  faBars,
+  faBars, faCalendarDay,
   faDatabase,
   faDice,
   faEye, faHatWizard,
@@ -902,12 +902,42 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             type: 'item',
             hidden: false,
             display: ToolbarDisplay.IconAndText,
+            icon: faCalendarDay,
+            label: "Natal Day in History",
+            disabled: () => false,
+            tooltip: "Natal Day in History",
+            action: () => {
+              const day = moment(this.selectedPerson?.date).format("DD MMMM");
+              const prompt = `List 15 the most significant historical ervents that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
+              this.rest.do_explain({prompt});
+            }
+          },
+          {
+            mask: ToolbarCmdMask.NavBar,
+            type: 'item',
+            hidden: false,
+            display: ToolbarDisplay.IconAndText,
             icon: faHatWizard,
-            label: "Daily Cast",
+            label: "Today Cast",
             disabled: () => !this.selectedPerson || this.selectedPerson.scope === PersonScope.Public,
             tooltip: "Everyday Prediction",
             action: () => {
-              this.transit_category("today's focus areas, health points, energy shifts and short overall today's summary");
+              this.transit_category("today's focus areas suggesting concrete activities, then list important health points and conclude with short overall summary for today.");
+            }
+          },
+          {
+            mask: ToolbarCmdMask.NavBar,
+            type: 'item',
+            hidden: false,
+            display: ToolbarDisplay.IconAndText,
+            icon: faCalendarDay,
+            label: "Today in History",
+            disabled: () => !this.selectedPerson,
+            tooltip: "Today in History",
+            action: () => {
+              const day = moment().format("DD MMMM");
+              const prompt = `List 15 the most significant historical events that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
+              this.rest.do_explain({prompt});
             }
           }
         ]
@@ -1166,7 +1196,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     const prompt = `
       For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following information:
       ${this.natal_description_for_ai}.\n
-      Analyze and write a summary in a few paragraphs about ${kind}`;
+      In a few paragraphs explore some general insights from the provided placements that might hint at ${kind}`;
     this.rest.do_explain({prompt});
   }
 
@@ -1175,7 +1205,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     const prompt = `
       For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following today's information:
       ${this.transit_description_for_ai}.\n
-      Write a summary about ${kind}`;
+      In a few paragraphs explore some general insights from the provided placements that might hint at ${kind}`;
     this.rest.do_explain({prompt});
   }
 
