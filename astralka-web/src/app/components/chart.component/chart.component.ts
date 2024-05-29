@@ -939,6 +939,21 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
               const prompt = `List 15 the most significant historical events that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
               this.rest.do_explain({prompt});
             }
+          },
+          {
+            mask: ToolbarCmdMask.NavBar,
+            type: 'item',
+            hidden: false,
+            display: ToolbarDisplay.IconAndText,
+            icon: faCalendarDay,
+            label: "Transit Day in History",
+            disabled: () => !this.selectedPerson,
+            tooltip: "Transit Day in History",
+            action: () => {
+              const day = moment(this.transit.date).utc().add(this.transit.offset, 'days').format("DD MMMM");
+              const prompt = `List 15 the most significant historical events that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
+              this.rest.do_explain({prompt});
+            }
           }
         ]
       },
