@@ -928,8 +928,9 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             disabled: () => false,
             tooltip: "Natal Day in History",
             action: () => {
-              const day = moment(this.selectedPerson?.date).format("DD MMMM");
-              const prompt = `List 15 the most significant historical ervents that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
+              const day = moment(this.selectedPerson?.date).format("MMMM Do");
+              const prompt = `Write what is internationally celebrated on ${day}. Indicate if it's a relegeous holy day, then list 15 the most significant historical events that happened on ${day} throughout history as a bullet list, in the format:
+                - <strong>Year</strong> Description;`;
               this.rest.do_explain({prompt, title: `${day} throughout History`});
             }
           },
@@ -956,8 +957,9 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             disabled: () => !this.selectedPerson,
             tooltip: "Today in History",
             action: () => {
-              const day = moment().format("DD MMMM");
-              const prompt = `List 15 the most significant historical events that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
+              const day = moment().format("MMMM Do");
+              const prompt = `Write what is internationally celebrated on ${day}. Indicate if it's a relegeous holy day, then list 15 the most significant historical events that happened on ${day} throughout history as a bullet list, in the format:
+                - <strong>Year</strong> Description;`;
               this.rest.do_explain({prompt, title: `${day} throughout History`});
             }
           },
@@ -971,8 +973,9 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             disabled: () => !this.selectedPerson,
             tooltip: "Transit Day in History",
             action: () => {
-              const day = moment(this.transit.date).utc().add(this.transit.offset, 'days').format("DD MMMM");
-              const prompt = `List 15 the most significant historical events that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
+              const day = moment(this.transit.date).utc().add(this.transit.offset, 'days').format("MMMM Do");
+              const prompt = `Write what is internationally celebrated on ${day}. Indicate if it's a relegeous holy day, then list 15 the most significant historical events that happened on ${day} throughout history as a bullet list, in the format:
+                - <strong>Year</strong> Description;`;
               this.rest.do_explain({prompt, title: `${day} throughout History`});
             }
           }
