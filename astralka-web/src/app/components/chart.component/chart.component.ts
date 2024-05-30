@@ -21,9 +21,11 @@ import {
   COLLISION_RADIUS,
   convert_DD_to_D,
   convert_lat_to_DMS,
-  convert_long_to_DMS, Dao,
+  convert_long_to_DMS,
+  Dao,
   Gender,
-  getContext, getSkyObjectRankWeight,
+  getContext,
+  getSkyObjectRankWeight,
   IPersonEntry,
   IPersonInfo,
   IToolbarCmd,
@@ -45,7 +47,8 @@ import {
   ToolbarAlign,
   ToolbarCmdMask,
   ToolbarDisplay,
-  ToolbarMenuSpan, UserRole,
+  ToolbarMenuSpan,
+  UserRole,
   zodiac_sign
 } from '../../common';
 import {CommonModule} from '@angular/common';
@@ -76,13 +79,17 @@ import {AstralkaTransitComponent} from "../transit.component/transit.component";
 import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {
   faBaby,
-  faBars, faCalendarDay,
+  faBars,
+  faCalendarDay,
   faDatabase,
   faDice,
-  faEye, faHatWizard,
+  faEye,
+  faHatWizard,
   faLocationPin,
   faMarsAndVenus,
-  faMeteor, faPlus, faPlusSquare,
+  faMeteor,
+  faPlus,
+  faPlusSquare,
   faSave,
   faSignOut,
   faTools,
@@ -165,7 +172,7 @@ import {AstroPipe} from "../../controls/astro.pipe";
 
           <as-split direction="vertical" (dragEnd)="onSplitterDragEnd()" unit="pixel" #split>
 
-            <as-split-area [size]="height" [minSize]="height/5" [maxSize]="height" style="display: flex;">
+            <as-split-area [size]="splitter_height" [minSize]="height/5" [maxSize]="height" style="display: flex;">
 
               <div id="container">
 
@@ -744,14 +751,22 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return planets.join("; ");
   }
 
+  public splitter_height: number = 0;
   ngAfterViewInit() {
-    _.delay(() => {
-      this.recalculate_explanation_height();
-    }, 100);
+    this.recalculate_explanation_height().then(() => {
+      const vas = this.storage.restore("astralka-splitter");
+      if (vas) {
+        this.splitter_height = vas[0];
+        this.recalculate_explanation_height().then();
+      }
+    });
+
   }
 
-  public onSplitterDragEnd() {
-    this.recalculate_explanation_height();
+  public async onSplitterDragEnd() {
+    await this.recalculate_explanation_height();
+    const vas = this.split.getVisibleAreaSizes();
+    this.storage.store("astralka-splitter", vas);
   }
 
   public update_commpands(): void {
@@ -773,7 +788,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         tooltip: 'Person Natal Data Entry',
         action: () => {
           this.show_entry_form = !this.show_entry_form;
-          this.recalculate_explanation_height();
+          this.recalculate_explanation_height().then();
         }
       },
       {
@@ -792,7 +807,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         label: 'Transit Form',
         action: () => {
           this.show_transit_form = !this.show_transit_form;
-          this.recalculate_explanation_height();
+          this.recalculate_explanation_height().then();
         }
       },
       {
@@ -830,7 +845,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         label: 'Show/Hide Quick Picks',
         action: () => {
           this.show_quick_pick = !this.show_quick_pick;
-          this.recalculate_explanation_height();
+          this.recalculate_explanation_height().then();
         }
       }
     ];
@@ -874,7 +889,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
               disabled: () => false,
               tooltip: perspective.tooltip ?? perspective.label,
               action: () => {
-                this.natal_category(perspective.prompt);
+                this.natal_category(perspective.prompt, 'Natal category: ' + perspective.label);
               }
             };
           })
@@ -900,7 +915,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             tooltip: "Natal Summary",
             action: () => {
               this.natal_category(`overall potential. Make 5 guess on who he/she might be and present the list in markdown format, with example
-                  1. **Pharmasist** - Highest potential to be great at sorting medicine. Moon in Aquarius makes it so;`);
+                  1. **Pharmasist** - Highest potential to be great at sorting medicine. Moon in Aquarius makes it so;`, 'Natal Summary');
             }
           },
           {
@@ -915,7 +930,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             action: () => {
               const day = moment(this.selectedPerson?.date).format("DD MMMM");
               const prompt = `List 15 the most significant historical ervents that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
-              this.rest.do_explain({prompt});
+              this.rest.do_explain({prompt, title: `${day} throughout History`});
             }
           },
           {
@@ -928,7 +943,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             disabled: () => !this.selectedPerson || this.selectedPerson.scope === PersonScope.Public,
             tooltip: "Everyday Prediction",
             action: () => {
-              this.transit_category("today's focus areas suggesting concrete activities, then list important health points and conclude with short overall summary for today.");
+              this.transit_category("today's focus areas suggesting concrete activities, then list important health points and conclude with short overall summary for today.", "Today's Cast");
             }
           },
           {
@@ -943,7 +958,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             action: () => {
               const day = moment().format("DD MMMM");
               const prompt = `List 15 the most significant historical events that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
-              this.rest.do_explain({prompt});
+              this.rest.do_explain({prompt, title: `${day} throughout History`});
             }
           },
           {
@@ -958,7 +973,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
             action: () => {
               const day = moment(this.transit.date).utc().add(this.transit.offset, 'days').format("DD MMMM");
               const prompt = `List 15 the most significant historical events that happened on ${day} throughout history. Indicate if it's a relegeous holy day.`;
-              this.rest.do_explain({prompt});
+              this.rest.do_explain({prompt, title: `${day} throughout History`});
             }
           }
         ]
@@ -1008,9 +1023,9 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           if (result.breakpoints[r.breakpoint]) {
             this.responsive_breakpoint = r;
             this.width = r.width;
-            this.height = r.height;
+            this.height = this.splitter_height = r.height;
             this.margin = r.margin;
-            this.recalculate_explanation_height();
+            this.recalculate_explanation_height().then();
           }
         });
       }
@@ -1050,6 +1065,8 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       takeUntilDestroyed(this._destroyRef)
     ).subscribe((data: any) => {
       if (data.result === 'LOADING!') {
+        console.log(`---- CONTEXT ------`);
+        console.log(data);
         const name: string = getContext(data);
         this.rotate_image = {
           name: name + '.' + rnd_suffix(),
@@ -1059,7 +1076,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         return;
       }
       const md = markdownit('commonmark');
-      const result = md.render(data.result);
+      const result = (data.params.title ? `<h4>${data.params.title}</h4>`:'') +  md.render(data.result);
       this._phrase = this.latin_phrase(this.sign);
 
       this._explanation.push({
@@ -1068,6 +1085,9 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         rotator: _.cloneDeep(this.rotate_image),
         timestamp: moment().format("MMMM Do YYYY, h:mm:ss a")
       });
+
+      console.log(`---- CONTEXT ------`);
+      console.log(data);
 
       _.delay(() => {
         this.zone.run(() => {
@@ -1214,22 +1234,22 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return {x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a)};
   }
 
-  public natal_category(kind: string): void {
+  public natal_category(kind: string, title: string): void {
     //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
     const prompt = `
       For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following information:
       ${this.natal_description_for_ai}.\n
       In a few paragraphs explore some general insights from the provided placements that might hint at ${kind}`;
-    this.rest.do_explain({prompt});
+    this.rest.do_explain({prompt, title});
   }
 
-  public transit_category(kind: string): void {
+  public transit_category(kind: string, title: string): void {
     //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
     const prompt = `
       For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following today's information:
       ${this.transit_description_for_ai}.\n
       In a few paragraphs explore some general insights from the provided placements that might hint at ${kind}`;
-    this.rest.do_explain({prompt});
+    this.rest.do_explain({prompt, title});
   }
 
   public resetEntry(): void {
@@ -1300,16 +1320,20 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private recalculate_explanation_height() {
-    _.delay(() => {
-      try {
-        const ex = document.getElementById('explanation');
-        if (ex) {
-          this.split_height = window.scrollY + document.getElementById('explanation')!.getBoundingClientRect().top;
+  private async recalculate_explanation_height(): Promise<void> {
+    return new Promise<void>(r => {
+      _.delay(() => {
+        try {
+          const ex = document.getElementById('explanation');
+          if (ex) {
+            this.split_height = window.scrollY + document.getElementById('explanation')!.getBoundingClientRect().top;
+          }
+        } catch (err) {
+        } finally {
+          r();
         }
-      } catch (err) {
-      }
-    }, 100);
+      }, 100);
+    });
   }
 
   private init(): void {
@@ -1354,12 +1378,10 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   }
 
   public latin_phrase(sign: string): { latin: string, english: string } {
-    const takeOne = _.chain(latinPhrases.find(x => x.sign === sign)!.phrases)
+    return _.chain(latinPhrases.find(x => x.sign === sign)!.phrases)
       .shuffle()
       .first()
       .value();
-    console.log(takeOne);
-    return takeOne;
   }
 
   private handleChartData(data: any) {
