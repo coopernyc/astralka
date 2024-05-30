@@ -1,4 +1,4 @@
-import { AstralkaConfig } from "./constants";
+import {AstralkaConfig, Dao} from "./constants";
 import { IAspect, IAspectDef, IChartObject, IHouse, IDignities as Dignities, ISkyObject } from "./interfaces";
 import _ from "lodash";
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
@@ -34,6 +34,7 @@ export class Planet implements ISkyObject {
     public swisseph_id: number;
     public house: IHouse | undefined;
     public oriental: boolean = false;
+    public dao: string;
     constructor(name: string) {
         const conf: any = _.find(_.get(AstralkaConfig, "Planets", []), (x: any) => x.name === name);
         if (!conf) {
@@ -50,6 +51,7 @@ export class Planet implements ISkyObject {
         if (dignities) {
             this.dignities = dignities as Dignities;
         }
+        this.dao = _.get(conf, "dao", Dao.Yang);
     }    
 }
 export class AspectDef implements IAspectDef {

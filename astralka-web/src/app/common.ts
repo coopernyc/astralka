@@ -738,6 +738,39 @@ export function calculate_arrow(L: number, W: number, p1: any, p2: any, options:
   ];
 }
 
+export function getSkyObjectRankWeight(so: string): number {
+  let weight = 0.1;
+  switch (so) {
+    case SYMBOL_PLANET.Sun:
+    case SYMBOL_PLANET.Moon:
+      weight = 1;
+      break;
+    case SYMBOL_PLANET.Mercury:
+    case SYMBOL_PLANET.Venus:
+    case SYMBOL_PLANET.Mars:
+    case SYMBOL_PLANET.Jupiter:
+    case SYMBOL_PLANET.Saturn:
+    case SYMBOL_PLANET.Uranus:
+    case SYMBOL_PLANET.Neptune:
+    case SYMBOL_PLANET.Pluto:
+      weight = 0.75;
+      break;
+    case SYMBOL_PLANET.SouthNode:
+    case SYMBOL_PLANET.NorthNode:
+    case SYMBOL_PLANET.Chiron:
+    case SYMBOL_PLANET.Lilith:
+    case SYMBOL_CUSP.Cusp1:
+    case SYMBOL_CUSP.Cusp10:
+    case SYMBOL_CUSP.Cusp4:
+    case SYMBOL_CUSP.Cusp7:
+      weight = 0.5;
+      break;
+    case SYMBOL_PLANET.ParsFortuna:
+      weight = 0.25;
+      break;
+  }
+  return weight;
+}
 
 export function rnd_suffix(): string {
   function s4() {
@@ -805,6 +838,11 @@ export interface IToolbarNavCmd extends IToolbarCmdBase, IToolbarItem {
 }
 
 export type IToolbarCmd = IToolbarNavCmd | IToolbarSeparator | IToolbarMenu;
+
+export const Dao = {
+  Yin: "Yin",
+  Yang: "Yang"
+}
 
 export interface IPersonInfo {
   _id?: string,

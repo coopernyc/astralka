@@ -91,7 +91,7 @@ export function chart_data(query: IQuery): any {
 
         });
         const aspects: IAspect[] = [];
-        const only_asc_and_mc: IHouse[] = houses.filter((x:IHouse) => [0, 9].indexOf(x.index) !== -1);
+        const only_axises: IHouse[] = houses.filter((x:IHouse) => [0, 3, 6, 9].indexOf(x.index) !== -1);
         for(let i=0; i< sky_objects.length; i++) {
             for(let j = i; j < sky_objects.length; j++ ) {
                 if (i === j) continue;
@@ -109,12 +109,12 @@ export function chart_data(query: IQuery): any {
                     aspects.push(found);
                 }
             }
-            for(let j = 0; j < only_asc_and_mc.length; j++) {
+            for(let j = 0; j < only_axises.length; j++) {
                 const a = sky_objects[i];
                 // if (a.name === SkyObject.ParsFortuna) {
                 //     continue;
                 // }
-                const b = only_asc_and_mc[j];
+                const b = only_axises[j];
                 const angle = swisseph.swe_difdegn(a.position, b.position).degreeDiff;
                 const found = find_aspect(a, b, angle, aspect_defs);
                 if (found) {

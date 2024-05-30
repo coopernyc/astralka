@@ -21,9 +21,9 @@ import {
   COLLISION_RADIUS,
   convert_DD_to_D,
   convert_lat_to_DMS,
-  convert_long_to_DMS,
+  convert_long_to_DMS, Dao,
   Gender,
-  getContext,
+  getContext, getSkyObjectRankWeight,
   IPersonEntry,
   IPersonInfo,
   IToolbarCmd,
@@ -192,8 +192,9 @@ import {AstroPipe} from "../../controls/astro.pipe";
                     <section>Age: {{ age }} yo</section>
                     <section>Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
                     <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}</section>
-                    <section>Score: {{ avg_score.toFixed(3) }}</section>
                     <section>{{ show_natal_aspects ? "Natal" : "Transit" }} Aspects</section>
+                    <section>Pos Score: {{ natal_position_score.toFixed(2) }}</section>
+                    <section>Engy Score: {{ (((natal_energy_score - 23.44) / 9.80665)).toFixed(2) }}</section>
                     <section style="margin-top: 1em">
                       <astralka-position-data [kind]="'planets'" [positions]="stat_lines"
                                               [title]="'Natal Planets Position'">
@@ -530,7 +531,12 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   public commands: IToolbarCmd[] = [];
   public rotate_image!: any;
   public show_natal_aspects: boolean = true;
-  public avg_score: number = -1;
+
+  public natal_position_score: number = 0;
+  public natal_energy_score: number = 0;
+
+  public transit_position_score: number = 0;
+
   public _ = _;
   public config: any = config;
   protected readonly Gender = Gender;
@@ -1179,6 +1185,8 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       //console.log(`Selected ${person}`);
       if (person.name !== _.get(this.selectedPerson, "name", '')) {
         this._explanation = [];
+        this.natal_position_score = 0;
+        this.natal_energy_score = 0;
       }
       this.selectedPerson = person;
       this.entry = {
@@ -1313,6 +1321,8 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     this._houses = [];
     this._aspects = [];
     this.data = {};
+    this.natal_position_score = 0;
+    this.natal_energy_score = 0;
 
     this.cx = Math.trunc(this.width / 2);
     this.cy = Math.trunc(this.width / 2) - (this.responsive_breakpoint.mode === AppMode.Full ? this.margin / 2 : 0);
@@ -1366,6 +1376,21 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < 12; i++) {
       // assemble houses
       const house: any = _.find(data.Houses, (x: any) => x.index == i);
+      if (this.selectedPerson?.gender === Gender.Male) {
+        if (i == 0 || i == 9) {
+          house.dao = Dao.Yang;
+        }
+        if (i == 3 || i == 6) {
+          house.dao = Dao.Yin;
+        }
+      } else {
+        if (i == 0 || i == 9) {
+          house.dao = Dao.Yin;
+        }
+        if (i == 3 || i == 6) {
+          house.dao = Dao.Yang;
+        }
+      }
       const a = house.position;
       const p1 = this.get_point_on_circle(this.cx, this.cy, this.inner_radius, a);
       const p2 = this.get_point_on_circle(this.cx, this.cy, this.house_radius, a);
@@ -1612,7 +1637,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           position: pos_in_zodiac(so.position),
           speed: so.speed,
           house: so.house.symbol + 'Hse',
-          dignities: this.format_dignities(so)
+          dignities: this.format_dignities(so, true)
         }
       });
       cnt++;
@@ -1634,15 +1659,17 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private format_dignities(so: any): string {
+  private format_dignities(so: any, isTransit: boolean = false): string {
 
     if (_.includes([SYMBOL_PLANET.ParsFortuna], so.name)) {
       return '';
     }
 
+    const so_weight = getSkyObjectRankWeight(so.name);
+
     const sign: string = zodiac_sign(so.position);
     let result: string[] = [];
-    let score: number = 6;
+    let score: number = 0;
     if (_.some(_.get(so, "dignities.domicile", []), x => x === sign)) {
       result.push("SDom");
       score += 3;
@@ -1662,22 +1689,23 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       result.push("SEne");
       score -= 1;
     }
-    if (so.oriental) {
+
+    if (so.oriental && this.data.dayChart) {
       result.push("Ori");
-      score += 1;
-    } else {
-      result.push("Occ");
-      score -= 1;
+      score += 2;
     }
-    if (so.speed >= 0) {
-      score += 1;
-    } else {
-      score -= 1;
+    if (!so.oriental && !this.data.dayChart) {
+      result.push("Occ");
+      score += 2;
+    }
+
+    if (so.speed < 0) {
+      score -= 2;
     }
     if (_.includes([1, 4, 7, 10], so.house.index + 1)) {
-      score += 1;
+      score += 2;
     } else if (_.includes([12, 9, 6, 3], so.house.index + 1)) {
-      score -= 1;
+      score -= 2;
     }
     if (this.data.dayChart) {
       if (_.includes([SYMBOL_PLANET.Sun, SYMBOL_PLANET.Mars, SYMBOL_PLANET.Jupiter, SYMBOL_PLANET.Uranus], so.name)) {
@@ -1700,48 +1728,71 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     // check if so also a ruler or detriment
     const dom = _.some(this.sky_objects.filter(x => x.dignities && _.includes(x.dignities.domicile, house_sign)), z => z.name === so.name);
     if (dom) {
-      score += 2;
+      score += 3;
       result.push("HDom");
       //console.log(`${so.name} ${house_sign} ${so.dignities.domicile.join('|')}`);
     }
     const det = _.some(this.sky_objects.filter(x => x.dignities && _.includes(x.dignities.detriment, house_sign)), z => z.name === so.name);
     if (det) {
-      score -= 2;
+      score -= 3;
       result.push("HDet");
       //console.log(`${so.name} ${house_sign} ${so.dignities.detriment.join('|')} ${found.name}`);
     }
 
-    let aspect_score = 0;
-    this.data.Aspects.forEach((a: any) => {
-      if (so.name === a.parties[0].name || so.name === a.parties[1].name) {
-        switch (a.aspect.angle) {
-          case 180:
-            aspect_score -= 3;
-            break;
-          case 0:
-            aspect_score += 3;
-            break;
-          case 90:
-            aspect_score -= 2;
-            break;
-          case 45:
-            aspect_score -= 1;
-            break;
-          case 120:
-            aspect_score += 2;
-            break;
-          case 60:
-            aspect_score += 1;
-            break;
+
+
+    result.push(` (${(score * so_weight).toFixed(2)})`);
+
+    //this.avg_score = aspect_score;
+    if (!isTransit) {
+
+      let aspect_score = 0;
+      this.data.Aspects.forEach((a: any) => {
+
+        if (so.name === a.parties[0].name) {
+          const aspect_weight = (getSkyObjectRankWeight(so.name) + getSkyObjectRankWeight(a.parties[1].name)) / 2;
+          let rank: number;
+          switch (a.aspect.angle) {
+            // stressful
+            case 90:  rank = -8; break;  // big obsticles
+            case 45:  rank = -3; break;   // some frictions
+            case 135: rank = -1; break;  // little discomfort
+
+            // stabilizing
+            case 60:  rank = 8; break;   // good opportunity
+            case 120: rank = 7; break;   // harmony, easy going
+            case 30:  rank = 3; break;   // little helper
+            case 150: rank = 1; break;   // increase, growth   (with Asc -- health troubles)
+
+            case 180:  // balancing differences
+            case 0:    // dao
+              if (a.parties[1].name === SYMBOL_PLANET.ParsFortuna) {
+                a.parties[1].dao = this.selectedPerson?.gender === Gender.Male ? Dao.Yang : Dao.Yin;
+              }
+              if (_.startsWith(a.parties[1].name, "Cusp")) {
+                const found = this.data.Houses.find(x => x.name === a.parties[1].name);
+                if (found) {
+                  a.parties[1].dao = found.dao;
+                }
+              }
+              if ((a.parties[0].dao === Dao.Yin && a.parties[1].dao === Dao.Yang) ||
+                (a.parties[0].dao === Dao.Yang && a.parties[1].dao === Dao.Yin)) {
+                rank = a.aspect.angle === 0 ? -7 : 7;
+              } else {
+                rank = a.aspect.angle === 0 ? 7: -7;
+              }
+              break;
+            default:
+              rank = 0;
+          }
+          aspect_score += rank * aspect_weight;
+          //console.log(`${a.parties[0].name}:${a.parties[0].dao} ${a.aspect.name} ${a.parties[1].name}:${a.parties[1].dao} ---- ${(rank * aspect_weight).toFixed(2)}`);
         }
-        //console.log(a);
-      }
-    });
+      });
 
-    result.push(` (${score})`);
-
-    this.avg_score = (this.avg_score > -1 ? (this.avg_score + score) / 2 : score) + aspect_score;
-
+      this.natal_position_score += score * so_weight;
+      this.natal_energy_score += aspect_score;
+    }
 
     return result.join(', ');
   }
@@ -1836,6 +1887,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   protected readonly AppMode = AppMode;
   protected readonly faPlusSquare = faPlusSquare;
   protected readonly faPlus = faPlus;
+  protected readonly Math = Math;
 }
 
 

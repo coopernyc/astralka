@@ -137,6 +137,11 @@ export const AspectName = {
  */
 export const ZodiaSymbols: string[] = ['♈', "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", '♑', "♒", "♓"];
 
+export const Dao = {
+    Yin: "Yin",
+    Yang: "Yang"
+}
+
 /**
  * Hardcoded configuration
  */
@@ -153,7 +158,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Libra],
                 friend: [ZodiacSign.Sagittarius],
                 enemy: [ZodiacSign.Gemini]
-            }
+            },
+            dao: Dao.Yang
         },
         {
             name: SkyObject.Moon,
@@ -167,7 +173,7 @@ export const AstralkaConfig = {
                 friend: [ZodiacSign.Pisces],
                 enemy: [ZodiacSign.Virgo]
             },
-
+            dao: Dao.Yin
         },
         {
             name: SkyObject.Mercury,
@@ -180,7 +186,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Pisces],
                 friend: [ZodiacSign.Aquarius, ZodiacSign.Capricorn],
                 enemy: [ZodiacSign.Leo, ZodiacSign.Cancer]
-            }
+            },
+            dao: Dao.Yang
         },
         {
             name: SkyObject.Venus,
@@ -193,7 +200,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Virgo],
                 friend: [ZodiacSign.Aquarius, ZodiacSign.Capricorn],
                 enemy: [ZodiacSign.Leo, ZodiacSign.Cancer]
-            }
+            },
+            dao: Dao.Yin
         },
         {
             name: SkyObject.Mars,
@@ -206,7 +214,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Cancer],
                 friend: [ZodiacSign.Sagittarius, ZodiacSign.Leo],
                 enemy: [ZodiacSign.Gemini, ZodiacSign.Aquarius]
-            }
+            },
+            dao: Dao.Yang
         },
         {
             name: SkyObject.Jupiter,
@@ -219,7 +228,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Capricorn],
                 friend: [ZodiacSign.Aries, ZodiacSign.Leo, ZodiacSign.Scorpio],
                 enemy: [ZodiacSign.Libra, ZodiacSign.Aquarius, ZodiacSign.Taurus]
-            }
+            },
+            dao: Dao.Yang
         },
         {
             name: SkyObject.Saturn,
@@ -232,7 +242,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Aries],
                 friend: [ZodiacSign.Taurus, ZodiacSign.Gemini, ZodiacSign.Virgo],
                 enemy: [ZodiacSign.Scorpio, ZodiacSign.Sagittarius, ZodiacSign.Pisces]
-            }
+            },
+            dao: Dao.Yin
         },
         {
             name: SkyObject.Uranus,
@@ -245,7 +256,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Taurus],
                 friend: [ZodiacSign.Gemini, ZodiacSign.Virgo, ZodiacSign.Libra],
                 enemy: [ZodiacSign.Sagittarius, ZodiacSign.Pisces, ZodiacSign.Aries]
-            }
+            },
+            dao: Dao.Yang
         },
         {
             name: SkyObject.Neptune,
@@ -258,7 +270,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Aquarius],
                 friend: [ZodiacSign.Scorpio, ZodiacSign.Cancer],
                 enemy: [ZodiacSign.Taurus, ZodiacSign.Capricorn]
-            }
+            },
+            dao: Dao.Yin
         },
         {
             name: SkyObject.Pluto,
@@ -271,7 +284,8 @@ export const AstralkaConfig = {
                 fall: [ZodiacSign.Libra],
                 friend: [ZodiacSign.Sagittarius, ZodiacSign.Pisces],
                 enemy: [ZodiacSign.Gemini, ZodiacSign.Virgo]
-            }
+            },
+            dao: Dao.Yin
         },
         {
             name: SkyObject.NorthNode,
@@ -280,7 +294,8 @@ export const AstralkaConfig = {
             dignities: {
                 exaltation: [ZodiacSign.Gemini],
                 detriment: [ZodiacSign.Sagittarius],                
-            }
+            },
+            dao: Dao.Yang
         },
         {
             name: SkyObject.SouthNode,
@@ -289,7 +304,8 @@ export const AstralkaConfig = {
             dignities: {
                 exaltation: [ZodiacSign.Sagittarius],
                 detriment: [ZodiacSign.Gemini],                
-            }
+            },
+            dao: Dao.Yin
         },
         {
             name: SkyObject.ParsFortuna,
@@ -298,7 +314,8 @@ export const AstralkaConfig = {
         {
             name: SkyObject.Lilith,
             symbol: "⚜︎",
-            swisseph_id: swisseph.SE_MEAN_APOG
+            swisseph_id: swisseph.SE_MEAN_APOG,
+            dao: Dao.Yin
         },
         // {
         //     name: SkyObject.TrueBalckMoon,
@@ -310,7 +327,8 @@ export const AstralkaConfig = {
         {
             name: SkyObject.Chiron,
             symbol: "k",
-            swisseph_id: swisseph.SE_CHIRON          
+            swisseph_id: swisseph.SE_CHIRON,
+            dao: Dao.Yang
         },
         // {
         //     name: SkyObject.Vesta,
