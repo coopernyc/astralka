@@ -172,6 +172,13 @@
   section:not(:first-child) {
     margin-top: 2px;
   }
+  section {
+    span.goldenrod {
+      color: #000;
+      background-color: #ffc000;
+      padding: 0.2em;
+    }
+  }
   button {
     @include portal.btn;
     font-size: 11px;

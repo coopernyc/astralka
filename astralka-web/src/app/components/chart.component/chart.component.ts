@@ -37,7 +37,7 @@ import {
   perspectives,
   point_on_the_line,
   pos_in_zodiac,
-  pos_in_zodiac_sign,
+  pos_in_zodiac_sign, PromptKind,
   rnd_suffix,
   rotate_point_around_center,
   SYMBOL_ASPECT,
@@ -199,9 +199,9 @@ import {AstroPipe} from "../../controls/astro.pipe";
                     <section>Age: {{ age }} yo</section>
                     <section>Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
                     <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}</section>
-                    <section>{{ show_natal_aspects ? "Natal" : "Transit" }} Aspects</section>
+                    <section><span [class.goldenrod]="!show_natal_aspects">{{ show_natal_aspects ? "Natal" : "Transit" }} Aspects</span></section>
                     <section>Pos Score: {{ natal_position_score.toFixed(2) }}</section>
-                    <section>Engy Score: {{ (((natal_energy_score - 23.44) / 9.80665)).toFixed(2) }}</section>
+                    <section [innerHTML]="formatted_energy_score | safeHtml"></section>
                     <section style="margin-top: 1em">
                       <astralka-position-data [kind]="'planets'" [positions]="stat_lines"
                                               [title]="'Natal Planets Position'">
@@ -661,6 +661,21 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     }) || [];
   }
 
+  public get formatted_energy_score(): string {
+    const score = (this.natal_energy_score - 23.44) / 9.80665
+    let score_name = 'Balanced';
+    if (score <= -5 ) {
+      score_name = 'Violent';
+    } else if (score <= -3) {
+      score_name = 'Tense';
+    } else if (score >= 5) {
+      score_name = 'Joyfull';
+    } else if (score >= 3) {
+      score_name = 'Peacefull';
+    }
+    return `Energy: ${score.toFixed(2)}<br/>${score_name}`;
+  }
+
   public get calculatedTransitDateStr(): string {
     if (this.transit) {
       return moment(this.transit.date).utc().add(this.transit.offset, 'days').toISOString().replace('Z', '')
@@ -918,67 +933,67 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
                   1. **Pharmasist** - Highest potential to be great at sorting medicine. Moon in Aquarius makes it so;`, 'Natal Summary');
             }
           },
-          {
-            mask: ToolbarCmdMask.NavBar,
-            type: 'item',
-            hidden: false,
-            display: ToolbarDisplay.IconAndText,
-            icon: faCalendarDay,
-            label: "Natal Day in History",
-            disabled: () => false,
-            tooltip: "Natal Day in History",
-            action: () => {
-              const day = moment(this.selectedPerson?.date).format("MMMM Do");
-              const prompt = `Write what is internationally celebrated on ${day}. Indicate if it's a relegeous holy day, then list 15 the most significant historical events that happened on ${day} throughout history as a bullet list, in the format:
-                - <strong>Year</strong> Description;`;
-              this.rest.do_explain({prompt, title: `${day} throughout History`});
-            }
-          },
+          // {
+          //   mask: ToolbarCmdMask.NavBar,
+          //   type: 'item',
+          //   hidden: false,
+          //   display: ToolbarDisplay.IconAndText,
+          //   icon: faCalendarDay,
+          //   label: "Natal Day in History",
+          //   disabled: () => false,
+          //   tooltip: "Natal Day in History",
+          //   action: () => {
+          //     const day = moment(this.selectedPerson?.date).format("MMMM Do");
+          //     const prompt = `Write what is internationally celebrated on ${day}. Indicate if it's a relegeous holy day, then list 15 the most significant historical events that happened on ${day} throughout history as a bullet list, in the format:
+          //       - <strong>Year</strong> Description;`;
+          //     this.rest.do_explain({prompt, title: `${day} throughout History`});
+          //   }
+          // },
           {
             mask: ToolbarCmdMask.NavBar,
             type: 'item',
             hidden: false,
             display: ToolbarDisplay.IconAndText,
             icon: faHatWizard,
-            label: "Today Cast",
+            label: "Trends",
             disabled: () => !this.selectedPerson || this.selectedPerson.scope === PersonScope.Public,
-            tooltip: "Everyday Prediction",
+            tooltip: "Trends",
             action: () => {
-              this.transit_category("today's focus areas suggesting concrete activities, then list important health points and conclude with short overall summary for today.", "Today's Cast");
+              this.transit_category("the focus areas suggesting concrete activities, then list for today, week, month the important health points and conclude with short overall summary.", "Day / Week / Month trends");
             }
           },
-          {
-            mask: ToolbarCmdMask.NavBar,
-            type: 'item',
-            hidden: false,
-            display: ToolbarDisplay.IconAndText,
-            icon: faCalendarDay,
-            label: "Today in History",
-            disabled: () => !this.selectedPerson,
-            tooltip: "Today in History",
-            action: () => {
-              const day = moment().format("MMMM Do");
-              const prompt = `Write what is internationally celebrated on ${day}. Indicate if it's a relegeous holy day, then list 15 the most significant historical events that happened on ${day} throughout history as a bullet list, in the format:
-                - <strong>Year</strong> Description;`;
-              this.rest.do_explain({prompt, title: `${day} throughout History`});
-            }
-          },
-          {
-            mask: ToolbarCmdMask.NavBar,
-            type: 'item',
-            hidden: false,
-            display: ToolbarDisplay.IconAndText,
-            icon: faCalendarDay,
-            label: "Transit Day in History",
-            disabled: () => !this.selectedPerson,
-            tooltip: "Transit Day in History",
-            action: () => {
-              const day = moment(this.transit.date).utc().add(this.transit.offset, 'days').format("MMMM Do");
-              const prompt = `Write what is internationally celebrated on ${day}. Indicate if it's a relegeous holy day, then list 15 the most significant historical events that happened on ${day} throughout history as a bullet list, in the format:
-                - <strong>Year</strong> Description;`;
-              this.rest.do_explain({prompt, title: `${day} throughout History`});
-            }
-          }
+          // {
+          //   mask: ToolbarCmdMask.NavBar,
+          //   type: 'item',
+          //   hidden: false,
+          //   display: ToolbarDisplay.IconAndText,
+          //   icon: faCalendarDay,
+          //   label: "Today in History",
+          //   disabled: () => !this.selectedPerson,
+          //   tooltip: "Today in History",
+          //   action: () => {
+          //     const day = moment().format("MMMM Do");
+          //     const prompt = `Write what is internationally celebrated exactly "${day}". Indicate if it's a religeous holy day, then list 15 the most significant historical events that happened exactly on (${day}) throughout history as a bullet list, in the format:
+          //       - <strong>Year</strong> Description;`;
+          //     this.rest.do_explain({prompt, title: `${day} throughout History`});
+          //   }
+          // },
+          // {
+          //   mask: ToolbarCmdMask.NavBar,
+          //   type: 'item',
+          //   hidden: false,
+          //   display: ToolbarDisplay.IconAndText,
+          //   icon: faCalendarDay,
+          //   label: "Transit Day in History",
+          //   disabled: () => !this.selectedPerson,
+          //   tooltip: "Transit Day in History",
+          //   action: () => {
+          //     const day = moment(this.transit.date).utc().add(this.transit.offset, 'days').format("MMMM Do");
+          //     const prompt = `Write what is internationally celebrated exactly "${day}". Indicate if it's a religeous holy day, then list 15 the most significant historical events that happened exactly on (${day}) throughout history as a bullet list, in the format:
+          //       - <strong>Year</strong> Description;`;
+          //     this.rest.do_explain({prompt, title: `${day} throughout History`});
+          //   }
+          // }
         ]
       },
       ...responsive_commands,
@@ -1068,8 +1083,8 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       takeUntilDestroyed(this._destroyRef)
     ).subscribe((data: any) => {
       if (data.result === 'LOADING!') {
-        console.log(`---- CONTEXT ------`);
-        console.log(data);
+        //console.log(`---- CONTEXT ------`);
+        //console.log(data);
         const name: string = getContext(data);
         this.rotate_image = {
           name: name + '.' + rnd_suffix(),
@@ -1081,7 +1096,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       const md = markdownit('commonmark');
       const result = (data.params.title ? `<h4>${data.params.title}</h4>`:'') +  md.render(data.result);
       this._phrase = this.latin_phrase(this.sign);
-
+      this.show_natal_aspects = this.data.kind === PromptKind.Transit;
       this._explanation.push({
         text: result,
         info: data.params,
@@ -1089,8 +1104,8 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         timestamp: moment().format("MMMM Do YYYY, h:mm:ss a")
       });
 
-      console.log(`---- CONTEXT ------`);
-      console.log(data);
+      //console.log(`---- CONTEXT ------`);
+      //console.log(data);
 
       _.delay(() => {
         this.zone.run(() => {
@@ -1238,21 +1253,21 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   }
 
   public natal_category(kind: string, title: string): void {
-    //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
+    this.show_natal_aspects = true;
     const prompt = `
       For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following information:
       ${this.natal_description_for_ai}.\n
       In a few paragraphs explore some general insights from the provided placements that might hint at ${kind}`;
-    this.rest.do_explain({prompt, title});
+    this.rest.do_explain({prompt, title, kind: PromptKind.Natal});
   }
 
   public transit_category(kind: string, title: string): void {
-    //const prompt = `Given the following information as a natal data for a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'}: ${this.natal_description_for_ai}. Write a summary about live perspectives, opportunities, and also difficulties and set backs ${kind}`;
+    this.show_natal_aspects = false;
     const prompt = `
       For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following today's information:
       ${this.transit_description_for_ai}.\n
-      In a few paragraphs explore some general insights from the provided placements that might hint at ${kind}`;
-    this.rest.do_explain({prompt, title});
+      In a few paragraphs explore some general insights from the provided placements and plants transit periods that might hint at ${kind}`;
+    this.rest.do_explain({prompt, title, kind: PromptKind.Transit});
   }
 
   public resetEntry(): void {

@@ -4,7 +4,7 @@ import {PortalModule} from "@angular/cdk/portal";
 import {ConnectedPosition, Overlay, OverlayModule} from "@angular/cdk/overlay";
 import {AstralkaBasePortalComponent} from "../base.portal";
 import {ChartSymbol} from "../graphics/chart-symbol";
-import {SYMBOL_PLANET} from "../../common";
+import {PromptKind, SYMBOL_PLANET} from "../../common";
 import _ from "lodash";
 import {RestService} from "../../services/rest.service";
 
@@ -80,11 +80,13 @@ export class AstralkaPositionDataComponent extends AstralkaBasePortalComponent {
   }
 
   public get_explanation_from_ai(stats: any) {
-    const prompt: string = this.kind === "houses"
-      ? `In a couple of paragraphs describe meaning of ${stats.name} in ${stats.position.sign}`
+    console.log(stats);
+    const title =  this.kind === "houses"
+      ? `Cusp of ${stats.name.replace('Cusp', 'House ')} in ${stats.position.sign}`
       : this.kind === 'planets'
-        ? `In a couple of paragraphs describe meaning of ${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in ${stats.house}`
-        : `In a couple of paragraphs describe meaning of ${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in transit over ${stats.house}`;
+        ? `${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in ${stats.house}`
+        : `${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in transit over ${stats.house}`;
+    const prompt = `In a couple of paragraphs describe the meaning of ${title}`;
     let context: string;
     if (this.kind === 'planets' || this.kind === 'transits') {
       const names = [stats.name, stats.position.sign];
@@ -92,7 +94,7 @@ export class AstralkaPositionDataComponent extends AstralkaBasePortalComponent {
     } else {
       context = stats.position.sign;
     }
-    this.rest.do_explain({ prompt, params: this.stats, context });
+    this.rest.do_explain({ prompt, params: this.stats, context, title, kind: this.kind === 'planets' || this.kind === 'houses' ? PromptKind.Natal : PromptKind.Transit });
   }
 
   protected override get connectedPositions(): ConnectedPosition[] {

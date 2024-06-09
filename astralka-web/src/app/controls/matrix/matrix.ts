@@ -4,7 +4,7 @@ import {PortalModule} from "@angular/cdk/portal";
 import {Overlay, OverlayModule} from "@angular/cdk/overlay";
 import {ChartSymbol} from "../graphics/chart-symbol";
 import {AstralkaBasePortalComponent} from "../base.portal";
-import {aspect_color, convert_DD_to_D, format_party, SYMBOL_CUSP, SYMBOL_PLANET} from "../../common";
+import {aspect_color, convert_DD_to_D, format_party, PromptKind, SYMBOL_CUSP, SYMBOL_PLANET} from "../../common";
 import _ from "lodash";
 import {ChartText} from "../graphics/chart-text";
 import {RestService} from "../../services/rest.service";
@@ -183,7 +183,7 @@ export class AstralkaAspectMatrixComponent extends AstralkaBasePortalComponent i
       const party0 = format_party(this.selected.aspect.parties[0]);
       const party1 = format_party(this.selected.aspect.parties[1]);
       const prompt = `Write in 2 or 3 paragraphs describing the meaning of ${party0} is in ${this.selected.aspect.aspect.name} with ${party1}.`;
-      this.rest.do_explain({prompt, params: m, context: this.selected.aspect.aspect.name});
+      this.rest.do_explain({prompt, params: m, context: this.selected.aspect.aspect.name, title: `${party0} is in ${this.selected.aspect.aspect.name} with ${party1}`, kind: PromptKind.Natal});
     }
   }
 }

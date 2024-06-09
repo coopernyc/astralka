@@ -1019,6 +1019,11 @@ export function getContext(data: any): string {
   }
 }
 
+export const PromptKind = {
+  "Natal": "Natal",
+  "Transit": "Transit"
+};
+
 export const perspectives = [
   {
     label: "Health",

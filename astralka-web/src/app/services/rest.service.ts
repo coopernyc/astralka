@@ -45,6 +45,7 @@ export class RestService implements OnDestroy {
   }
 
   public do_explain(load: any): void {
+    console.log(load);
     this.explain$.next({ result: 'LOADING!', context: load.context});
     const obs = this.http.post(`${this.serverUrl}/explain`, {prompt: load.prompt});
     obs.pipe(

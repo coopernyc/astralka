@@ -3,7 +3,7 @@ import {CommonModule} from "@angular/common";
 import {AstralkaBasePortalComponent} from "../base.portal";
 import {ConnectedPosition, Overlay, OverlayModule} from "@angular/cdk/overlay";
 import {RestService} from "../../services/rest.service";
-import {aspect_color, convert_DD_to_D, format_party, SYMBOL_CUSP, SYMBOL_PLANET} from "../../common";
+import {aspect_color, convert_DD_to_D, format_party, PromptKind, SYMBOL_CUSP, SYMBOL_PLANET} from "../../common";
 import _ from "lodash";
 import {PortalModule} from "@angular/cdk/portal";
 import {ChartSymbol} from "../graphics/chart-symbol";
@@ -181,7 +181,7 @@ export class AstralkaTransitMatrixComponent extends AstralkaBasePortalComponent 
         const party0 = format_party(this.selected.aspect.parties[0]);
         const party1 = format_party(this.selected.aspect.parties[1]);
         const prompt = `Write in 2 or 3 paragraphs describing the meaning of Transit ${party0} is in ${this.selected.aspect.aspect.name} with Natal ${party1}.`;
-        this.rest.do_explain({prompt, params: m, context: this.selected.aspect.aspect.name});
+        this.rest.do_explain({prompt, params: m, context: this.selected.aspect.aspect.name, title: `Transit ${party0} is in ${this.selected.aspect.aspect.name} with Natal ${party1}`, kind: PromptKind.Transit});
       }
     }
   }
