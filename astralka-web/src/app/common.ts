@@ -596,7 +596,8 @@ export function format_party(party: any): string {
   if (_.startsWith(party.name, 'Cusp')) {
     result = `${party.symbol} House in ${zodiac_sign(party.position)}`;
   } else {
-    result = `${r}${party.name} in ${zodiac_sign(party.position)} and in ${party.house.symbol} House in ${zodiac_sign(party.house.position)}`;
+    //result = `${r}${party.name} in ${zodiac_sign(party.position)} and in ${party.house.symbol} House in ${zodiac_sign(party.house.position)}`;
+    result = `${r}${party.name} in ${zodiac_sign(party.position)} and in ${party.house.symbol} House`;
   }
   return result;
 }
