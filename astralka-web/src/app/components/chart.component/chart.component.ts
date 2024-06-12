@@ -37,7 +37,8 @@ import {
   perspectives,
   point_on_the_line,
   pos_in_zodiac,
-  pos_in_zodiac_sign, PromptKind,
+  pos_in_zodiac_sign,
+  PromptKind,
   rnd_suffix,
   rotate_point_around_center,
   SYMBOL_ASPECT,
@@ -80,7 +81,6 @@ import {AstralkaToolbarComponent} from "../../controls/toolbar/toolbar";
 import {
   faBaby,
   faBars,
-  faCalendarDay,
   faDatabase,
   faDice,
   faEye,
@@ -1096,7 +1096,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       const md = markdownit('commonmark');
       const result = (data.params.title ? `<h4>${data.params.title}</h4>`:'') +  md.render(data.result);
       this._phrase = this.latin_phrase(this.sign);
-      this.show_natal_aspects = this.data.kind === PromptKind.Natal;
+      this.show_natal_aspects = _.get(this, "params.kind", PromptKind.Natal) === PromptKind.Natal;
       this._explanation.push({
         text: result,
         info: data.params,
