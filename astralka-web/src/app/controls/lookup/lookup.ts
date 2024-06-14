@@ -25,6 +25,7 @@ import {IPersonInfo, PersonScope} from "../../common";
 import {LookupOption} from "./lookup-options";
 import {SessionStorageService} from "../../services/session.storage.service";
 import {ScrollingModule} from "@angular/cdk/scrolling";
+import _ from "lodash";
 
 @Component({
   selector: 'lookup',
@@ -38,7 +39,7 @@ import {ScrollingModule} from "@angular/cdk/scrolling";
       autocomplete="off"
       spellcheck="false"
       (focus)="focus()"
-      (keyup)="search(getValue($event))"
+      (keyup)="search($event, getValue($event))"
       (keydown)="manage($event)"
     />
 
@@ -113,7 +114,11 @@ export class AstralkaLookupControlComponent implements OnInit, AfterViewInit, On
     this.input.nativeElement.value = value;
   }
 
-  public search(name: string): void {
+  public search(event: KeyboardEvent, name: string): void {
+    if (/[0-9!'^+%&\/=?_~`;#$½{[\]}\\|<>@]/gi.test(event.key) ||
+    _.includes(['Enter','Esc','Tab'], event.key)) {
+      return;
+    }
     this.query$.next(name);
   }
 
@@ -137,6 +142,7 @@ export class AstralkaLookupControlComponent implements OnInit, AfterViewInit, On
     switch (event.key) {
       case 'Enter':
       case ' ':
+      case 'Tab':
         if (this.keyManager.activeItem) {
           this.selectOption(this.keyManager.activeItem);
         }
@@ -152,10 +158,10 @@ export class AstralkaLookupControlComponent implements OnInit, AfterViewInit, On
         this.keyManager.activeItem?.scrollIntoView();
         event.preventDefault();
         break;
-      case 'Tab':
-        this.keyManager.onKeydown(event);
-        this.keyManager.activeItem?.scrollIntoView();
-        break;
+      // case 'Tab':
+      //   this.keyManager.onKeydown(event);
+      //   this.keyManager.activeItem?.scrollIntoView();
+      //   break;
       case 'PageUp':
       case 'PageDown':
         event.preventDefault();
