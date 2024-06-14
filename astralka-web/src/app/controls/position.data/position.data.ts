@@ -84,8 +84,8 @@ export class AstralkaPositionDataComponent extends AstralkaBasePortalComponent {
     const title =  this.kind === "houses"
       ? `Cusp of ${stats.name.replace('Cusp', 'House ')} in ${stats.position.sign}`
       : this.kind === 'planets'
-        ? `${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in ${stats.house}`
-        : `${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} sign in transit over ${stats.house}`;
+        ? `${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} in ${stats.house}`
+        : `${stats.speed < 0 ? 'retrograde ':''}${stats.name} in ${stats.position.sign} in transit over ${stats.house}`;
     const prompt = `In a couple of paragraphs describe the meaning of ${title}`;
     let context: string;
     if (this.kind === 'planets' || this.kind === 'transits') {
