@@ -89,8 +89,6 @@ import {
   faMarsAndVenus,
   faMeteor,
   faPlus,
-  faPlusSquare,
-  faSave,
   faSignOut,
   faTools,
   faUserAstronaut,
@@ -184,7 +182,7 @@ import {AstroPipe} from "../../controls/astro.pipe";
                         <fa-icon [icon]="faPlus"></fa-icon>
                       </button>
                     </section>
-                    <section *ngIf="entry.description">{{selectedPerson.description}}</section>
+                    <section *ngIf="entry.description">{{ selectedPerson.description }}</section>
                     <section>{{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
                     <section>Loc: {{ selectedPerson.location.name }}</section>
                     <section>Lat: {{ convert_lat_to_DMS(selectedPerson.location.latitude) }}
@@ -200,7 +198,9 @@ import {AstroPipe} from "../../controls/astro.pipe";
                     <section>Age: {{ age }} yo</section>
                     <section>Gender: {{ selectedPerson.gender === Gender.Male ? 'Male' : 'Female' }}</section>
                     <section>{{ data.dayChart ? "Day Chart" : "Night Chart" }}</section>
-                    <section><span [class.goldenrod]="!show_natal_aspects">{{ show_natal_aspects ? "Natal" : "Transit" }} Aspects</span></section>
+                    <section><span
+                      [class.goldenrod]="!show_natal_aspects">{{ show_natal_aspects ? "Natal" : "Transit" }}
+                      Aspects</span></section>
                     <section>Pos Score: {{ natal_position_score.toFixed(2) }}</section>
                     <section [innerHTML]="formatted_energy_score | safeHtml"></section>
                     <section style="margin-top: 1em">
@@ -472,7 +472,58 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
   @ViewChild('split') split!: SplitComponent;
   public split_height!: number;
-
+  public width: number = 800;
+  public height: number = 800;
+  public margin: number = 160;
+  public show_entry_form: boolean = false;
+  public show_transit_form: boolean = false;
+  public show_quick_pick: boolean = false;
+  public cx: number = 0;
+  public cy: number = 0;
+  public outer_radius: number = 0;
+  public inner_radius: number = 0;
+  public house_radius: number = 0;
+  public offset_angle: number = 90;
+  public entry: IPersonEntry = {
+    name: '',
+    description: '',
+    locationName: '',
+    latitude: 0,
+    longitude: 0,
+    dob: Date(),
+    timezone: 0,
+    elevation: 0,
+    gender: Gender.Male,
+    scope: PersonScope.Private
+  };
+  public transit: any = {
+    latitude: 0,
+    longitude: 0,
+    date: moment.utc().toISOString().replace('Z', ''),
+    elevation: 0,
+    offset: 0
+  };
+  public data: any = {};
+  public selectedPerson: IPersonInfo | undefined;
+  public moment = moment;
+  public sharedExplain$!: Observable<any>;
+  public commands: IToolbarCmd[] = [];
+  public rotate_image!: any;
+  public show_natal_aspects: boolean = true;
+  public natal_position_score: number = 0;
+  public natal_energy_score: number = 0;
+  public _ = _;
+  public config: any = config;
+  public splitter_height: number = 0;
+  protected readonly Gender = Gender;
+  protected readonly convert_lat_to_DMS = convert_lat_to_DMS;
+  protected readonly convert_long_to_DMS = convert_long_to_DMS;
+  protected readonly faDice = faDice;
+  protected readonly faBaby = faBaby;
+  protected readonly faEye = faEye;
+  protected readonly faTools = faTools;
+  protected readonly faMeteor = faMeteor;
+  protected readonly faPlus = faPlus;
   private responsive_matrix = [
     {
       breakpoint: '(min-width: 375px)',
@@ -491,72 +542,8 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       mode: AppMode.Full
     }
   ];
-  public _responsive_breakpoint!: any;
-  public set responsive_breakpoint(value: any) {
-    this._responsive_breakpoint = value;
-  }
-
-  public get responsive_breakpoint(): any {
-    return _.get(this, "_responsive_breakpoint", this.responsive_matrix[0]);
-  }
-
-  public width: number = 800;
-  public height: number = 800;
-  public margin: number = 160;
-  public show_entry_form: boolean = false;
-  public show_transit_form: boolean = false;
-  public show_quick_pick: boolean = false;
-  public cx: number = 0;
-  public cy: number = 0;
-  public outer_radius: number = 0;
-  public inner_radius: number = 0;
-  public house_radius: number = 0;
-  public offset_angle: number = 90;
-
-  public entry: IPersonEntry = {
-    name: '',
-    description: '',
-    locationName: '',
-    latitude: 0,
-    longitude: 0,
-    dob: Date(),
-    timezone: 0,
-    elevation: 0,
-    gender: Gender.Male,
-    scope: PersonScope.Private
-  };
-
-  public transit: any = {
-    latitude: 0,
-    longitude: 0,
-    date: moment.utc().toISOString().replace('Z', ''),
-    elevation: 0,
-    offset: 0
-  };
-  public data: any = {};
-  public selectedPerson: IPersonInfo | undefined;
-  public moment = moment;
-  public sharedExplain$!: Observable<any>;
-  public commands: IToolbarCmd[] = [];
-  public rotate_image!: any;
-  public show_natal_aspects: boolean = true;
-
-  public natal_position_score: number = 0;
-  public natal_energy_score: number = 0;
-
-  public transit_position_score: number = 0;
-
-  public _ = _;
-  public config: any = config;
-  protected readonly Gender = Gender;
-  protected readonly convert_lat_to_DMS = convert_lat_to_DMS;
-  protected readonly convert_long_to_DMS = convert_long_to_DMS;
-  protected readonly faDice = faDice;
-  protected readonly faBaby = faBaby;
-  protected readonly faEye = faEye;
-  protected readonly faTools = faTools;
-  protected readonly faMeteor = faMeteor;
   private _destroyRef = inject(DestroyRef);
+  private _phrase!: any;
 
   constructor(
     private applicationRef: ApplicationRef,
@@ -570,6 +557,16 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     private zone: NgZone,
     private cdr: ChangeDetectorRef
   ) {
+  }
+
+  public _responsive_breakpoint!: any;
+
+  public get responsive_breakpoint(): any {
+    return _.get(this, "_responsive_breakpoint", this.responsive_matrix[0]);
+  }
+
+  public set responsive_breakpoint(value: any) {
+    this._responsive_breakpoint = value;
   }
 
   private _planets: any[] = [];
@@ -614,12 +611,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return this._stat_lines;
   }
 
-  private _aspects: any[] = [];
-
-  public get aspects(): any[] {
-    return this._aspects;
-  }
-
   private _explanation: any[] = [];
 
   public get explanation(): any[] {
@@ -645,8 +636,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return '';
   }
 
-  private _phrase!: any;
-
   public get phrase_selected(): any {
     if (this.sign) {
       return this._phrase;
@@ -666,7 +655,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   public get formatted_energy_score(): string {
     const score = (this.natal_energy_score - 23.44) / 9.80665
     let score_name = 'Balanced';
-    if (score <= -5 ) {
+    if (score <= -5) {
       score_name = 'Violent';
     } else if (score <= -3) {
       score_name = 'Tense';
@@ -713,7 +702,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
       const name = stats.name;
       aspects
-        .filter(x => x.parties[0].name === name)
+        .filter((x: any) => x.parties[0].name === name)
         .reduce((acc: string[], asp: any) => {
           const retrograde = asp.parties[1].speed < 0 ? 'retrograde ' : '';
           const prompt = `and in ${asp.aspect.name} with ${retrograde}${asp.parties[1].name}`
@@ -752,7 +741,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       const name = stats.name;
 
       aspects
-        .filter(x => x.parties[0].name === name)
+        .filter((x: any) => x.parties[0].name === name)
         .reduce((acc: string[], asp: any) => {
           const retrograde = asp.parties[1].speed < 0 ? 'retrograde ' : '';
           const prompt = `and in ${asp.aspect.name} with natal ${retrograde}${asp.parties[1].name}`
@@ -768,7 +757,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return planets.join("; ");
   }
 
-  public splitter_height: number = 0;
   ngAfterViewInit() {
     this.recalculate_explanation_height().then(() => {
       const vas = this.storage.restore("astralka-splitter");
@@ -1093,9 +1081,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       shareReplay(2)
     );
 
-    this.sharedExplain$.pipe(
-      takeUntilDestroyed(this._destroyRef)
-    ).subscribe((data: any) => {
+    this.sharedExplain$.subscribe((data: any) => {
       if (data.result === 'LOADING!') {
         //console.log(`---- CONTEXT ------`);
         //console.log(data);
@@ -1108,7 +1094,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         return;
       }
       const md = markdownit('commonmark');
-      const result = (data.params.title ? `<h4>${data.params.title}</h4>`:'') +  md.render(data.result);
+      const result = (data.params.title ? `<h4>${data.params.title}</h4>` : '') + md.render(data.result);
       this._phrase = this.latin_phrase(this.sign);
       this.show_natal_aspects = _.get(data, "params.kind", PromptKind.Natal) === PromptKind.Natal;
       this._explanation.push({
@@ -1354,6 +1340,13 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
+  public latin_phrase(sign: string): { latin: string, english: string } {
+    return _.chain(latinPhrases.find(x => x.sign === sign)!.phrases)
+      .shuffle()
+      .first()
+      .value();
+  }
+
   private async recalculate_explanation_height(): Promise<void> {
     return new Promise<void>(r => {
       _.delay(() => {
@@ -1377,7 +1370,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     this._lines = [];
     this._aspect_labels = [];
     this._houses = [];
-    this._aspects = [];
     this.data = {};
     this.natal_position_score = 0;
     this.natal_energy_score = 0;
@@ -1409,13 +1401,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       })
       index++;
     });
-  }
-
-  public latin_phrase(sign: string): { latin: string, english: string } {
-    return _.chain(latinPhrases.find(x => x.sign === sign)!.phrases)
-      .shuffle()
-      .first()
-      .value();
   }
 
   private handleChartData(data: any) {
@@ -1639,7 +1624,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         _.includes(aspect_names_enabled, x.aspect.name) &&
         !_.some(x.parties, p => _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name))
       );
-      this._aspects = calc_aspects(aspects);
+      calc_aspects(aspects);
     } else {
       // Transit Aspects
 
@@ -1655,7 +1640,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           return _.includes(['2 house', '3 house', '5 house', '6 house', '8 house', '9 house', '11 house', '12 house'], p.name);
         })
       );
-      this._aspects = calc_aspects(aspects);
+      calc_aspects(aspects);
     }
 
     // stat lines
@@ -1795,8 +1780,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       //console.log(`${so.name} ${house_sign} ${so.dignities.detriment.join('|')} ${found.name}`);
     }
 
-
-
     result.push(` (${(score * so_weight).toFixed(2)})`);
 
     //this.avg_score = aspect_score;
@@ -1810,23 +1793,37 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           let rank: number;
           switch (a.aspect.angle) {
             // stressful
-            case 90:  rank = -8; break;  // big obsticles
-            case 45:  rank = -3; break;   // some frictions
-            case 135: rank = -1; break;  // little discomfort
+            case 90:
+              rank = -8;
+              break;  // big obstacles
+            case 45:
+              rank = -3;
+              break;   // some frictions
+            case 135:
+              rank = -1;
+              break;  // little discomfort
 
             // stabilizing
-            case 60:  rank = 8; break;   // good opportunity
-            case 120: rank = 7; break;   // harmony, easy going
-            case 30:  rank = 3; break;   // little helper
-            case 150: rank = 1; break;   // increase, growth   (with Asc -- health troubles)
+            case 60:
+              rank = 8;
+              break;   // good opportunity
+            case 120:
+              rank = 7;
+              break;   // harmony, easy going
+            case 30:
+              rank = 3;
+              break;   // little helper
+            case 150:
+              rank = 1;
+              break;   // increase, growth   (with Asc -- health troubles)
 
             case 180:  // balancing differences
-            case 0:    // dao
+            case 0:    // dao conjunction
               if (a.parties[1].name === SYMBOL_PLANET.ParsFortuna) {
                 a.parties[1].dao = this.selectedPerson?.gender === Gender.Male ? Dao.Yang : Dao.Yin;
               }
               if (_.startsWith(a.parties[1].name, "Cusp")) {
-                const found = this.data.Houses.find(x => x.name === a.parties[1].name);
+                const found = this.data.Houses.find((x: any) => x.name === a.parties[1].name);
                 if (found) {
                   a.parties[1].dao = found.dao;
                 }
@@ -1835,7 +1832,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
                 (a.parties[0].dao === Dao.Yang && a.parties[1].dao === Dao.Yin)) {
                 rank = a.aspect.angle === 0 ? -7 : 7;
               } else {
-                rank = a.aspect.angle === 0 ? 7: -7;
+                rank = a.aspect.angle === 0 ? 7 : -7;
               }
               break;
             default:
@@ -1937,13 +1934,6 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       element.scroll({top: element.scrollHeight, behavior: 'smooth'});
     }
   }
-
-  protected readonly faSave = faSave;
-  protected readonly faLocationPin = faLocationPin;
-  protected readonly AppMode = AppMode;
-  protected readonly faPlusSquare = faPlusSquare;
-  protected readonly faPlus = faPlus;
-  protected readonly Math = Math;
 }
 
 
