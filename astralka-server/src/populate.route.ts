@@ -10,7 +10,7 @@ export async function populateRoute(req: any, res: any): Promise<void> {
     const client = new MongoClient(uri);
 
     const prompt = `
-        To draw an astrological natal chart for random 50 famous people, with public data available, and time of birth is known, and max 3 words for description and escape strings, date format is 'DD MMMM YYYY hh:mm a' provide the following information in a json format: {people: [{ name: "Sasha", description: "Programmer", gender: Male, dob: "01 April 1970 10:20 am", place: "Podolsk, Russia", latitude: 54.3455N, longitude: 37.3455E, elevation: 128m, UT_offset: 3 }]}
+        To draw an astrological natal chart for random 50 famous Russian people, with public data available, and time of birth is known, and max 3 words for description and escape strings, date format is 'DD MMMM YYYY hh:mm a' provide the following information in a json format: {people: [{ name: "Sasha", description: "Programmer", gender: Male, dob: "01 April 1970 10:20 am", place: "Podolsk, Russia", latitude: 54.3455N, longitude: 37.3455E, elevation: 128m, UT_offset: 3 }]}
     `;
 
 
@@ -19,6 +19,9 @@ export async function populateRoute(req: any, res: any): Promise<void> {
             const result = await call_ai(prompt, true, 8192 * 2);
 
             const obj = JSON.parse(result);
+
+            //console.log(result);
+
             const remapped = obj.people.reduce((acc: any[], p: any) => {
                 const latitude = _.endsWith(p.latitude, "N")
                     ? _.toNumber(p.latitude.replace("N", ""))
@@ -26,6 +29,11 @@ export async function populateRoute(req: any, res: any): Promise<void> {
                 const longitude = _.endsWith(p.longitude, "E")
                     ? _.toNumber(p.longitude.replace("E", ""))
                     : -_.toNumber(p.longitude.replace("W", ""));
+
+                if (!_.isNumber(latitude) || !_.isNumber(longitude)) {
+                    console.log(`--- SKIPPING ${p.name} --- CANNOT PARSE LONGITUDE [${p.longitude}] OR LATITUDE [${p.latitude}]`);
+                    return acc;
+                }
 
                 const dob = moment(p.dob, "DD MMMM YYYY hh:mm a");
                 if (!dob.isValid()) {

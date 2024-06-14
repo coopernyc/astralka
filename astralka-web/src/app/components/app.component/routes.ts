@@ -17,7 +17,7 @@ const routerConfig: Routes = [
   {
     path: 'astralka',
     component: AstralkaChartComponent,
-    title: 'Astralka Main Page'
+    title: 'Astralka - Ultimate Fortuna Teller'
   }
 ];
 

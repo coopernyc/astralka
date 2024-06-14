@@ -1670,7 +1670,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           label: so.name,
           position: pos_in_zodiac(so.position),
           speed: so.speed,
-          house: so.house.symbol + 'Hse',
+          house: so.house.symbol + ' House',
           dignities: this.format_dignities(so)
         }
       });
@@ -1688,7 +1688,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           label: so.name,
           position: pos_in_zodiac(so.position),
           speed: so.speed,
-          house: so.house.symbol + 'Hse',
+          house: so.house.symbol + ' House',
           dignities: this.format_dignities(so, true)
         }
       });
