@@ -1110,7 +1110,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       const md = markdownit('commonmark');
       const result = (data.params.title ? `<h4>${data.params.title}</h4>`:'') +  md.render(data.result);
       this._phrase = this.latin_phrase(this.sign);
-      this.show_natal_aspects = _.get(this, "params.kind", PromptKind.Natal) === PromptKind.Natal;
+      this.show_natal_aspects = _.get(data, "params.kind", PromptKind.Natal) === PromptKind.Natal;
       this._explanation.push({
         text: result,
         info: data.params,
