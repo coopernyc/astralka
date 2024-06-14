@@ -222,7 +222,7 @@ async function qp_list(username: string): Promise<any[]> {
             {
                 $match: {
                     $and: [
-                        { "username": {$eq: "cooper"} }
+                        { "username": {$eq: username} }
                     ]
                 }
             },

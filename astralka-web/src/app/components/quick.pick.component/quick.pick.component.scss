@@ -1,12 +1,11 @@
 :host {
-  flex: 1;
-  max-height: 49px;
+  flex: 0 46px;
   display: flex;
+
   .quick-pick-container {
     flex: 1;
-    border-top: 1px solid #555;
-    background-color: #376a57;
-    padding: 1px;
+    padding-bottom: 1px;
+    background-color: #333;
     margin: 0;
     display: flex;
     align-content: center;
@@ -15,14 +14,15 @@
     .quick-pick {
       margin: 1px;
       button {
+        color: #333;
         margin: 0;
         border: 0;
         outline: none;
         font-size: 11px;
         height: 21px;
         @media (max-width: 430px) {
-          font-size: 6px;
-          height: 12px;
+          //font-size: 6px;
+          //height: 12px;
           &:not(.close-button) {
             padding: 0 2px 0 4px;
           }

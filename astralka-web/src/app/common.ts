@@ -808,9 +808,10 @@ export enum ToolbarMenuSpan {
 }
 
 export interface IToolbarCmdBase {
+  id: string;
   mask: ToolbarCmdMask,
   hidden?: boolean,
-  align?: ToolbarAlign | number
+  align?: ToolbarAlign | number,
 }
 
 export interface IToolbarItem {

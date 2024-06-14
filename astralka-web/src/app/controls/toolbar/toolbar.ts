@@ -21,7 +21,7 @@ import {Overlay, OverlayConfig, OverlayModule, OverlayRef} from "@angular/cdk/ov
   standalone: true,
   imports: [AsPipe, TypeofPipe, FontAwesomeModule, PortalModule, OverlayModule],
   template: `
-    @for(cmd of commands; track cmd) {
+    @for(cmd of commands; track cmd.id) {
       @switch(cmd.type) {
         @case('item') {
             <button
@@ -65,7 +65,7 @@ import {Overlay, OverlayConfig, OverlayModule, OverlayRef} from "@angular/cdk/ov
               [class.double]="(portal_cmd | as : IToolbarMenu).menuSpan === ToolbarMenuSpan.Double"
               [class.triple]="(portal_cmd | as : IToolbarMenu).menuSpan === ToolbarMenuSpan.Triple"
             >
-              @for(m_portal_cmd of menu_commands(portal_cmd); track m_portal_cmd) {
+              @for(m_portal_cmd of menu_commands(portal_cmd); track m_portal_cmd.id) {
                 @switch(m_portal_cmd.type) {
                   @case('item') {
                     <button

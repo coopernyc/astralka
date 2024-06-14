@@ -788,6 +788,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
     const cmds: IToolbarCmd[] = [
       {
+        id: rnd_suffix(),
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: false,
@@ -807,6 +808,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         }
       },
       {
+        id: rnd_suffix(),
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: false,
@@ -826,6 +828,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         }
       },
       {
+        id: rnd_suffix(),
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: false,
@@ -845,6 +848,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         }
       },
       {
+        id: rnd_suffix(),
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: false,
@@ -868,6 +872,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       ? cmds
       : [
         {
+          id: rnd_suffix(),
           mask: ToolbarCmdMask.NavBar,
           type: 'menu',
           hidden: false,
@@ -882,6 +887,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
     this.commands = [
       {
+        id: rnd_suffix(),
         mask: ToolbarCmdMask.NavBar,
         type: 'menu',
         hidden: false,
@@ -895,6 +901,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           .sort((a: any, b: any) => a.label.localeCompare(b.label, 'standard', {sensitivity: 'case'}))
           .map((perspective: any) => {
             return {
+              id: rnd_suffix(),
               mask: ToolbarCmdMask.NavBar,
               type: 'item',
               hidden: false,
@@ -910,6 +917,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           })
       },
       {
+        id: rnd_suffix(),
         mask: ToolbarCmdMask.NavBar,
         type: 'menu',
         hidden: false,
@@ -920,6 +928,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         tooltip: 'Forecast',
         commands: [
           {
+            id: rnd_suffix(),
             mask: ToolbarCmdMask.NavBar,
             type: 'item',
             hidden: false,
@@ -950,6 +959,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
           //   }
           // },
           {
+            id: rnd_suffix(),
             mask: ToolbarCmdMask.NavBar,
             type: 'item',
             hidden: false,
@@ -998,6 +1008,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       },
       ...responsive_commands,
       {
+        id: rnd_suffix(),
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: !this.hasUserRole(UserRole.Admin),
@@ -1011,6 +1022,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
         }
       },
       {
+        id: rnd_suffix(),
         mask: ToolbarCmdMask.All,
         type: 'item',
         hidden: false,
