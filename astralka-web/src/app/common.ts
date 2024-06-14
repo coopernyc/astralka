@@ -849,6 +849,7 @@ export const Dao = {
 export interface IPersonInfo {
   _id?: string,
   name: string,
+  description: string,
   date: string,
   timezone: number,
   dateUT: string,
@@ -868,6 +869,7 @@ export interface IPersonInfo {
 
 export interface IPersonEntry {
   name: string,
+  description: string,
   locationName: string,
   latitude: number,
   longitude: number,

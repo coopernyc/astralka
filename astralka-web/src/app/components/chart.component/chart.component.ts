@@ -184,6 +184,7 @@ import {AstroPipe} from "../../controls/astro.pipe";
                         <fa-icon [icon]="faPlus"></fa-icon>
                       </button>
                     </section>
+                    <section *ngIf="entry.description">{{selectedPerson.description}}</section>
                     <section>{{ moment(selectedPerson.date).format('DD MMM YYYY, hh:mm a') }}</section>
                     <section>Loc: {{ selectedPerson.location.name }}</section>
                     <section>Lat: {{ convert_lat_to_DMS(selectedPerson.location.latitude) }}
@@ -514,6 +515,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
   public entry: IPersonEntry = {
     name: '',
+    description: '',
     locationName: '',
     latitude: 0,
     longitude: 0,
@@ -1241,6 +1243,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       this.selectedPerson = person;
       this.entry = {
         name: person.name,
+        description: person.description,
         locationName: person.location.name,
         longitude: person.location.longitude,
         latitude: person.location.latitude,
@@ -1285,6 +1288,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
   public resetEntry(): void {
     this.entry = {
       name: '',
+      description: '',
       locationName: '',
       latitude: 0,
       longitude: 0,

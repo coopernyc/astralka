@@ -51,6 +51,25 @@ import {faSave, faTrash} from "@fortawesome/free-solid-svg-icons";
             />
           </div>
           <div class="entry-group">
+            <label>
+              Description (Optional)
+              @if (description.errors) {
+                @if (description.errors['maxlength']) {
+                  <span> - at most 250 characters</span>
+                }
+              }
+            </label>
+            <input
+              style="width: 300px;"
+              type="text"
+              name="description"
+              [(ngModel)]="entry.description"
+              maxlength="250"
+              #description="ngModel"
+              [ngClass]="{invalid: name.errors}"
+            />
+          </div>
+          <div class="entry-group">
             <label>Gender</label>
             <select
               name="gender"
@@ -295,6 +314,7 @@ export class AstralkaPersonComponent implements OnChanges {
   public onSave(): void {
     const person: IPersonInfo = {
       name: this.entry.name,
+      description: this.entry.description,
       date: moment(this.entry.dob).format("YYYY-MM-DD HH:mm:ss"),
       timezone: this.entry.timezone,
       dateUT: moment.utc(this.entry.dob).add(-this.entry.timezone, 'hours').format("YYYY-MM-DD HH:mm:ss"),
