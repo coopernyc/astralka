@@ -1278,7 +1278,7 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     const prompt = `
       For a ${this.age} years old ${this.selectedPerson!.gender ? 'male' : 'female'} given the following today's information:
       ${this.transit_description_for_ai}.\n
-      In a few paragraphs explore some general insights from the provided placements and plants transit periods that might hint at ${kind}`;
+      In a few paragraphs explore some general insights from the provided placements and planets transit periods that might hint at ${kind}`;
     this.rest.do_explain({prompt, title, kind: PromptKind.Transit});
   }
 
