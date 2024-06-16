@@ -7,7 +7,7 @@
 ### Tired of clunky astrology software?
 
 Astralka is here to revolutionize your astrological journey!
-Create stunning, professional natal, transit, and progression charts with ease. Customize your charts to perfection, turning on or off specific elements and adjusting settings to your liking. Build public and private collections to organize your astrological insights.
+Create stunning, professional natal, transit, and progression charts with ease. Customize your charts to perfection, turning on or off specific elements and adjusting settings to your liking. Use public or build your private collections of natal charts to organize your astrological insights.
 
 ### But wait, there's more!
 
