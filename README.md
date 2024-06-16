@@ -23,8 +23,9 @@ Dive deep into the fascinating world of astrology with Astralka. Explore the sec
 > Feeling lucky? Don't know what numbers to pick for the lottery? Let the stars guide your gamble! Get ready to win big - it's time to play the cosmic lottery!
 
 ## Screenshot
-<img width="403" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/5cfe90d8-31a9-411b-a0ff-511e446ea544">
-<img width="210" src="https://github.com/coopernyc/astralka/assets/11201225/a72b8253-9402-4a5a-96b8-7dd10ccb8293">
+<img width="400" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/20fcca26-9094-4dae-b41d-922422956107">
+<img width="200" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/3141e5a1-bc9c-4850-80ea-bafa438ea2e3">
+
 
 > [!TIP]
 > on Windows, if you run into some errors about msvc for node >= 18, search and run `Install Additional tools for Node.js` batch file. 
