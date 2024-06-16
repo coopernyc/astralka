@@ -2,15 +2,25 @@
 
 ![image](https://github.com/coopernyc/astralka/assets/11201225/5d85f578-1ab8-43ff-9190-34758d3192d3)
 
-Astralka creates "very professional" astrological natal/transit/progression chart of a person, gives flexible settings on turning on/off various thing in drawing, calculations, choose different settings, ability to create public and private collections of charts, and **the best of all** it creates aggregated prompt for AI that is based on all calculated information from the chart to apply analysis and to give overall prognosis on different areas/categories of live.
+## Unleash Your Inner Astrologer with Astralka!
 
-Other than to apply in practice new Angular & Typescript methods and features in building web portals or pseudo commercial products, you can also learn tons of interesting but mostly useless information regarding Astrology, Planets, Signs, Houses, Aspects etc. 
+### Tired of clunky astrology software?
+
+Astralka is here to revolutionize your astrological journey!
+Create stunning, professional natal, transit, and progression charts with ease. Customize your charts to perfection, turning on or off specific elements and adjusting settings to your liking. Build public and private collections to organize your astrological insights.
+
+### But wait, there's more!
+
+Astralka empowers you to **leverage AI in a whole new way**. Generate insightful **prompts based on your chart's intricate data**, providing a comprehensive prognosis for your life's journey in different areas.
+Beyond practical application:
+Dive deep into the fascinating world of astrology with Astralka. Explore the secrets of planets, signs, houses, and aspects, unlocking a treasure trove of intriguing (and sometimes, yes, even slightly useless!) knowledge.
+
+### Astralka: Where astrology meets innovation - The Ultimate Fortune Teller!
 
 > [!WARNING] 
 > Please remember, Astrology is not a science, but a mental exercise people practice from ancient times.
-> Learn why girls so scared of "**Retrograde Mercury**"!!!
-> You can always re-roll you luck! You don't like prediction? Try again for a new one. There's no proof or credibility either way!
-> No more guessing on what bucket of flowers or gift to present on her birthday!
+> Forget science, embrace the fun! Astrology is a mental exercise people have enjoyed for ages, like rolling the dice on your fate. Why are girls so scared of "Retrograde Mercury?" Don't like your prediction? Just re-roll! There's no proof, no credibility, just pure entertainment. End the guessing game - no more wondering what flowers or gift to present on her birthday!
+> Feeling lucky? Don't know what numbers to pick for the lottery? Let the stars guide your gamble! Get ready to win big - it's time to play the cosmic lottery!
 
 ## Screenshot
 <img width="403" alt="image" src="https://github.com/coopernyc/astralka/assets/11201225/5cfe90d8-31a9-411b-a0ff-511e446ea544">
