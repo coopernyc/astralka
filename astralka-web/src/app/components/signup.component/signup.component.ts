@@ -3,7 +3,6 @@ import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 import {AstralkaAuthService} from "../../services/auth.service";
-import {SessionStorageService} from "../../services/session.storage.service";
 import _ from "lodash";
 
 @Component({
@@ -191,12 +190,25 @@ export class AstralkaSignUpComponent {
   public failed: boolean = false;
   public failedMessage: string = '';
 
+  /**
+   * Initializes a new instance of the component with dependencies injected.
+   * @param {Router} router - The router service for navigation.
+   * @param {AstralkaAuthService} auth - The authentication service.
+   */
   constructor(
     private router: Router,
     private auth: AstralkaAuthService
   ) {
   }
 
+  /**
+   * Handles the submission of a user registration form. Extracts form data
+   * and calls the `create_account` method of the `auth` service to create
+   * a new user account. Sets the status flags based on the success or failure
+   * of the account creation process.
+   *
+   * @return {void}
+   */
   public onSubmit(): void {
     const { username, password, email, firstname, lastname } = this.form;
 
@@ -213,6 +225,11 @@ export class AstralkaSignUpComponent {
     });
   }
 
+  /**
+   * Navigates the user to the login page by redirecting to the root path.
+   *
+   * @return {Promise<void>} A promise that resolves when the navigation is complete.
+   */
   public async goToLogin(): Promise<void> {
     await this.router.navigate(['']);
   }

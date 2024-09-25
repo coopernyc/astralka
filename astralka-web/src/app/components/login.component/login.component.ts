@@ -91,6 +91,14 @@ export class AstralkaLoginComponent implements OnInit {
   public failed: boolean = false;
   public failedMessage: string = '';
 
+  /**
+   * Creates an instance of the class.
+   *
+   * @param {Router} router - The router instance for navigating between routes.
+   * @param {AstralkaAuthService} auth - The authentication service for user login and session management.
+   * @param {SessionStorageService} session - The session storage service for managing session data.
+   * @return {void}
+   */
   constructor(
     private router: Router,
     private auth: AstralkaAuthService,
@@ -98,12 +106,26 @@ export class AstralkaLoginComponent implements OnInit {
   ) {
   }
 
+  /**
+   * Lifecycle hook that is called after data-bound properties of a directive are initialized.
+   * It checks if the user is logged in, and if so, navigates to the 'astralka' route.
+   *
+   * @returns {void}
+   */
   public ngOnInit(): void {
     if (this.session.isLoggedIn()) {
       this.router.navigate(['astralka']).then();
     }
   }
 
+  /**
+   * Submits the login form and handles the authentication process.
+   * It sends the username and password to the authentication service.
+   * Upon successful authentication, it stores the user data in the session
+   * and navigates to the Astralka page. In case of failure, it sets an error message.
+   *
+   * @return {void} This method does not return a value.
+   */
   public onSubmit(): void {
     const { username, password } = this.form;
     this.auth.login(username, password)
@@ -124,10 +146,20 @@ export class AstralkaLoginComponent implements OnInit {
       });
   }
 
+  /**
+   * Navigates the router to the 'astralka' route asynchronously.
+   *
+   * @return {Promise<void>} A promise that resolves once the navigation is complete.
+   */
   private async goToAstralka(): Promise<void> {
     await this.router.navigate(['astralka']);
   }
 
+  /**
+   * Navigates the user to the sign-up page.
+   *
+   * @return {Promise<void>} A promise that resolves when the navigation is complete.
+   */
   public async goToSignUp(): Promise<void> {
     await this.router.navigate(['signup']);
   }

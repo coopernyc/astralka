@@ -1,7 +1,7 @@
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from "@angular/core";
-import {Gender, IPersonInfo, PersonScope, UserRole} from "../../common";
+import {IPersonInfo, PersonScope, UserRole} from "../../common";
 import {SessionStorageService} from "../../services/session.storage.service";
 import _ from "lodash";
 import moment from "moment";
@@ -298,12 +298,25 @@ export class AstralkaPersonComponent implements OnChanges {
 
   public originalEntry: any;
 
+  /**
+   * Constructs an instance of the class with provided services.
+   *
+   * @param {SessionStorageService} session - Instance of SessionStorageService to manage session storage.
+   * @param {RestService} rest - Instance of RestService to make RESTful API calls.
+   */
   constructor(
     private session: SessionStorageService,
     private rest: RestService
   ) {
   }
 
+  /**
+   * Handles changes by comparing current and previous value of the 'entry' property.
+   * Updates internal state with the current value and makes a deep copy as the original.
+   *
+   * @param {SimpleChanges} changes - Object containing the current and previous values of the changed properties.
+   * @return {void} This method does not return a value.
+   */
   ngOnChanges(changes: SimpleChanges) {
     if (changes['entry']) {
       this.entry = changes['entry'].currentValue;
@@ -311,6 +324,13 @@ export class AstralkaPersonComponent implements OnChanges {
     }
   }
 
+  /**
+   * Saves the current entry of person information by formatting the data and sending it to the backend service.
+   * If the user has admin role, sets the scope accordingly; otherwise, sets it to private.
+   * Upon success, emits the saved person object; upon failure, logs the error and sets an error message.
+   *
+   * @return {void}
+   */
   public onSave(): void {
     const person: IPersonInfo = {
       name: this.entry.name,
@@ -340,6 +360,18 @@ export class AstralkaPersonComponent implements OnChanges {
         }
       })
   }
+  /**
+   * Initiates the removal process for an entry and handles the response.
+   *
+   * Constructs a deletion object with the name and scope of the current entry,
+   * and sends a removal request via the REST service using the provided username.
+   *
+   * Subscribes to the resulting observable to handle success and error responses.
+   * On success, sets the `failed` flag to false and emits the `deleted` event.
+   * On error, logs the error, sets the `failed` flag to true, and updates the `failedMessage`.
+   *
+   * @return {void} No return value.
+   */
   public onRemove(): void {
     const del = {
       name: this.entry.name,
@@ -358,16 +390,37 @@ export class AstralkaPersonComponent implements OnChanges {
         }
       });
   }
+  /**
+   * Notifies listeners that the clear event has been triggered.
+   *
+   * @return {void} This method does not return a value.
+   */
   public onClear(): void {
     this.clear.emit();
   }
+  /**
+   * Reverts the current entry to its original state.
+   *
+   * @return {void} This method does not return a value.
+   */
   public onRevert(): void {
     this.entry = this.originalEntry;
   }
+  /**
+   * Checks if the currently restored user has the specified role.
+   *
+   * @param {string} role - The role to check against the user's roles.
+   * @return {boolean} Returns true if the user has the specified role; otherwise, false.
+   */
   public hasUserRole(role: string): boolean {
     const user = this.session.restoreUser();
     return user && _.includes(user.roles, role);
   }
+  /**
+   * Retrieves the username of the currently authenticated user from the session.
+   *
+   * @return {string} The username of the current user.
+   */
   public get username(): string {
     const user = this.session.restoreUser();
     return user.username;

@@ -46,6 +46,12 @@ export class AstralkaTransitComponent implements OnChanges {
 
   public originalTransit: any;
 
+  /**
+   * Responds to changes in the input properties of the component.
+   *
+   * @param {SimpleChanges} changes - An object that holds the current and previous values of the input properties.
+   * @returns {void}
+   */
   ngOnChanges(changes: SimpleChanges) {
     if (changes['transit']) {
       this.transit = changes['transit'].currentValue;
@@ -56,10 +62,23 @@ export class AstralkaTransitComponent implements OnChanges {
     }
   }
 
+  /**
+   * Gets the formatted value of the transit offset.
+   *
+   * @return {number} The transit offset if it is a valid number, otherwise 0.
+   */
   public get valueFmt(): number {
     return !_.isNaN(this.transit.offset) ? this.transit.offset : 0;
   }
 
+  /**
+   * Sets the transit date and offset based on the given type.
+   *
+   * @param {'now'|'natal'} type - Indicates the type of transit to set.
+   *                               'now' sets the date to the current UTC date-time.
+   *                               'natal' sets the date to the birth date-time.
+   * @return {void}
+   */
   public setTransit(type: 'now' | 'natal'): void {
     switch (type) {
       case 'now':

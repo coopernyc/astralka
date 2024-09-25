@@ -61,10 +61,22 @@ export enum AppMode {
   Full
 }
 
+/**
+ * Normalizes the given angle to be within the range of 0 to 359 degrees.
+ *
+ * @param {number} a - The angle to be normalized.
+ * @return {number} The normalized angle ranging from 0 to 359 degrees.
+ */
 export function nl360(a: number): number {
   return (a + 360) % 360;
 }
 
+/**
+ * Calculates the modulo 180 of a given number after transforming it.
+ *
+ * @param {number} a - The input number to be transformed.
+ * @return {number} The result of the transformation modulo 180.
+ */
 export function nl180(a: number): number {
   return nl360(a) % 180;
 }
@@ -534,10 +546,23 @@ export const SymbolStaticData = {
   ]
 }
 
+/**
+ * Pads a given number or string to ensure it has at least two characters.
+ *
+ * @param {number|string} n - The number or string to pad.
+ * @return {string} The padded string.
+ */
 export function pad2(n: number | string): string {
   return _.padStart(n + '', 2);
 }
 
+/**
+ * Converts decimal degrees (DD) to degrees, minutes, and seconds (DMS) format.
+ *
+ * @param {number} degrees - The value in decimal degrees to be converted.
+ * @param {string} [sign="°"] - The sign symbol to be used in the output. Default is "°".
+ * @return {string} The formatted string representing the input in DMS format.
+ */
 export function convert_DD_to_DMS(degrees: number, sign = "°"): string {
   const deg = degrees | 0;
   const frac = Math.abs(degrees - deg);
@@ -546,18 +571,37 @@ export function convert_DD_to_DMS(degrees: number, sign = "°"): string {
   return pad2(deg) + sign + pad2(min) + "'" + pad2(sec) + "\"";
 }
 
+/**
+ * Converts latitude from decimal degrees format to degrees, minutes, and seconds (DMS) format.
+ *
+ * @param {number} lat - The latitude in decimal degrees.
+ * @return {string} The latitude in DMS format with N/S suffix.
+ */
 export function convert_lat_to_DMS(lat: number): string {
   const suffix = lat >= 0 ? 'N' : 'S';
   const l = Math.abs(lat);
   return `${convert_DD_to_DMS(l)}${suffix}`;
 }
 
+/**
+ * Converts a longitude in decimal degrees (DD) to degrees, minutes, and seconds (DMS) format with an appropriate suffix (E for positive, W for negative).
+ *
+ * @param {number} long - The longitude in decimal degrees to be converted.
+ * @return {string} The formatted longitude in DMS representation with the corresponding suffix.
+ */
 export function convert_long_to_DMS(long: number): string {
   const suffix = long >= 0 ? 'E' : 'W';
   const l = Math.abs(long);
   return `${convert_DD_to_DMS(l)}${suffix}`;
 }
 
+/**
+ * Converts a decimal degree value to a simplified degree notation.
+ *
+ * @param {number} degrees - The decimal degree value to be converted.
+ * @param {string} [sign="°"] - The sign/notation to append at the end of the converted value.
+ * @return {string} - The converted degree value in simplified notation.
+ */
 export function convert_DD_to_D(degrees: number, sign = "°"): string {
   var deg = degrees | 0;
   var frac = Math.abs(degrees - deg);
@@ -565,14 +609,40 @@ export function convert_DD_to_D(degrees: number, sign = "°"): string {
   return `${deg}${dec !== 0 ? '.' + dec : ''}${sign}`;
 }
 
+/**
+ * Calculates the position within a zodiac sign based on the given longitude.
+ *
+ * @param {number} longitude - The longitude of the celestial object.
+ * @return {number} The position within the current zodiac sign (0-29 degrees).
+ */
 export function pos_in_zodiac_sign(longitude: number): number {
   return longitude % 30;
 }
 
+/**
+ * Determines the zodiac sign based on the input longitude.
+ *
+ * @param {number} longitude - The longitude to determine the zodiac sign for.
+ * @return {string} The corresponding zodiac sign.
+ */
 export function zodiac_sign(longitude: number): string {
   return ZodiacSigns[Math.floor(longitude / 30)];
 }
 
+/**
+ * Calculates a point on the line segment between points p1 and p2, at a fractional distance 1/n from p1.
+ *
+ * @param {number} n - The subdivision factor that dictates the fraction along the segment, where 1/n determines the position.
+ * @param {Object} p1 - The starting point of the line segment.
+ * @param {number} p1.x - The x-coordinate of the starting point.
+ * @param {number} p1.y - The y-coordinate of the starting point.
+ * @param {Object} p2 - The end point of the line segment.
+ * @param {number} p2.x - The x-coordinate of the end point.
+ * @param {number} p2.y - The y-coordinate of the end point.
+ * @return {Object} - The point on the line segment at a fractional distance 1/n from p1.
+ * @return {number} return.x - The x-coordinate of the calculated point.
+ * @return {number} return.y - The y-coordinate of the calculated point.
+ */
 export function point_on_the_line(n: number, p1: { x: number, y: number }, p2: { x: number, y: number }): {
   x: number,
   y: number
@@ -590,6 +660,19 @@ export function point_on_the_line(n: number, p1: { x: number, y: number }, p2: {
   }
 }
 
+/**
+ * Formats a party object into a descriptive string.
+ *
+ * @param {Object} party - The party object containing details such as name, symbol, position, speed, and house.
+ * @param {string} party.name - The name of the party.
+ * @param {string} party.symbol - The symbol representing the party.
+ * @param {number} party.position - The position of the party in the zodiac.
+ * @param {number} [party.speed] - The speed of the party (if available).
+ * @param {Object} party.house - The house object associated with the party.
+ * @param {string} party.house.symbol - The symbol of the house.
+ * @param {number} party.house.position - The position of the house in the zodiac.
+ * @return {string} A formatted string describing the party's position and house.
+ */
 export function format_party(party: any): string {
   const r = _.isUndefined(party.speed) || party.speed >= 0 ? '' : 'retrograde ';
   let result: string;
@@ -617,6 +700,17 @@ export interface IDroppableEventObject {
   zone: any;
 }
 
+/**
+ * Calculates the point located one third of the way from the first point to the second point on a straight line.
+ *
+ * @param {Object} p1 - The starting point with coordinates x and y.
+ * @param {number} p1.x - The x-coordinate of the starting point.
+ * @param {number} p1.y - The y-coordinate of the starting point.
+ * @param {Object} p2 - The ending point with coordinates x and y.
+ * @param {number} p2.x - The x-coordinate of the ending point.
+ * @param {number} p2.y - The y-coordinate of the ending point.
+ * @return {Object} The point located one third of the way from p1 to p2, with coordinates x and y.
+ */
 export function one_third_point_on_the_line(p1: { x: number, y: number }, p2: { x: number, y: number }): {
   x: number,
   y: number
@@ -624,6 +718,20 @@ export function one_third_point_on_the_line(p1: { x: number, y: number }, p2: { 
   return point_on_the_line(3, p1, p2);
 }
 
+/**
+ * Rotates a point around a given center by a specified angle.
+ *
+ * @param {Object} c - The center point.
+ * @param {number} c.x - The x-coordinate of the center.
+ * @param {number} c.y - The y-coordinate of the center.
+ * @param {Object} p - The point to rotate.
+ * @param {number} p.x - The x-coordinate of the point.
+ * @param {number} p.y - The y-coordinate of the point.
+ * @param {number} angle - The angle of rotation in degrees.
+ * @return {Object} The rotated point.
+ * @return {number} return.x - The x-coordinate of the rotated point.
+ * @return {number} return.y - The y-coordinate of the rotated point.
+ */
 export function rotate_point_around_center(c: { x: number, y: number }, p: { x: number, y: number }, angle: number): {
   x: number,
   y: number
@@ -638,11 +746,24 @@ export function rotate_point_around_center(c: { x: number, y: number }, p: { x: 
   }
 }
 
+/**
+ * Calculates the age based on the given birth date.
+ *
+ * @param {any} date - The birth date to calculate the age from. It can be in any format recognized by moment.js.
+ * @return {number} The calculated age in years.
+ */
 export function age(date: any): number {
   const bd = moment.utc(date);
   return moment.utc().diff(bd, 'years');
 }
 
+/**
+ * Converts a given position in degrees to its corresponding position within the zodiac system.
+ * The result includes the degree, minute, and second components of the position as well as formatted strings and the associated zodiac sign.
+ *
+ * @param {number} position - The position in degrees to convert.
+ * @return {Object} An object containing the position in degrees, and its equivalent in degrees, minutes, seconds, formatted strings, and the zodiac sign.
+ */
 export function pos_in_zodiac(position: number): any {
   const z_pos = pos_in_zodiac_sign(position);
   const deg = z_pos | 0;
@@ -661,6 +782,12 @@ export function pos_in_zodiac(position: number): any {
   };
 }
 
+/**
+ * Returns the stroke color and optional stroke properties based on the given angle.
+ *
+ * @param {number} angle - The angle for which to determine the stroke properties.
+ * @return {Object} An object containing the stroke color and optional stroke properties.
+ */
 export function aspect_color(angle: number): any {
   let options = {};
   switch (angle) {
@@ -720,6 +847,17 @@ export function aspect_color(angle: number): any {
 
 //stroke_dasharray: "5,3"
 
+/**
+ * This function calculates the coordinates of the two points that form the arrowhead
+ * of a line segment represented by points `p1` and `p2`.
+ *
+ * @param {number} L - Length of the arrowhead.
+ * @param {number} W - Width of the arrowhead.
+ * @param {Object} p1 - Starting point of the line segment with properties `x` and `y`.
+ * @param {Object} p2 - Ending point of the line segment with properties `x` and `y`.
+ * @param {Object} options - Additional options or properties to be included in the returned arrowhead points.
+ * @return {Array} Array of two objects each representing a point of the arrowhead, including the `p1`, `p2`, and `options` properties.
+ */
 export function calculate_arrow(L: number, W: number, p1: any, p2: any, options: any): any[] {
   const [dx, dy] = [p2.x - p1.x, p2.y - p1.y];
   const Norm = Math.sqrt(dx * dx + dy * dy);
@@ -739,6 +877,12 @@ export function calculate_arrow(L: number, W: number, p1: any, p2: any, options:
   ];
 }
 
+/**
+ * Calculates the rank weight of a given sky object.
+ *
+ * @param {string} so - The symbol representing the sky object.
+ * @return {number} The rank weight of the sky object.
+ */
 export function getSkyObjectRankWeight(so: string): number {
   let weight = 0.1;
   switch (so) {
@@ -773,6 +917,11 @@ export function getSkyObjectRankWeight(so: string): number {
   return weight;
 }
 
+/**
+ * Generates a random string suffix composed of hexadecimal characters.
+ *
+ * @return {string} A randomly generated string consisting of four segments.
+ */
 export function rnd_suffix(): string {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)

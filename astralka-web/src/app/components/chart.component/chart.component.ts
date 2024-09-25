@@ -82,7 +82,7 @@ import {
   faBaby,
   faBars,
   faDatabase,
-  faDice,
+  faDice, faElevator,
   faEye,
   faHatWizard,
   faLocationPin,
@@ -94,6 +94,7 @@ import {
   faUserAstronaut,
   faWandMagicSparkles
 } from "@fortawesome/free-solid-svg-icons";
+// @ts-ignore
 import * as config from "assets/config.json";
 import {AstralkaRotateImageComponent} from "../../controls/rotate.image/rotate.image";
 import {LocalStorageService} from "../../services/local.storage.service";
@@ -103,6 +104,11 @@ import {AstralkaTransitMatrixComponent} from "../../controls/matrix/transit.matr
 import {AngularSplitModule, SplitComponent} from "angular-split";
 import {AstroPipe} from "../../controls/astro.pipe";
 
+/**
+ * AstralkaChartComponent is an Angular standalone component responsible for displaying astrological charts,
+ * including natal and transit/progression data, using a variety of subcomponents and visual elements.
+ *
+*/
 @Component({
   selector: 'astralka-chart',
   standalone: true,
@@ -561,10 +567,22 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
   public _responsive_breakpoint!: any;
 
+  /**
+   * Retrieves the responsive breakpoint from the instance. If the
+   * breakpoint is not explicitly set, it returns the first element
+   * of the `responsive_matrix`.
+   *
+   * @return {any} The responsive breakpoint.
+   */
   public get responsive_breakpoint(): any {
     return _.get(this, "_responsive_breakpoint", this.responsive_matrix[0]);
   }
 
+  /**
+   * Sets the responsive breakpoint value.
+   *
+   * @param {any} value - The value to set as the responsive breakpoint.
+   */
   public set responsive_breakpoint(value: any) {
     this._responsive_breakpoint = value;
   }
@@ -613,14 +631,29 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
   private _explanation: any[] = [];
 
+  /**
+   * Retrieves the explanation data.
+   *
+   * @return {any[]} An array containing the explanation data.
+   */
   public get explanation(): any[] {
     return this._explanation;
   }
 
+  /**
+   * Retrieves the name of the currently selected house system.
+   *
+   * @return {string} The name of the selected house system.
+   */
   public get selectedHouseSystemName(): string {
     return this.settings.house_system_selected.name;
   }
 
+  /**
+   * Calculates the age of the selected person based on their birthdate.
+   *
+   * @return {number} The age in years if the selected person's data is available; otherwise, NaN.
+   */
   public get age(): number {
     if (this.data && this.selectedPerson) {
       const bd = moment.utc(this.selectedPerson.date);
@@ -629,6 +662,10 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return NaN;
   }
 
+  /**
+   * Retrieves the zodiac sign based on the position of the Sun within the SkyObjects data.
+   * @return {string} The zodiac sign corresponding to the Sun's position, or an empty string if the data is not available.
+   */
   public get sign(): string {
     if (this.data && this.data.SkyObjects) {
       return zodiac_sign(this.data.SkyObjects.find((x: any) => x.name === SYMBOL_PLANET.Sun).position);
@@ -636,6 +673,11 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return '';
   }
 
+  /**
+   * Retrieves the selected phrase if the sign condition is met.
+   *
+   * @return {any} The selected phrase if this.sign is true; otherwise, returns null.
+   */
   public get phrase_selected(): any {
     if (this.sign) {
       return this._phrase;
@@ -643,6 +685,15 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return null;
   }
 
+  /**
+   * Retrieves an array of sky objects associated with the planets in the dataset.
+   *
+   * The method checks if the data is empty and returns an empty array if so. Otherwise,
+   * it maps through the `_planets` property, finding corresponding sky objects in the
+   * `data.SkyObjects` array by matching their names.
+   *
+   * @return {any[]} An array of sky objects related to the planets, or an empty array if no data is available.
+   */
   public get sky_objects(): any[] {
     if (_.isEmpty(this.data)) {
       return [];
@@ -652,6 +703,14 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     }) || [];
   }
 
+  /**
+   * Calculates the formatted energy score based on the natal energy score
+   * and classifies it into categories such as Balanced, Violent, Tense,
+   * Joyfull, and Peaceful.
+   *
+   * @return {string} A string representing the formatted energy score
+   *                  and its classification.
+   */
   public get formatted_energy_score(): string {
     const score = (this.natal_energy_score - 23.44) / 9.80665
     let score_name = 'Balanced';
@@ -667,6 +726,14 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return `Energy: ${score.toFixed(2)}<br/>${score_name}`;
   }
 
+  /**
+   * Calculates the transit date string based on the transit date and offset.
+   * If the transit object exists, it computes the date by adding the offset in days
+   * to the transit date. The resulting date is then converted to ISO string format
+   * without the 'Z' character.
+   *
+   * @return the calculated transit date string in ISO format or an empty string if transit object does not exist.
+   */
   public get calculatedTransitDateStr(): string {
     if (this.transit) {
       return moment(this.transit.date).utc().add(this.transit.offset, 'days').toISOString().replace('Z', '')
@@ -676,15 +743,33 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
   private _picks: any[] = [];
 
+  /**
+   * Retrieves the list of picks.
+   *
+   * @return {any[]} An array containing the picks
+   */
   public get picks(): any[] {
     return this._picks;
   }
 
+  /**
+   * Retrieves the username of the currently restored user from the session.
+   *
+   * @return {string} The username of the restored user or an empty string if no user is restored.
+   */
   public get username(): string {
     const user = this.session.restoreUser();
     return user ? user.username : '';
   }
 
+  /**
+   * Generates a natal description based on astrological data, excluding certain houses.
+   * Filters aspects that do not involve specific house names and constructs a textual description
+   * of planetary positions and their aspects.
+   *
+   * @return {string} A detailed description of the natal chart, highlighting planetary positions,
+   *                  retrograde statuses, and key astrological aspects.
+   */
   private get natal_description_for_ai(): string {
 
     const aspects = this.data.Aspects.filter((x: any) =>
@@ -718,6 +803,13 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return planets.join("; ");
   }
 
+  /**
+   * Generates a description of the transit for AI interpretation by filtering and
+   * processing transit aspects and stat lines data.
+   *
+   * @return {string} A formatted string that summarizes the transit aspects and
+   *                  positions with respect to natal positions.
+   */
   private get transit_description_for_ai(): string {
 
     const aspects = this.data.Transit.Aspects.filter((x: any) =>
@@ -757,6 +849,15 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return planets.join("; ");
   }
 
+  /**
+   * Lifecycle hook that is called after Angular has fully initialized
+   * a component's view. This method triggers the recalculation of the
+   * explanation height and attempts to restore a splitter height value from
+   * storage. If the value is found, it sets the splitter height and recalculates
+   * the explanation height.
+   *
+   * @return {void} No return value.
+   */
   ngAfterViewInit() {
     this.recalculate_explanation_height().then(() => {
       const vas = this.storage.restore("astralka-splitter");
@@ -768,12 +869,30 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
 
   }
 
+  /**
+   * Handles the end of a drag event on the splitter component.
+   * This method recalculates the explanation height and stores the current sizes
+   * of the visible areas in persistent storage.
+   *
+   * @return {Promise<void>} A promise that resolves when the recalculation and storage operations are complete.
+   */
   public async onSplitterDragEnd() {
     await this.recalculate_explanation_height();
     const vas = this.split.getVisibleAreaSizes();
     this.storage.store("astralka-splitter", vas);
   }
 
+  /**
+   * Updates the toolbar commands based on the current application state.
+   * This method configures the toolbar with various commands such as form toggles,
+   * aspect toggles, quick pick toggles, perspectives, and forecasts.
+   * Each command is dynamically generated with properties like id, mask, type,
+   * display mode, icon, tooltip, action, and so on, depending on the
+   * current responsive breakpoint and other state variables.
+   *
+   * @return {void} No return value. Side effects include updating this.commands with
+   * new toolbar commands.
+   */
   public update_commpands(): void {
 
     const cmds: IToolbarCmd[] = [
@@ -962,6 +1081,20 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
               this.transit_category("the focus areas suggesting concrete activities, then list for today, week, month the important health points and conclude with short overall summary.", "Day / Week / Month trends");
             }
           },
+          {
+            id: rnd_suffix(),
+            mask: ToolbarCmdMask.NavBar,
+            type: 'item',
+            hidden: false,
+            display: ToolbarDisplay.IconAndText,
+            icon: faElevator,
+            label: "Be President",
+            disabled: () => false,
+            tooltip: "Election",
+            action: () => {
+              this.transit_category(`overall chances to be elected as a President of the country. Rate the chances from 0 to 100.`, 'Presidential Electrions');
+            }
+          },
           // {
           //   mask: ToolbarCmdMask.NavBar,
           //   type: 'item',
@@ -1028,11 +1161,23 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     ];
   }
 
+  /**
+   * Checks if the currently restored user has the specified role.
+   *
+   * @param {string} role - The role to check against the user's roles.
+   * @return {boolean} True if the user has the specified role, otherwise false.
+   */
   public hasUserRole(role: string): boolean {
     const user = this.session.restoreUser();
     return user && _.includes(user.roles, role);
   }
 
+  /**
+   * Initializes the component and sets up responsive behavior, session checks,
+   * and subscription to various observables for handling state changes and data updates.
+   *
+   * @return {void}
+   */
   ngOnInit(): void {
 
     this.update_commpands();
@@ -1166,10 +1311,23 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Retries the explanation process for a given error.
+   *
+   * @param {any} e - The error object containing necessary information for explanation.
+   * @return {void}
+   */
   public retryExplanation(e: any): void {
     this.rest.do_explain(e.info);
   }
 
+  /**
+   * Generates a set of options for a given zodiac sign.
+   *
+   * @param {Object} p - The parameter object.
+   * @param {string} p.name - The name of the zodiac sign.
+   * @return {Object} An object containing the stroke color and scale corresponding to the given zodiac sign.
+   */
   public zodiac_options(p: any): any {
     let color = "#ffdd00";
     switch (p.name) {
@@ -1197,6 +1355,12 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return {stroke_color: color, scale: this.responsive_breakpoint.scale};
   }
 
+  /**
+   * Initiates the process to draw a chart based on the selected person's natal chart and optionally transit information.
+   * Generates necessary data and calls an API endpoint to retrieve chart data, then processes the received data.
+   *
+   * @return {void} Does not return a value.
+   */
   public draw() {
     if (this.selectedPerson) {
       const load: any = {
@@ -1218,6 +1382,13 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Handles the selection of a person, updating internal state and UI accordingly.
+   *
+   * @param {IPersonInfo} [person] - The information of the person being selected. If no person
+   * is provided, the internal state is reset.
+   * @return {void}
+   */
   public onPersonSelected(person?: IPersonInfo): void {
     if (person) {
       //console.log(`Selected ${person}`);
@@ -1248,11 +1419,27 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Calculate the coordinates of a point on the circumference of a circle given the center, radius, and angle.
+   *
+   * @param {number} cx - The x-coordinate of the circle's center.
+   * @param {number} cy - The y-coordinate of the circle's center.
+   * @param {number} radius - The radius of the circle.
+   * @param {number} angle - The angle in degrees from the positive x-axis to the point.
+   * @return {Object} An object containing the x and y coordinates of the point.
+   */
   public get_point_on_circle(cx: number, cy: number, radius: number, angle: number): { x: number, y: number } {
     const a = (180 - angle) * Math.PI / 180;
     return {x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a)};
   }
 
+  /**
+   * Generates and sends a prompt for natal chart insights based on the specified category.
+   *
+   * @param {string} kind - The category/type of insights to be generated (e.g., love, career, health).
+   * @param {string} title - The title to be used in the prompt.
+   * @return {void}
+   */
   public natal_category(kind: string, title: string): void {
     this.show_natal_aspects = true;
     const prompt = `
@@ -1262,6 +1449,14 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     this.rest.do_explain({prompt, title, kind: PromptKind.Natal});
   }
 
+  /**
+   * Generates an astrological transit category based on the given parameters and triggers an explanation process.
+   *
+   * @param {string} kind - The type of transit category being explored.
+   * @param {string} title - The title of the requested analysis.
+   *
+   * @return {void} This method does not return anything.
+   */
   public transit_category(kind: string, title: string): void {
     this.show_natal_aspects = false;
     const prompt = `
@@ -1271,6 +1466,11 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     this.rest.do_explain({prompt, title, kind: PromptKind.Transit});
   }
 
+  /**
+   * Resets the entry object to its initial default state.
+   *
+   * @return {void} This method does not return a value.
+   */
   public resetEntry(): void {
     this.entry = {
       name: '',
@@ -1286,21 +1486,47 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     };
   }
 
+  /**
+   * Clears the current person selection by resetting the entry and invoking the person selected callback.
+   * @return {void} This method does not return any value.
+   */
   public onPersonClear(): void {
     this.resetEntry();
     this.onPersonSelected();
   }
 
+  /**
+   * Handles the event when a person is saved.
+   *
+   * @param person - The information of the saved person.
+   * @return void
+   */
   public onPersonSaved(person: IPersonInfo): void {
     this.onPersonSelected(person);
   }
 
+  /**
+   * Handles logic when a person is removed.
+   * Sets the show_entry_form property to false, resets the entry form,
+   * and calls the onPersonSelected method.
+   *
+   * @return {void} No return value.
+   */
   public onPersonRemoved(): void {
     this.show_entry_form = false;
     this.resetEntry();
     this.onPersonSelected();
   }
 
+  /**
+   * Saves the selected person to the quick picks list if not already present.
+   *
+   * This method checks if the selected person is already in the quick picks list.
+   * If not, it calls a RESTful service to save the selected person to the quick picks.
+   * The quick picks list is then updated with the new data.
+   *
+   * @return {void}
+   */
   public savePersonToQuickPick(): void {
     const found = this._picks.find(x => x.person._id === _.get(this.selectedPerson, '_id', ''));
     if (!found) {
@@ -1312,12 +1538,24 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Removes a person from the quick pick list based on the provided id.
+   *
+   * @param {string} id - The unique identifier of the person to be removed.
+   * @return {void}
+   */
   public removePersonFromQuickPick(id: string) {
     this.rest.removeFromQuickPick(id, this.username).subscribe((data: any) => {
       this._picks = data;
     });
   }
 
+  /**
+   * Re-saves quick pick data using the provided user data.
+   *
+   * @param {any} data - The data to be re-saved, containing an array of objects each having a 'person' object with an '_id' property.
+   * @return {void} This method does not return a value.
+   */
   public reSaveQuickPick(data: any) {
     const load = data.map((x: any) => x.person._id);
     this.rest.reSaveToQuickPick(load, this.username)
@@ -1326,6 +1564,15 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       });
   }
 
+  /**
+   * Logs out the current user by performing the following steps:
+   * 1. Restores the user from the session.
+   * 2. Calls the authentication service to log out the user.
+   * 3. Cleans up the session on a successful logout.
+   * 4. Reloads the window to ensure the changes are reflected.
+   *
+   * @return {void}
+   */
   public logout(): void {
     const user: any = this.session.restoreUser();
     this.auth.logout(user.username).subscribe({
@@ -1340,6 +1587,12 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Generates a random Latin phrase and its English translation based on the provided sign.
+   *
+   * @param {string} sign - The sign used to look up the associated Latin phrases.
+   * @return {{ latin: string, english: string }} An object containing the Latin phrase and its English translation.
+   */
   public latin_phrase(sign: string): { latin: string, english: string } {
     return _.chain(latinPhrases.find(x => x.sign === sign)!.phrases)
       .shuffle()
@@ -1347,6 +1600,16 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
       .value();
   }
 
+  /**
+   * Recalculates the height of the explanation element and updates the `split_height` property.
+   *
+   * The method waits for a short delay before computing the new height of the
+   * explanation element by adding the current vertical scroll position to the top
+   * offset of the explanation element. The computed value is then assigned to the
+   * `split_height` property.
+   *
+   * @return {Promise<void>} A promise that resolves once the height recalculation is complete.
+   */
   private async recalculate_explanation_height(): Promise<void> {
     return new Promise<void>(r => {
       _.delay(() => {
@@ -1363,6 +1626,14 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Initializes the necessary data structures and graphical parameters for the application.
+   * This includes setting the initial state for planets, zodiac signs, cusps, lines, aspect labels, houses,
+   * and other relevant data fields. Calculates various radii for rendering purposes and assembles ruler lines
+   * and zodiac signs with their corresponding positions on the circle.
+   *
+   * @return {void}
+   */
   private init(): void {
     this._planets = [];
     this._zodiac = [];
@@ -1403,6 +1674,13 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Processes and configures chart data including houses, sky objects, and transit objects. Adjusts
+   * positions, calculates lines, and assembles visual elements for the chart display.
+   *
+   * @param {any} data - The input data containing information about houses, sky objects, and transits.
+   * @return {void}
+   */
   private handleChartData(data: any) {
     this.offset_angle = data.Houses.find((z: any) => z.name === 'Cusp1').position;
 
@@ -1700,6 +1978,13 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Formats the dignities of a given sky object based on its astrological properties and position.
+   *
+   * @param {Object} so - The sky object containing its name, position, and various dignities.
+   * @param {boolean} [isTransit=false] - Indicates whether the current context is a transit.
+   * @return {string} - A formatted string representing the dignities and their score.
+   */
   private format_dignities(so: any, isTransit: boolean = false): string {
 
     if (_.includes([SYMBOL_PLANET.ParsFortuna], so.name)) {
@@ -1850,6 +2135,13 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return result.join(', ');
   }
 
+  /**
+   * Adjusts the positions of elements within a circular area based on their relative positions.
+   *
+   * @param {Array} sos - An array of objects to adjust, each should have `name` and `position` properties.
+   * @param {boolean} [transit=false] - A boolean flag to determine whether to use the outer radius or the inner radius for adjustment.
+   * @return {Array} An array of adjusted points, each containing properties such as `name`, position coordinates, radius, angle, and pointer.
+   */
   private adjust(sos: any[], transit: boolean = false): any[] {
     const so_radius = transit ? this.outer_radius + 15 : this.inner_radius - 15;
     let points: any[] = [];
@@ -1866,12 +2158,26 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return points;
   }
 
+  /**
+   * Determines if two objects are in collision based on their coordinates and radii.
+   *
+   * @param {Object} a - The first object with properties x, y, and r representing its coordinates and radius.
+   * @param {Object} b - The second object with properties x, y, and r representing its coordinates and radius.
+   * @return {boolean} - Returns true if the objects are colliding, otherwise false.
+   */
   private in_collision(a: any, b: any): boolean {
     const dx = a.x - b.x;
     const dy = a.y - b.y;
     return Math.sqrt(dx * dx + dy * dy) <= a.r + b.r;
   }
 
+  /**
+   * Adjusts the angles of two points to resolve a collision based on their pointers and a defined collision radius.
+   *
+   * @param {object} p1 - The first point, which should contain properties `pointer` and `angle`.
+   * @param {object} p2 - The second point, which should contain properties `pointer` and `angle`.
+   * @return {void} - This method does not return any value.
+   */
   private adjust_collision(p1: any, p2: any) {
     const step = 1;
     if (
@@ -1886,6 +2192,15 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Locates a point within a given radius, ensuring it does not collide with other points.
+   * If a collision is detected, it adjusts the positions to resolve the conflict.
+   *
+   * @param {any[]} points - The array of existing points.
+   * @param {any} point - The new point to be located.
+   * @param {number} radius - The radius within which to locate the point.
+   * @return {any[]} The updated array of points after resolving potential collisions.
+   */
   private locate(points: any[], point: any, radius: number): any[] {
     if (points.length == 0) {
       points.push(point);
@@ -1923,6 +2238,15 @@ export class AstralkaChartComponent implements OnInit, AfterViewInit {
     return points;
   }
 
+  /**
+   * Scrolls to the bottom of the given HTMLDivElement. If elements with
+   * the class "explanation-wrap" are found within the container, it
+   * scrolls smoothly to the last one. Otherwise, it scrolls to the
+   * bottom of the container.
+   *
+   * @param {HTMLDivElement} element - The container element to scroll.
+   * @return {void} - This method does not return a value.
+   */
   private scrollToBottom(element: HTMLDivElement) {
     const all_explanations = element.querySelectorAll('.explanation-wrap');
     if (all_explanations) {

@@ -41,10 +41,22 @@ export class AstralkaQuickPickComponent {
   @Output() remove: EventEmitter<any> = new EventEmitter<any>();
   @Output() swapped: EventEmitter<any> = new EventEmitter<any>();
 
+  /**
+   * Retrieves the list of zone identifiers.
+   *
+   * @return {string[]} An array of zone identifiers.
+   */
   public get zones(): string[] {
     return this.picks.map(qp => qp.qp_id);
   }
 
+  /**
+   * Handles the completion of a drag-and-drop operation. It updates the internal data structure
+   * to reflect the new positions of items after the drag event.
+   *
+   * @param {any} event - The event object containing data about the drag-and-drop operation. The event object should have 'data' representing the dragged item and 'zone' representing the drop target position.
+   * @return {void} - This method does not return any value.
+   */
   public dragComplete(event: any): void {
     if (event) {
       const index1: number = this.picks.findIndex(x => x.qp_id === event.data);
